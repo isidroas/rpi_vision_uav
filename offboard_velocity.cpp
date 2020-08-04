@@ -203,7 +203,7 @@ int main(int argc, char** argv)
 
 
     //  using local NED co-ordinates
-    ret = offb_ctrl_ned(offboard);
+    bool ret = offb_ctrl_ned(offboard);
     if (ret == false) {
         return EXIT_FAILURE;
     }
