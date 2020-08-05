@@ -83,15 +83,22 @@ bool offb_ctrl_ned(std::shared_ptr<mavsdk::Offboard> offboard)
     Offboard::VelocityNedYaw turn_east{};
     turn_east.yaw_deg = 90.0f;
     offboard->set_velocity_ned(turn_east);
-    sleep_for(seconds(1)); // Let yaw settle.
+    sleep_for(seconds(3)); // Let yaw settle.
 
 
     offboard_log(offb_mode, "Turn to face West");
     Offboard::VelocityNedYaw turn_west{};
     turn_west.yaw_deg = 270.0f;
     offboard->set_velocity_ned(turn_west);
-    sleep_for(seconds(2));
+    sleep_for(seconds(3));
 
+    // Set postion setpoints
+    Offboard::PositionNedYaw move_a_bit{};
+    move_a_bit.north_m=0;
+    move_a_bit.east_m=0;
+    move_a_bit.down_m=-4;
+    offboard->set_position_ned(move_a_bit);
+    sleep_for(seconds(3));
 
     // Now, stop offboard mode.
     offboard_result = offboard->stop();
@@ -194,6 +201,15 @@ int main(int argc, char** argv)
     Action::Result arm_result = action->arm();
     action_error_exit(arm_result, "Arming failed");
     std::cout << "Armed" << std::endl;
+
+    // show postion 
+
+    telemetry->subscribe_position_velocity_ned([](Telemetry::PositionVelocityNed position) {
+        std::cout << "north: " << position.position.north_m << " m" << std::endl
+                  << "east: " << position.position.east_m << " m" << std::endl
+                  << "donw: " << position.position.down_m << " m" << std::endl;
+    });
+
 
     Action::Result takeoff_result = action->takeoff();
     action_error_exit(takeoff_result, "Takeoff failed");
