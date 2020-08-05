@@ -203,12 +203,11 @@ int main(int argc, char** argv)
     std::cout << "Armed" << std::endl;
 
     // show postion 
-
-    telemetry->subscribe_position_velocity_ned([](Telemetry::PositionVelocityNed position) {
-        std::cout << "north: " << position.position.north_m << " m" << std::endl
-                  << "east: " << position.position.east_m << " m" << std::endl
-                  << "donw: " << position.position.down_m << " m" << std::endl;
-    });
+    //telemetry->subscribe_position_velocity_ned([](Telemetry::PositionVelocityNed position) {
+    //    std::cout << "north: " << position.position.north_m << " m" << std::endl
+    //              << "east: " << position.position.east_m << " m" << std::endl
+    //              << "donw: " << position.position.down_m << " m" << std::endl;
+    //});
 
 
     Action::Result takeoff_result = action->takeoff();
@@ -217,6 +216,11 @@ int main(int argc, char** argv)
     telemetry->subscribe_landed_state(landed_state_callback(telemetry, in_air_promise));
     in_air_future.wait();
 
+
+    while (telemetry->flight_mode()!= Telemetry::FlightMode::Hold) {
+        std::cout << "Waiting for system go to hold" << std::endl;
+        sleep_for(seconds(1));
+    }
 
     //  using local NED co-ordinates
     bool ret = offb_ctrl_ned(offboard);
