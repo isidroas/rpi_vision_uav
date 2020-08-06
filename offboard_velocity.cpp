@@ -17,6 +17,7 @@
 #include <mavsdk/plugins/action/action.h>
 #include <mavsdk/plugins/offboard/offboard.h>
 #include <mavsdk/plugins/telemetry/telemetry.h>
+#include <mavsdk/plugins/mocap/mocap.h>
 
 using namespace mavsdk;
 using std::chrono::milliseconds;
@@ -66,7 +67,7 @@ inline void offboard_log(const std::string& offb_mode, const std::string msg)
  * returns true if everything went well in Offboard control, exits with a log
  * otherwise.
  */
-bool offb_ctrl_ned(std::shared_ptr<mavsdk::Offboard> offboard)
+bool offb_ctrl_ned(std::shared_ptr<mavsdk::Offboard> offboard, std::shared_ptr<mavsdk::Mocap> mocap)
 {
     const std::string offb_mode = "NED";
     // Send it once before starting offboard, otherwise it will be rejected.
@@ -97,8 +98,22 @@ bool offb_ctrl_ned(std::shared_ptr<mavsdk::Offboard> offboard)
     move_a_bit.north_m=0;
     move_a_bit.east_m=0;
     move_a_bit.down_m=-4;
+    move_a_bit.yaw_deg=0;
     offboard->set_position_ned(move_a_bit);
     sleep_for(seconds(3));
+	
+    offboard_log(offb_mode, "Sending postition estimate");
+    Mocap::VisionPositionEstimate  est_pos;
+    est_pos.position_body.x_m =0;
+    est_pos.position_body.y_m =0;
+    est_pos.position_body.z_m =-4;
+    est_pos.time_usec=0;
+    Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
+    if(result!=Mocap::Result::Success){
+        offboard_error_exit(offboard_result, "Mocap stop failed: ");
+    }
+    sleep_for(seconds(300));
+
 
     // Now, stop offboard mode.
     offboard_result = offboard->stop();
@@ -188,6 +203,7 @@ int main(int argc, char** argv)
     auto action = std::make_shared<Action>(system);
     auto offboard = std::make_shared<Offboard>(system);
     auto telemetry = std::make_shared<Telemetry>(system);
+    auto mocap = std::make_shared<Mocap>(system);
 
     while (!telemetry->health_all_ok()) {
         std::cout << "Waiting for system to be ready" << std::endl;
@@ -216,6 +232,11 @@ int main(int argc, char** argv)
     telemetry->subscribe_landed_state(landed_state_callback(telemetry, in_air_promise));
     in_air_future.wait();
 
+    Offboard::PositionNedYaw move_a_bit{};
+    move_a_bit.north_m=0;
+    move_a_bit.east_m=0;
+    move_a_bit.down_m=-4;
+    offboard->set_position_ned(move_a_bit);
 
     while (telemetry->flight_mode()!= Telemetry::FlightMode::Hold) {
         std::cout << "Waiting for system go to hold" << std::endl;
@@ -223,7 +244,7 @@ int main(int argc, char** argv)
     }
 
     //  using local NED co-ordinates
-    bool ret = offb_ctrl_ned(offboard);
+    bool ret = offb_ctrl_ned(offboard,mocap);
     if (ret == false) {
         return EXIT_FAILURE;
     }
