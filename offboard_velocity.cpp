@@ -61,74 +61,12 @@ inline void offboard_log(const std::string& offb_mode, const std::string msg)
     std::cout << "[" << offb_mode << "] " << msg << std::endl;
 }
 
-/**
- * Does Offboard control using NED co-ordinates.
- *
- * returns true if everything went well in Offboard control, exits with a log
- * otherwise.
- */
-bool offb_ctrl_ned(std::shared_ptr<mavsdk::Offboard> offboard, std::shared_ptr<mavsdk::Mocap> mocap)
+// Logs during Vision position
+inline void mocap_log(const std::string msg)
 {
-    const std::string offb_mode = "NED";
-    // Send it once before starting offboard, otherwise it will be rejected.
-    const Offboard::VelocityNedYaw stay{};
-    offboard->set_velocity_ned(stay);
-
-    // TODO: Try to wait user sel offboard mode
-    Offboard::Result offboard_result = offboard->start();
-    offboard_error_exit(offboard_result, "Offboard start failed");
-    offboard_log(offb_mode, "Offboard started");
-
-    offboard_log(offb_mode, "Turn to face East");
-
-    Offboard::VelocityNedYaw turn_east{};
-    turn_east.yaw_deg = 90.0f;
-    offboard->set_velocity_ned(turn_east);
-    sleep_for(seconds(3)); // Let yaw settle.
-
-
-    offboard_log(offb_mode, "Turn to face West");
-    Offboard::VelocityNedYaw turn_west{};
-    turn_west.yaw_deg = 270.0f;
-    offboard->set_velocity_ned(turn_west);
-    sleep_for(seconds(3));
-
-    // Set postion setpoints
-    Offboard::PositionNedYaw move_a_bit{};
-    move_a_bit.north_m=0;
-    move_a_bit.east_m=0;
-    move_a_bit.down_m=-4;
-    move_a_bit.yaw_deg=0;
-    offboard->set_position_ned(move_a_bit);
-    sleep_for(seconds(3));
-	
-    offboard_log(offb_mode, "Sending postition estimate");
-    Mocap::VisionPositionEstimate  est_pos;
-    est_pos.position_body.x_m =0;
-    est_pos.position_body.y_m =0;
-    est_pos.position_body.z_m =-4;
-    est_pos.angle_body.roll_rad =0;
-    est_pos.angle_body.pitch_rad =0;
-    est_pos.angle_body.yaw_rad =0;
-
-  
-    for(unsigned int i=0; i<1000000; i++){
-      Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
-      if(result!=Mocap::Result::Success){
-          offboard_error_exit(offboard_result, "Mocap stop failed: ");
-      }
-    // The messages should be streamed at between 30Hz (if containing covariances) and 50 Hz.
-      sleep_for(milliseconds(3));
-    }
-
-
-    // Now, stop offboard mode.
-    offboard_result = offboard->stop();
-    offboard_error_exit(offboard_result, "Offboard stop failed: ");
-    offboard_log(offb_mode, "Offboard stopped");
-
-    return true;
+    std::cout << "[Mocap] " << msg << std::endl;
 }
+
 
 
 
@@ -212,64 +150,109 @@ int main(int argc, char** argv)
     auto telemetry = std::make_shared<Telemetry>(system);
     auto mocap = std::make_shared<Mocap>(system);
 
-    while (!telemetry->health_all_ok()) {
-        std::cout << "Waiting for system to be ready" << std::endl;
-        sleep_for(seconds(1));
+    //while (!telemetry->health_all_ok()) {
+    //    std::cout << "Waiting for system to be ready" << std::endl;
+    //    sleep_for(seconds(1));
+    //}
+    //std::cout << "System is ready" << std::endl;
+
+    //std::promise<void> in_air_promise;
+    //auto in_air_future = in_air_promise.get_future();
+
+    //Action::Result arm_result = action->arm();
+    //action_error_exit(arm_result, "Arming failed");
+    //std::cout << "Armed" << std::endl;
+
+
+    //Action::Result takeoff_result = action->takeoff();
+    //action_error_exit(takeoff_result, "Takeoff failed");
+
+    
+    //telemetry->subscribe_landed_state(landed_state_callback(telemetry, in_air_promise));
+    //in_air_future.wait();
+
+    //while (telemetry->flight_mode()!= Telemetry::FlightMode::Hold) {
+    //    std::cout << "Waiting for system go to hold" << std::endl;
+    //    sleep_for(seconds(1));
+    //}
+
+
+    //const std::string offb_mode = "NED";
+    //// Send it once before starting offboard, otherwise it will be rejected.
+    //const Offboard::VelocityNedYaw stay{};
+    //offboard->set_velocity_ned(stay);
+
+    //// TODO: Try to wait user sel offboard mode
+    //Offboard::Result offboard_result = offboard->start();
+    //offboard_error_exit(offboard_result, "Offboard start failed");
+    //offboard_log(offb_mode, "Offboard started");
+
+    //offboard_log(offb_mode, "Turn to face East");
+
+    //Offboard::VelocityNedYaw turn_east{};
+    //turn_east.yaw_deg = 90.0f;
+    //offboard->set_velocity_ned(turn_east);
+    //sleep_for(seconds(3)); // Let yaw settle.
+
+
+    //offboard_log(offb_mode, "Turn to face West");
+    //Offboard::VelocityNedYaw turn_west{};
+    //turn_west.yaw_deg = 270.0f;
+    //offboard->set_velocity_ned(turn_west);
+    //sleep_for(seconds(3));
+
+    //// Set postion setpoints
+    //Offboard::PositionNedYaw move_a_bit{};
+    //move_a_bit.north_m=0;
+    //move_a_bit.east_m=0;
+    //move_a_bit.down_m=-4;
+    //move_a_bit.yaw_deg=0;
+    //offboard->set_position_ned(move_a_bit);
+    //sleep_for(seconds(3));
+	
+    /*  Send vision position estimate */
+    mocap_log("Sending postition estimate");
+    Mocap::VisionPositionEstimate  est_pos;
+    est_pos.position_body.x_m =0;
+    est_pos.position_body.y_m =0;
+    est_pos.position_body.z_m =0;
+    est_pos.angle_body.roll_rad =0;
+    est_pos.angle_body.pitch_rad =0;
+    est_pos.angle_body.yaw_rad =0;
+    //est_pos.pose_covariance.covariance_matrix =NAN;
+    std::vector<float> covariance{NAN};
+    est_pos.pose_covariance.covariance_matrix=covariance;
+
+  
+    for(unsigned int i=0; i<1000000; i++){
+      Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
+      if(result!=Mocap::Result::Success){
+          std::cerr << ERROR_CONSOLE_TEXT << "Set vision position failed: " << result << NORMAL_CONSOLE_TEXT << std::endl;
+      }
+      // The messages should be streamed at between 30Hz (if containing covariances) and 50 Hz.
+      sleep_for(milliseconds(25)); //40Hz
     }
-    std::cout << "System is ready" << std::endl;
-
-    std::promise<void> in_air_promise;
-    auto in_air_future = in_air_promise.get_future();
-
-    Action::Result arm_result = action->arm();
-    action_error_exit(arm_result, "Arming failed");
-    std::cout << "Armed" << std::endl;
-
-    // show postion 
-    //telemetry->subscribe_position_velocity_ned([](Telemetry::PositionVelocityNed position) {
-    //    std::cout << "north: " << position.position.north_m << " m" << std::endl
-    //              << "east: " << position.position.east_m << " m" << std::endl
-    //              << "donw: " << position.position.down_m << " m" << std::endl;
-    //});
 
 
-    Action::Result takeoff_result = action->takeoff();
-    action_error_exit(takeoff_result, "Takeoff failed");
-
-    telemetry->subscribe_landed_state(landed_state_callback(telemetry, in_air_promise));
-    in_air_future.wait();
-
-    Offboard::PositionNedYaw move_a_bit{};
-    move_a_bit.north_m=0;
-    move_a_bit.east_m=0;
-    move_a_bit.down_m=-4;
-    offboard->set_position_ned(move_a_bit);
-
-    while (telemetry->flight_mode()!= Telemetry::FlightMode::Hold) {
-        std::cout << "Waiting for system go to hold" << std::endl;
-        sleep_for(seconds(1));
-    }
-
-    //  using local NED co-ordinates
-    bool ret = offb_ctrl_ned(offboard,mocap);
-    if (ret == false) {
-        return EXIT_FAILURE;
-    }
+    // Now, stop offboard mode.
+    //offboard_result = offboard->stop();
+    //offboard_error_exit(offboard_result, "Offboard stop failed: ");
+    //offboard_log(offb_mode, "Offboard stopped");
 
 
-    const Action::Result land_result = action->land();
-    action_error_exit(land_result, "Landing failed");
+    //const Action::Result land_result = action->land();
+    //action_error_exit(land_result, "Landing failed");
 
-    // Check if vehicle is still in air
-    while (telemetry->in_air()) {
-        std::cout << "Vehicle is landing..." << std::endl;
-        sleep_for(seconds(1));
-    }
-    std::cout << "Landed!" << std::endl;
+    //// Check if vehicle is still in air
+    //while (telemetry->in_air()) {
+    //    std::cout << "Vehicle is landing..." << std::endl;
+    //    sleep_for(seconds(1));
+    //}
+    //std::cout << "Landed!" << std::endl;
 
-    // We are relying on auto-disarming but let's keep watching the telemetry for
-    // a bit longer.
-    sleep_for(seconds(3));
+    //// We are relying on auto-disarming but let's keep watching the telemetry for
+    //// a bit longer.
+    //sleep_for(seconds(3));
     std::cout << "Finished..." << std::endl;
 
     return EXIT_SUCCESS;
