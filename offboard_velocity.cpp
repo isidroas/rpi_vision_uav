@@ -107,12 +107,19 @@ bool offb_ctrl_ned(std::shared_ptr<mavsdk::Offboard> offboard, std::shared_ptr<m
     est_pos.position_body.x_m =0;
     est_pos.position_body.y_m =0;
     est_pos.position_body.z_m =-4;
-    est_pos.time_usec=0;
-    Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
-    if(result!=Mocap::Result::Success){
-        offboard_error_exit(offboard_result, "Mocap stop failed: ");
+    est_pos.angle_body.roll_rad =0;
+    est_pos.angle_body.pitch_rad =0;
+    est_pos.angle_body.yaw_rad =0;
+
+  
+    for(unsigned int i=0; i<1000000; i++){
+      Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
+      if(result!=Mocap::Result::Success){
+          offboard_error_exit(offboard_result, "Mocap stop failed: ");
+      }
+    // The messages should be streamed at between 30Hz (if containing covariances) and 50 Hz.
+      sleep_for(milliseconds(3));
     }
-    sleep_for(seconds(300));
 
 
     // Now, stop offboard mode.
