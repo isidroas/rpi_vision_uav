@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.8)
+project( detect_markers )
+find_package( OpenCV REQUIRED )
+add_executable( detect_markers detect_markers.cpp )
+add_executable( calibrate_camera_charuco calibrate_camera_charuco.cpp )
+target_link_libraries( detect_markers ${OpenCV_LIBS} )
+target_link_libraries( calibrate_camera_charuco ${OpenCV_LIBS} )
