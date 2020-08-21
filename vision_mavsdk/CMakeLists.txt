@@ -14,7 +14,7 @@ else()
 endif()
 
 find_package(MAVSDK REQUIRED)
-find_package(OpenCV REQUIRED PATHS /home/isidro/opencv-install/4.4.0/)
+find_package( OpenCV REQUIRED PATHS ~/opencv-install/opencv-4.4.0)
 	                          
 add_executable(offboard_vision
     offboard_vision.cpp
