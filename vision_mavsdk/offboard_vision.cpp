@@ -23,13 +23,19 @@ using std::this_thread::sleep_for;
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/aruco.hpp>
+#include <opencv2/calib3d.hpp>
 #include <iostream>
 
 #define CALIBRATION_PARAMETERS "calibration_parameters.txt"
 #define DICTIONARY 10   // 6x6 256
 #define MARKER_LENGTH 0.173 
+// Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
 #define REFINEMENT_METHOD 0
-//"{refine   |       | Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
+#define SHOW_REJECTED  false
+// #define DEBUG
+
+// The messages should be streamed at between 30Hz (if containing covariances) and 50 Hz.
+#define LOOP_PERIOD_MS  25 
 
 using namespace std;
 using namespace cv;
@@ -74,6 +80,46 @@ void usage(std::string bin_name)
               << "For example, to connect to the simulator use URL: udp://:14540" << std::endl;
 }
 
+// Checks if a matrix is a valid rotation matrix.
+bool isRotationMatrix(Mat &R)
+{
+    Mat Rt;
+    transpose(R, Rt);
+    Mat shouldBeIdentity = Rt * R;
+    Mat I = Mat::eye(3,3, shouldBeIdentity.type());
+    
+    return  norm(I, shouldBeIdentity) < 1e-6;
+    
+}
+
+// Calculates rotation matrix to euler angles
+// The result is the same as MATLAB except the order
+// of the euler angles ( x and z are swapped ).
+Vec3f rotationMatrixToEulerAngles(Mat &R)
+{
+
+    assert(isRotationMatrix(R));
+    
+    float sy = sqrt(R.at<double>(0,0) * R.at<double>(0,0) +  R.at<double>(1,0) * R.at<double>(1,0) );
+
+    bool singular = sy < 1e-6; // If
+
+    float x, y, z;
+    if (!singular)
+    {
+        x = atan2(R.at<double>(2,1) , R.at<double>(2,2));
+        y = atan2(-R.at<double>(2,0), sy);
+        z = atan2(R.at<double>(1,0), R.at<double>(0,0));
+    }
+    else
+    {
+        x = atan2(-R.at<double>(1,2), R.at<double>(1,1));
+        y = atan2(-R.at<double>(2,0), sy);
+        z = 0;
+    }
+    return Vec3f(x, y, z);
+}
+
 
 int main(int argc, char** argv)
 {
@@ -108,18 +154,8 @@ int main(int argc, char** argv)
 	
     /*  Send vision position estimate */
     mocap_log("Sending postition estimate");
-    Mocap::VisionPositionEstimate  est_pos;
-    est_pos.position_body.x_m =0;
-    est_pos.position_body.y_m =0;
-    est_pos.position_body.z_m =0;
-    est_pos.angle_body.roll_rad =0;
-    est_pos.angle_body.pitch_rad =0;
-    est_pos.angle_body.yaw_rad =0;
-    std::vector<float> covariance{NAN};
-    est_pos.pose_covariance.covariance_matrix=covariance;
 
-    /* Vision setup */
-    bool showRejected = false;
+    /*** Vision setup ***/
 
     Ptr<aruco::DetectorParameters> detectorParams = aruco::DetectorParameters::create();
 
@@ -151,61 +187,99 @@ int main(int argc, char** argv)
         waitTime = 10;
     }
 
-    double totalTime = 0;
+    double total_time_detect = 0;
+    double total_time = 0;
     int totalIterations = 0;
   
-    /* Main Loop */
-    for(unsigned int i=0; i<1000000; i++){
+    /*** Main Loop ***/
+    while(true){
+      auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
+      double tick_global = (double)getTickCount();
       /* Vision task */
-      if (inputVideo.grab()){
-         Mat image, imageCopy;
-         inputVideo.retrieve(image);
+      inputVideo.grab();
+      Mat image, imageCopy;
+      inputVideo.retrieve(image);
 
-         double tick = (double)getTickCount();
+      double tick = (double)getTickCount();
 
-         vector< int > ids;
-         vector< vector< Point2f > > corners, rejected;
-         vector< Vec3d > rvecs, tvecs;
+      vector< int > ids;
+      vector< vector< Point2f > > corners, rejected;
+      vector< Vec3d > rvecs, tvecs;
 
-         // detect markers and estimate pose
-         aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
-         if(ids.size() > 0)
-             aruco::estimatePoseSingleMarkers(corners, MARKER_LENGTH, camMatrix, distCoeffs, rvecs,
-                                              tvecs);
+      // detect markers and estimate pose
+      aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
+      bool found_marker=ids.size() > 0;
 
-         double currentTime = ((double)getTickCount() - tick) / getTickFrequency();
-         totalTime += currentTime;
-         totalIterations++;
-         if(totalIterations % 30 == 0) {
-             cout << "Detection Time = " << currentTime * 1000 << " ms "
-                  << "(Mean = " << 1000 * totalTime / double(totalIterations) << " ms)" << endl;
-         }
+      double execution_time_detect = ((double)getTickCount() - tick) / getTickFrequency();
 
+      Mocap::VisionPositionEstimate  est_pos;
+
+      if(found_marker)
+         aruco::estimatePoseSingleMarkers(corners, MARKER_LENGTH, camMatrix, distCoeffs, rvecs, tvecs);
+
+      #ifdef DEBUG
          // draw results
          image.copyTo(imageCopy);
-         if(ids.size() > 0) {
-             aruco::drawDetectedMarkers(imageCopy, corners, ids);
-
-                 for(unsigned int i = 0; i < ids.size(); i++)
-                     aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
-                                     MARKER_LENGTH * 0.5f);
+         if(found_marker){
+            aruco::drawDetectedMarkers(imageCopy, corners, ids);
+            aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[0], tvecs[0], MARKER_LENGTH * 0.5f);
          }
 
-         if(showRejected && rejected.size() > 0)
+         if(SHOW_REJECTED && rejected.size() > 0)
              aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
-
          imshow("out", imageCopy);
-         char key = (char)waitKey(waitTime);
-         if(key == 27) break;
+      #endif
+
+      if (found_marker){
+         // Aruco gives camera position with respect marker
+         // TODO: get camera position with respect autopilot
+         // tvecs
+         est_pos.position_body.x_m = tvecs[0][0];
+         est_pos.position_body.y_m = tvecs[0][1];
+         est_pos.position_body.z_m =-tvecs[0][2];
+         // rvecs are rotation_vectors
+         cv::Mat  rot_mat;
+         Rodrigues(rvecs[0],rot_mat);
+         if (!isRotationMatrix(rot_mat)){
+             break;
+         }
+         Vec3f euler_angles = rotationMatrixToEulerAngles(rot_mat);
+
+         est_pos.angle_body.roll_rad =  euler_angles[0];
+         est_pos.angle_body.pitch_rad = euler_angles[1];
+         est_pos.angle_body.yaw_rad =   euler_angles[2];
+
+         std::vector<float> covariance{NAN};
+         est_pos.pose_covariance.covariance_matrix=covariance;
+
+
+         Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
+         if(result!=Mocap::Result::Success){
+             std::cerr << ERROR_CONSOLE_TEXT << "Set vision position failed: " << result << NORMAL_CONSOLE_TEXT << std::endl;
+         }
       }
 
-      /* Publish task */
-      Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
-      if(result!=Mocap::Result::Success){
-          std::cerr << ERROR_CONSOLE_TEXT << "Set vision position failed: " << result << NORMAL_CONSOLE_TEXT << std::endl;
+      total_time_detect += execution_time_detect;
+      double execution_time = ((double)getTickCount() - tick_global) / getTickFrequency();
+      total_time += execution_time;
+      totalIterations++;
+      /* Print data */
+      if(totalIterations % 30 == 0) {
+         cout << "Detection Time = " << execution_time_detect * 1000 << " ms "
+              << "(Mean = " << 1000 * total_time_detect / double(totalIterations) << " ms)" << endl;
+         cout << "Execution Time = " << execution_time * 1000 << " ms " 
+              << "(Mean = " << 1000 * total_time / double(totalIterations) << " ms)" << endl;
+         #ifdef DEBUG
+         if(found_marker)
+            cout << est_pos << endl;
+         #endif 
       }
-      // The messages should be streamed at between 30Hz (if containing covariances) and 50 Hz.
-      sleep_for(milliseconds(25)); //40Hz
+      
+      char key = (char)waitKey(waitTime);
+      if(key == 27) break;
+
+      //sleep_for(milliseconds(25)); //40Hz
+      std::this_thread::sleep_until(x);
     }
 
     std::cout << "Finished..." << std::endl;
