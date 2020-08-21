@@ -32,7 +32,8 @@ using std::this_thread::sleep_for;
 // Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
 #define REFINEMENT_METHOD 0
 #define SHOW_REJECTED  false
-// #define DEBUG
+#define DEBUG
+//#define MAV_CONNECT
 
 // The messages should be streamed at between 30Hz (if containing covariances) and 50 Hz.
 #define LOOP_PERIOD_MS  25 
@@ -123,6 +124,10 @@ Vec3f rotationMatrixToEulerAngles(Mat &R)
 
 int main(int argc, char** argv)
 {
+    cout << argc << endl;
+    cout << argv << endl;
+
+    #ifdef MAV_CONNECT
     Mavsdk dc;
     std::string connection_url;
     ConnectionResult connection_result;
@@ -150,13 +155,9 @@ int main(int argc, char** argv)
     auto offboard = std::make_shared<Offboard>(system);
     auto telemetry = std::make_shared<Telemetry>(system);
     auto mocap = std::make_shared<Mocap>(system);
-
-	
-    /*  Send vision position estimate */
-    mocap_log("Sending postition estimate");
-
+    #endif
+	 
     /*** Vision setup ***/
-
     Ptr<aruco::DetectorParameters> detectorParams = aruco::DetectorParameters::create();
 
     //override cornerRefinementMethod read from config file
@@ -253,10 +254,12 @@ int main(int argc, char** argv)
          est_pos.pose_covariance.covariance_matrix=covariance;
 
 
+         #ifdef MAV_CONNECT
          Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
          if(result!=Mocap::Result::Success){
              std::cerr << ERROR_CONSOLE_TEXT << "Set vision position failed: " << result << NORMAL_CONSOLE_TEXT << std::endl;
          }
+         #endif
       }
 
       total_time_detect += execution_time_detect;
