@@ -233,14 +233,10 @@ int main(int argc, char** argv)
       #endif
 
       if (found_marker){
-         // Aruco gives camera position with respect marker
-         // TODO: get camera position with respect autopilot
-         // tvecs
-         est_pos.position_body.x_m = tvecs[0][0];
-         est_pos.position_body.y_m = tvecs[0][1];
-         //est_pos.position_body.z_m =-tvecs[0][2];
-         est_pos.position_body.z_m = tvecs[0][2];
-         // rvecs are rotation_vectors
+         // tvecs and rvecs are translation and rotation of the marker with respect camera axis
+         // camera position coordinates are the same as autopilot
+         
+         // rvecs are rotation_vectors. Here it is transformed to rotation matrix
          cv::Mat  rot_mat;
          Rodrigues(rvecs[0],rot_mat);
          if (!isRotationMatrix(rot_mat)){
@@ -248,13 +244,30 @@ int main(int argc, char** argv)
          }
          Vec3f euler_angles = rotationMatrixToEulerAngles(rot_mat);
 
+         // Get position and rotation of camera in marker axis
+         //tvecs_trans=transpose(rot_mat)*tvecs[0];
+         Mat rot_mat_inv;
+         Mat t_in{tvecs[0][0],tvecs[0][1],tvecs[0][2]};
+         transpose(rot_mat, rot_mat_inv);
+         vector<Vec3d> pos_inv;
+         Mat t_out = rot_mat_inv*t_in;
+
+         // This code get marker position in camera coordinates
+         //est_pos.position_body.x_m = tvecs[0][0];
+         //est_pos.position_body.y_m = tvecs[0][1];
+         //est_pos.position_body.z_m = tvecs[0][2];
+         
+         // This on get camera postion in marker coordinates (but is negated -> why?)
+         est_pos.position_body.x_m = t_out.at<double>(0);
+         est_pos.position_body.y_m = t_out.at<double>(1);
+         est_pos.position_body.z_m = t_out.at<double>(2);
+
          est_pos.angle_body.roll_rad =  euler_angles[0];
          est_pos.angle_body.pitch_rad = euler_angles[1];
          est_pos.angle_body.yaw_rad =   euler_angles[2];
 
          std::vector<float> covariance{NAN};
          est_pos.pose_covariance.covariance_matrix=covariance;
-
 
          #ifdef MAV_CONNECT
          Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
