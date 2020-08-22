@@ -30,13 +30,14 @@ using std::this_thread::sleep_for;
 #define DICTIONARY 10   // 6x6 256
 #define MARKER_LENGTH 0.173 
 // Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
-#define REFINEMENT_METHOD 0
+#define REFINEMENT_METHOD 1
 #define SHOW_REJECTED  false
 #define DEBUG
 //#define MAV_CONNECT
+#define OPEN_WINDOW
 
-// The messages should be streamed at between 30Hz (if containing covariances) and 50 Hz.
-#define LOOP_PERIOD_MS  25 
+// The messages should be streamed at between 30Hz (33ms) (if containing covariances) and 50 Hz (20ms).
+#define LOOP_PERIOD_MS  30 
 
 using namespace std;
 using namespace cv;
@@ -218,7 +219,7 @@ int main(int argc, char** argv)
       if(found_marker)
          aruco::estimatePoseSingleMarkers(corners, MARKER_LENGTH, camMatrix, distCoeffs, rvecs, tvecs);
 
-      #ifdef DEBUG
+      #ifdef OPEN_WINDOW
          // draw results
          image.copyTo(imageCopy);
          if(found_marker){
@@ -237,7 +238,8 @@ int main(int argc, char** argv)
          // tvecs
          est_pos.position_body.x_m = tvecs[0][0];
          est_pos.position_body.y_m = tvecs[0][1];
-         est_pos.position_body.z_m =-tvecs[0][2];
+         //est_pos.position_body.z_m =-tvecs[0][2];
+         est_pos.position_body.z_m = tvecs[0][2];
          // rvecs are rotation_vectors
          cv::Mat  rot_mat;
          Rodrigues(rvecs[0],rot_mat);
