@@ -21,10 +21,13 @@ using std::this_thread::sleep_for;
 #define TELEMETRY_CONSOLE_TEXT "\033[34m" // Turn text on console blue
 #define NORMAL_CONSOLE_TEXT "\033[0m" // Restore normal console colour
 
+#include <Eigen/Dense>
+
 #include <opencv2/highgui.hpp>
 #include <opencv2/aruco.hpp>
 #include <opencv2/calib3d.hpp>
-#include <iostream>
+#include <opencv2/core/eigen.hpp>
+//#include <iostream>
 
 #define CALIBRATION_PARAMETERS "calibration_parameters.txt"
 #define DICTIONARY 10   // 6x6 256
@@ -51,12 +54,6 @@ static bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeff
     return true;
 }
 
-
-// Logs during Vision position
-inline void mocap_log(const std::string msg)
-{
-    std::cout << "[Mocap] " << msg << std::endl;
-}
 
 void wait_until_discover(Mavsdk& dc)
 {
@@ -97,7 +94,7 @@ bool isRotationMatrix(Mat &R)
 // Calculates rotation matrix to euler angles
 // The result is the same as MATLAB except the order
 // of the euler angles ( x and z are swapped ).
-Vec3f rotationMatrixToEulerAngles(Mat &R)
+Vec3d rotationMatrixToEulerAngles(Mat &R)
 {
 
     assert(isRotationMatrix(R));
@@ -120,6 +117,29 @@ Vec3f rotationMatrixToEulerAngles(Mat &R)
         z = 0;
     }
     return Vec3f(x, y, z);
+}
+
+Eigen::Vector3d rotationMatrixToEulerAngles_eig(Eigen::Matrix3d &R)
+{
+
+    float sy = sqrt(R(0,0) * R(0,0) +  R(1,0) * R(1,0) );
+
+    bool singular = sy < 1e-6; // If
+
+    float x, y, z;
+    if (!singular)
+    {
+        x = atan2(R(2,1) , R(2,2));
+        y = atan2(-R(2,0), sy);
+        z = atan2(R(1,0), R(0,0));
+    }
+    else
+    {
+        x = atan2(-R(1,2), R(1,1));
+        y = atan2(-R(2,0), sy);
+        z = 0;
+    }
+    return Eigen::Vector3d(x, y, z);
 }
 
 
@@ -207,6 +227,7 @@ int main(int argc, char** argv)
       vector< int > ids;
       vector< vector< Point2f > > corners, rejected;
       vector< Vec3d > rvecs, tvecs;
+      //vector< Vector3d > rvecs, tvecs;
 
       // detect markers and estimate pose
       aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
@@ -239,38 +260,41 @@ int main(int argc, char** argv)
          // rvecs are rotation_vectors. Here it is transformed to rotation matrix
          cv::Mat  rot_mat;
          Rodrigues(rvecs[0],rot_mat);
-         if (!isRotationMatrix(rot_mat)){
-             break;
-         }
-         Vec3f euler_angles = rotationMatrixToEulerAngles(rot_mat);
+         //if (!isRotationMatrix(rot_mat)){
+         //    break;
+         //}
+         //Vec3d euler_angles = rotationMatrixToEulerAngles(rot_mat);
+
+         Eigen::Matrix3d rot_mat_eig; 
+         cv::cv2eigen(rot_mat,rot_mat_eig);
+
+
+         // rotate marker axis in order to get z point down
+         Eigen::Matrix3d  x_rotation;
+         x_rotation << 1,  0,  0,
+                       0, -1,  0,
+                       0,  0, -1;
+         Eigen::Matrix3d rot_mat_aux= rot_mat_eig*x_rotation; 
 
          // Get position and rotation of camera in marker axis
          //tvecs_trans=transpose(rot_mat)*tvecs[0];
-         Mat rot_mat_inv;
-         Mat t_in{tvecs[0][0],tvecs[0][1],tvecs[0][2]};
-         transpose(rot_mat, rot_mat_inv);
-         vector<Vec3d> pos_inv;
-         Mat t_out = rot_mat_inv*t_in;
+         Eigen::Matrix3d rot_mat_inv;
+         Eigen::Vector3d t_in(tvecs[0][0],tvecs[0][1],tvecs[0][2]);
+         rot_mat_inv = rot_mat_eig.transpose();
+         //vector<Vec3d> pos_inv;
+         Eigen::Vector3d t_out = -rot_mat_inv*t_in;
+         Eigen::Vector3d t_out2 = x_rotation*t_out;
 
-         // rotate marker axis in order to get z point down
-         /* TODO: work with matrices defined as "float matrix1[3][3]" since Mat is designed for images. See eigen https://eigen.tuxfamily.org/dox/group__TutorialMatrixClass.html */
-         //Mat  x_rotation={{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
-         //Mat rot_mat_aux= rot_mat*x_rotation;
-           
+         Eigen::Vector3d euler_angles_aux = rotationMatrixToEulerAngles_eig(rot_mat_aux);
 
-         // This code get marker position in camera coordinates
-         //est_pos.position_body.x_m = tvecs[0][0];
-         //est_pos.position_body.y_m = tvecs[0][1];
-         //est_pos.position_body.z_m = tvecs[0][2];
-         
          // This on get camera postion in marker coordinates (but is negated -> why?)
-         est_pos.position_body.x_m = t_out.at<double>(0);
-         est_pos.position_body.y_m = t_out.at<double>(1);
-         est_pos.position_body.z_m = t_out.at<double>(2);
+         est_pos.position_body.x_m = t_out2[0];
+         est_pos.position_body.y_m = t_out2[1];
+         est_pos.position_body.z_m = t_out2[2];
 
-         est_pos.angle_body.roll_rad =  euler_angles[0];
-         est_pos.angle_body.pitch_rad = euler_angles[1];
-         est_pos.angle_body.yaw_rad =   euler_angles[2];
+         est_pos.angle_body.roll_rad =  euler_angles_aux[0];
+         est_pos.angle_body.pitch_rad = euler_angles_aux[1];
+         est_pos.angle_body.yaw_rad =   euler_angles_aux[2];
 
          std::vector<float> covariance{NAN};
          est_pos.pose_covariance.covariance_matrix=covariance;
