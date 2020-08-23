@@ -252,6 +252,12 @@ int main(int argc, char** argv)
          vector<Vec3d> pos_inv;
          Mat t_out = rot_mat_inv*t_in;
 
+         // rotate marker axis in order to get z point down
+         /* TODO: work with matrices defined as "float matrix1[3][3]" since Mat is designed for images. See eigen https://eigen.tuxfamily.org/dox/group__TutorialMatrixClass.html */
+         //Mat  x_rotation={{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+         //Mat rot_mat_aux= rot_mat*x_rotation;
+           
+
          // This code get marker position in camera coordinates
          //est_pos.position_body.x_m = tvecs[0][0];
          //est_pos.position_body.y_m = tvecs[0][1];
