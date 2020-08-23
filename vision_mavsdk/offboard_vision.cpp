@@ -259,14 +259,16 @@ int main(int argc, char** argv)
          
          // rvecs are rotation_vectors. Here it is transformed to rotation matrix
          cv::Mat  rot_mat;
-         Rodrigues(rvecs[0],rot_mat);
+         Rodrigues(-rvecs[0],rot_mat);
          //if (!isRotationMatrix(rot_mat)){
          //    break;
          //}
          //Vec3d euler_angles = rotationMatrixToEulerAngles(rot_mat);
 
+         //Eigen::Matrix3d rot_mat_eig, rot_mat_aux2; 
          Eigen::Matrix3d rot_mat_eig; 
          cv::cv2eigen(rot_mat,rot_mat_eig);
+         //rot_mat_eig=-rot_mat_aux2; 
 
 
          // rotate marker axis in order to get z point down
@@ -274,7 +276,7 @@ int main(int argc, char** argv)
          x_rotation << 1,  0,  0,
                        0, -1,  0,
                        0,  0, -1;
-         Eigen::Matrix3d rot_mat_aux= rot_mat_eig*x_rotation; 
+         Eigen::Matrix3d rot_mat_aux= x_rotation*rot_mat_eig; 
 
          // Get position and rotation of camera in marker axis
          //tvecs_trans=transpose(rot_mat)*tvecs[0];
@@ -282,8 +284,8 @@ int main(int argc, char** argv)
          Eigen::Vector3d t_in(tvecs[0][0],tvecs[0][1],tvecs[0][2]);
          rot_mat_inv = rot_mat_eig.transpose();
          //vector<Vec3d> pos_inv;
-         Eigen::Vector3d t_out = -rot_mat_inv*t_in;
-         Eigen::Vector3d t_out2 = x_rotation*t_out;
+         Eigen::Vector3d t_out = rot_mat_inv*t_in;
+         Eigen::Vector3d t_out2 = -x_rotation*t_out;
 
          Eigen::Vector3d euler_angles_aux = rotationMatrixToEulerAngles_eig(rot_mat_aux);
 
