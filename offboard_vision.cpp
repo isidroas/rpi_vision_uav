@@ -20,9 +20,9 @@ using std::this_thread::sleep_for;
 #define ERROR_CONSOLE_TEXT "\033[31m" // Turn text on console red
 #define TELEMETRY_CONSOLE_TEXT "\033[34m" // Turn text on console blue
 #define NORMAL_CONSOLE_TEXT "\033[0m" // Restore normal console colour
+#define CONNECTION_URL  "serial:///dev/ttyUSB0"
 
 #include <Eigen/Dense>
-
 #include <opencv2/highgui.hpp>
 #include <opencv2/aruco.hpp>
 #include <opencv2/calib3d.hpp>
@@ -36,8 +36,8 @@ using std::this_thread::sleep_for;
 #define REFINEMENT_METHOD 1
 #define SHOW_REJECTED  false
 #define DEBUG
-//#define MAV_CONNECT
-#define OPEN_WINDOW
+#define MAV_CONNECT
+//#define OPEN_WINDOW
 
 // The messages should be streamed at between 30Hz (33ms) (if containing covariances) and 50 Hz (20ms).
 #define LOOP_PERIOD_MS  30 
@@ -150,16 +150,9 @@ int main(int argc, char** argv)
 
     #ifdef MAV_CONNECT
     Mavsdk dc;
-    std::string connection_url;
     ConnectionResult connection_result;
 
-    if (argc == 2) {
-        connection_url = argv[1];
-        connection_result = dc.add_any_connection(connection_url);
-    } else {
-        usage(argv[0]);
-        return 1;
-    }
+   connection_result = dc.add_any_connection(CONNECTION_URL);
 
     if (connection_result != ConnectionResult::Success) {
         std::cout << ERROR_CONSOLE_TEXT << "Connection failed: " << connection_result
@@ -171,7 +164,7 @@ int main(int argc, char** argv)
     wait_until_discover(dc);
 
     // System got discovered.
-    System& system = dc.system();
+    System& system = dc.system(3690507541151037490);
     auto action = std::make_shared<Action>(system);
     auto offboard = std::make_shared<Offboard>(system);
     auto telemetry = std::make_shared<Telemetry>(system);
@@ -315,11 +308,11 @@ int main(int argc, char** argv)
       totalIterations++;
       /* Print data */
       if(totalIterations % 30 == 0) {
+         #ifdef DEBUG
          cout << "Detection Time = " << execution_time_detect * 1000 << " ms "
               << "(Mean = " << 1000 * total_time_detect / double(totalIterations) << " ms)" << endl;
          cout << "Execution Time = " << execution_time * 1000 << " ms " 
               << "(Mean = " << 1000 * total_time / double(totalIterations) << " ms)" << endl;
-         #ifdef DEBUG
          if(found_marker)
             cout << est_pos << endl;
          #endif 
