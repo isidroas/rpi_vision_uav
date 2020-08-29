@@ -21,13 +21,13 @@ using std::this_thread::sleep_for;
 #define TELEMETRY_CONSOLE_TEXT "\033[34m" // Turn text on console blue
 #define NORMAL_CONSOLE_TEXT "\033[0m" // Restore normal console colour
 #define CONNECTION_URL  "serial:///dev/ttyUSB0"
+#define UUID 3690507541151037490
 
 #include <Eigen/Dense>
 #include <opencv2/highgui.hpp>
 #include <opencv2/aruco.hpp>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core/eigen.hpp>
-//#include <iostream>
 
 #define CALIBRATION_PARAMETERS "calibration_parameters.txt"
 #define DICTIONARY 10   // 6x6 256
@@ -152,7 +152,7 @@ int main(int argc, char** argv)
     Mavsdk dc;
     ConnectionResult connection_result;
 
-   connection_result = dc.add_any_connection(CONNECTION_URL);
+    connection_result = dc.add_any_connection(CONNECTION_URL);
 
     if (connection_result != ConnectionResult::Success) {
         std::cout << ERROR_CONSOLE_TEXT << "Connection failed: " << connection_result
@@ -161,10 +161,17 @@ int main(int argc, char** argv)
     }
 
     // Wait for the system to connect via heartbeat
-    wait_until_discover(dc);
+    //wait_until_discover(dc);
 
     // System got discovered.
-    System& system = dc.system(3690507541151037490);
+    bool connected = dc.is_connected(UUID);
+    while(connected==false){
+       connected = dc.is_connected(UUID);
+       cout << "Waiting system for connection ..." << endl;
+       sleep_for(milliseconds(500));
+    }
+    System& system = dc.system(UUID);
+
     auto action = std::make_shared<Action>(system);
     auto offboard = std::make_shared<Offboard>(system);
     auto telemetry = std::make_shared<Telemetry>(system);
