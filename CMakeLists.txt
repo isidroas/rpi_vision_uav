@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.13)
 
 project(offboard_vision)
 
@@ -30,3 +30,6 @@ target_link_libraries(offboard_vision
     ${OpenCV_LIBS}
     Eigen3::Eigen
 )
+
+add_custom_target(install2
+COMMAND cp offboard_vision ../install)

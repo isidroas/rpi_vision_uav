@@ -4,6 +4,7 @@
 #include <future>
 #include <iostream>
 #include <thread>
+#include<unistd.h> 
 
 #include <mavsdk/mavsdk.h>
 #include <mavsdk/plugins/action/action.h>
@@ -38,9 +39,11 @@ using std::this_thread::sleep_for;
 #define DEBUG
 #define MAV_CONNECT
 //#define OPEN_WINDOW
+//#define WRITE_IMAGES // very slow!
+//#define DRAW_AXIS 
 
 // The messages should be streamed at between 30Hz (33ms) (if containing covariances) and 50 Hz (20ms).
-#define LOOP_PERIOD_MS  30 
+#define LOOP_PERIOD_MS  32 
 
 using namespace std;
 using namespace cv;
@@ -200,29 +203,33 @@ int main(int argc, char** argv)
         }
 
     VideoCapture inputVideo;
-    int waitTime;
+    //int waitTime;
     if(!video.empty()) {
         inputVideo.open(video);
-        waitTime = 0;
+        //waitTime = 0;
     } else {
         inputVideo.open(camId);
-        waitTime = 10;
+        //waitTime = 10;
     }
 
     double total_time_detect = 0;
     double total_time = 0;
     int totalIterations = 0;
+    double tick_global_ant = (double)getTickCount();
+    auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
+    inputVideo.grab();
   
     /*** Main Loop ***/
     while(true){
-      auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
-      double tick_global = (double)getTickCount();
       /* Vision task */
-      inputVideo.grab();
+
       Mat image, imageCopy;
+      double tick0 = (double)getTickCount();
+      inputVideo.grab();
+      double tick1 = (double)getTickCount();
       inputVideo.retrieve(image);
 
-      double tick = (double)getTickCount();
+      double tick2 = (double)getTickCount();
 
       vector< int > ids;
       vector< vector< Point2f > > corners, rejected;
@@ -233,16 +240,17 @@ int main(int argc, char** argv)
       aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
       bool found_marker=ids.size() > 0;
 
-      double execution_time_detect = ((double)getTickCount() - tick) / getTickFrequency();
+      double tick3 = (double)getTickCount();
 
       Mocap::VisionPositionEstimate  est_pos;
 
       if(found_marker)
          aruco::estimatePoseSingleMarkers(corners, MARKER_LENGTH, camMatrix, distCoeffs, rvecs, tvecs);
 
-      #ifdef OPEN_WINDOW
+      #ifdef DRAW_AXIS
          // draw results
          image.copyTo(imageCopy);
+         //imageCopy=image;
          if(found_marker){
             aruco::drawDetectedMarkers(imageCopy, corners, ids);
             aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[0], tvecs[0], MARKER_LENGTH * 0.5f);
@@ -250,6 +258,8 @@ int main(int argc, char** argv)
 
          if(SHOW_REJECTED && rejected.size() > 0)
              aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
+      #endif
+      #ifdef OPEN_WINDOW
          imshow("out", imageCopy);
       #endif
 
@@ -308,14 +318,30 @@ int main(int argc, char** argv)
          }
          #endif
       }
+      #ifdef WRITE_IMAGES
+          
+	 char path [30];
+         sprintf(path,"./images/image%d.png", totalIterations);
+         imwrite(path,image);
+      #endif
+
+      double tick_global_act = (double)getTickCount();
+      double execution_time = (tick_global_act - tick_global_ant) / getTickFrequency();
+      tick_global_ant = tick_global_act;
+
+      double execution_time_detect = (tick3-tick2) / getTickFrequency();
+      double execution_time_video_grab = (tick1-tick0) / getTickFrequency();
+      double execution_time_video_ret = (tick2-tick1) / getTickFrequency();
 
       total_time_detect += execution_time_detect;
-      double execution_time = ((double)getTickCount() - tick_global) / getTickFrequency();
       total_time += execution_time;
+
       totalIterations++;
       /* Print data */
       if(totalIterations % 30 == 0) {
          #ifdef DEBUG
+         cout << "Image grabbing = " << execution_time_video_grab * 1000 << " ms " << endl;
+         cout << "Image retrieving = " << execution_time_video_ret * 1000 << " ms " << endl;
          cout << "Detection Time = " << execution_time_detect * 1000 << " ms "
               << "(Mean = " << 1000 * total_time_detect / double(totalIterations) << " ms)" << endl;
          cout << "Execution Time = " << execution_time * 1000 << " ms " 
@@ -323,13 +349,17 @@ int main(int argc, char** argv)
          if(found_marker)
             cout << est_pos << endl;
          #endif 
+	 cout << endl;
       }
+      #ifdef OPEN_WINDOW
+      	 char key = (char)waitKey(10);
+      	 if(key == 27) break;
+      #endif
       
-      char key = (char)waitKey(waitTime);
-      if(key == 27) break;
 
       //sleep_for(milliseconds(25)); //40Hz
       std::this_thread::sleep_until(x);
+      x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
     }
 
     std::cout << "Finished..." << std::endl;
