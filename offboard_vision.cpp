@@ -37,13 +37,13 @@ using std::this_thread::sleep_for;
 #define REFINEMENT_METHOD 1
 #define SHOW_REJECTED  false
 #define DEBUG
-#define MAV_CONNECT
-//#define OPEN_WINDOW
+//#define MAV_CONNECT
+#define OPEN_WINDOW
 //#define WRITE_IMAGES // very slow!
-//#define DRAW_AXIS 
+#define DRAW_AXIS 
 
 // The messages should be streamed at between 30Hz (33ms) (if containing covariances) and 50 Hz (20ms).
-#define LOOP_PERIOD_MS  32 
+#define LOOP_PERIOD_MS  20 
 
 using namespace std;
 using namespace cv;
@@ -269,7 +269,7 @@ int main(int argc, char** argv)
          
          // rvecs are rotation_vectors. Here it is transformed to rotation matrix
          cv::Mat  rot_mat;
-         Rodrigues(-rvecs[0],rot_mat);
+         Rodrigues(rvecs[0],rot_mat);
          //if (!isRotationMatrix(rot_mat)){
          //    break;
          //}
@@ -288,16 +288,26 @@ int main(int argc, char** argv)
          xz_rotation << -1,  0,  0,
                          0,  1,  0,
                          0,  0, -1;
-         Eigen::Matrix3d rot_mat_aux= xz_rotation*rot_mat_eig; 
+         Eigen::Matrix3d  x_rotation;
+         x_rotation << 1,   0,   0,
+                       0,  -1,   0,
+                       0,   0,  -1;
+         Eigen::Matrix3d  z_rotation;
+         z_rotation <<-1,   0,   0,
+                       0,  -1,   0,
+                       0,   0,   1;
+         Eigen::Matrix3d rot_mat_aux=x_rotation*rot_mat_eig.transpose()*z_rotation; 
 
          // Get position and rotation of camera in marker axis
          //tvecs_trans=transpose(rot_mat)*tvecs[0];
-         Eigen::Matrix3d rot_mat_inv;
          Eigen::Vector3d t_in(tvecs[0][0],tvecs[0][1],tvecs[0][2]);
-         rot_mat_inv = rot_mat_eig.transpose();
+         //Eigen::Matrix3d rot_mat_inv = rot_mat_eig.transpose();
          //vector<Vec3d> pos_inv;
-         Eigen::Vector3d t_out = rot_mat_inv*t_in;
-         Eigen::Vector3d t_out2 = -xz_rotation*t_out;
+         //Eigen::Vector3d t_out = rot_mat_inv*t_in;
+         //Eigen::Vector3d t_out2 = -xz_rotation*t_out;
+         //Eigen::Vector3d t_out2 = x_rotation*t_out;
+         // TODO: why is neccesary minus sign?
+         Eigen::Vector3d t_out2 = -rot_mat_aux*t_in;
 
          Eigen::Vector3d euler_angles_aux = rotationMatrixToEulerAngles_eig(rot_mat_aux);
 
