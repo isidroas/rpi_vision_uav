@@ -102,187 +102,73 @@ int main(int argc, char** argv)
     cout << argc << endl;
     cout << argv << endl;
 
-    #ifdef MAV_CONNECT
-    auto mocap = mavlink_setup()
+    #ifdef MAV_CONNECT	
+    commObj = ComunicationClass(); 
     #endif
 	 
-    /*** Vision setup ***/
-    Ptr<aruco::DetectorParameters> detectorParams = aruco::DetectorParameters::create();
-
-    //override cornerRefinementMethod read from config file
-    detectorParams->cornerRefinementMethod = REFINEMENT_METHOD;
-    std::cout << "Corner refinement method (0: None, 1: Subpixel, 2:contour, 3: AprilTag 2): " << detectorParams->cornerRefinementMethod << std::endl;
-
-    Ptr<aruco::Dictionary> dictionary =
-        aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME(DICTIONARY));
-
-    Mat camMatrix, distCoeffs;
-        bool readOk = readCameraParameters(CALIBRATION_PARAMETERS, camMatrix, distCoeffs);
-        if(!readOk) {
-            cerr << "Invalid camera file" << endl;
-            return 0;
-        }
-
-    VideoCapture inputVideo;
-    inputVideo.open(0);
-    inputVideo.set(cv::CAP_PROP_MONOCHROME, 1);
-
+    visionMarker VisionClass(); 
+    
     double total_time = 0;
     int totalIterations = 0;
     int n_position_get = 0;
     auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
     double tick_global_ant = (double)getTickCount();
+    Eigen::Vector3d pos, euler_angles ;
   
     /*** Main Loop ***/
     while(true){
-      /* Vision task */
 
-      Mat image, imageCopy;
       double tick0 = (double)getTickCount();
-      inputVideo.grab();
+      visionMarker.grab_and_retrieve();
       double tick1 = (double)getTickCount();
-      inputVideo.retrieve(image);
-
+      // detect markers
+      bool found_marker = visionMarker.detectMarker(pos, euler_angles)
       double tick2 = (double)getTickCount();
 
-      vector< int > ids;
-      vector< vector< Point2f > > corners, rejected;
-      vector< Vec3d > rvecs, tvecs;
-      //vector< Vector3d > rvecs, tvecs;
-
-      // detect markers and estimate pose
-      aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
-      bool found_marker=ids.size() > 0;
-
-      double tick3 = (double)getTickCount();
-
-      Mocap::VisionPositionEstimate  est_pos;
-
-      if(found_marker)
-         aruco::estimatePoseSingleMarkers(corners, MARKER_LENGTH, camMatrix, distCoeffs, rvecs, tvecs);
-
-      #ifdef DRAW_AXIS
-         // draw results
-         image.copyTo(imageCopy);
-         //imageCopy=image;
-         if(found_marker){
-            aruco::drawDetectedMarkers(imageCopy, corners, ids);
-            aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[0], tvecs[0], MARKER_LENGTH * 0.5f);
-         }
-
-         if(SHOW_REJECTED && rejected.size() > 0)
-             aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
-      #endif
-      #ifdef OPEN_WINDOW
-         imshow("out", imageCopy);
-      #endif
-
       if (found_marker){
-         // tvecs and rvecs are translation and rotation of the marker with respect camera axis
-         // camera position coordinates are the same as autopilot
-         
-         // rvecs are rotation_vectors. Here it is transformed to rotation matrix
-         cv::Mat  rot_mat;
-         Rodrigues(rvecs[0],rot_mat);
-         //if (!isRotationMatrix(rot_mat)){
-         //    break;
-         //}
-         //Vec3d euler_angles = rotationMatrixToEulerAngles(rot_mat);
-
-         //Eigen::Matrix3d rot_mat_eig, rot_mat_aux2; 
-         Eigen::Matrix3d rot_mat_eig; 
-         cv::cv2eigen(rot_mat,rot_mat_eig);
-         //rot_mat_eig=-rot_mat_aux2; 
-
-
-         // rotate 180 degrees in x axis in order to get z point down. Also rotate 180º in z axis
-         // Rx=[[1, 0, 0], [0, -1, 0], [0, 0, -1]]
-         // Rz=[[-1, 0, 0], [0, -1, 0], [0, 0, 1]]
-         Eigen::Matrix3d  xz_rotation;
-         xz_rotation << -1,  0,  0,
-                         0,  1,  0,
-                         0,  0, -1;
-         Eigen::Matrix3d  x_rotation;
-         x_rotation << 1,   0,   0,
-                       0,  -1,   0,
-                       0,   0,  -1;
-         Eigen::Matrix3d  z_rotation;
-         z_rotation <<-1,   0,   0,
-                       0,  -1,   0,
-                       0,   0,   1;
-         Eigen::Matrix3d rot_mat_aux=x_rotation*rot_mat_eig.transpose()*z_rotation; 
-
-         // Get position and rotation of camera in marker axis
-         Eigen::Vector3d t_in(tvecs[0][0],tvecs[0][1],tvecs[0][2]);
-         // TODO: why is neccesary minus sign?
-         Eigen::Vector3d t_out2 = -rot_mat_aux*t_in;
-
-         Eigen::Vector3d euler_angles_aux = rotationMatrixToEulerAngles_eig(rot_mat_aux);
-
-         est_pos.position_body.x_m = t_out2[0];
-         est_pos.position_body.y_m = t_out2[1];
-         est_pos.position_body.z_m = t_out2[2];
-
-         est_pos.angle_body.roll_rad =  euler_angles_aux[0];
-         est_pos.angle_body.pitch_rad = euler_angles_aux[1];
-         est_pos.angle_body.yaw_rad =   euler_angles_aux[2];
-
-         std::vector<float> covariance{NAN};
-         est_pos.pose_covariance.covariance_matrix=covariance;
-         
-         n_position_get++;
-         #ifdef MAV_CONNECT
-         Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
-         if(result!=Mocap::Result::Success){
-             std::cerr << ERROR_CONSOLE_TEXT << "Set vision position failed: " << result << NORMAL_CONSOLE_TEXT << std::endl;
-         }
-         #endif
+        #ifdef MAV_CONNECT
+	commObj.send_msg(pos, euler_angles);
+        #endif
+        n_position_get++;
       }
       #ifdef WRITE_IMAGES
-          
-	 char path [30];
-         sprintf(path,"./images/image%d.png", totalIterations);
-         imwrite(path,image);
+      //char path [30];
+      //sprintf(path,"./images/image%d.png", totalIterations);
+      //imwrite(path,image);
       #endif
 
+      #ifdef DEBUG
+      // Update counters
       double tick_global_act = (double)getTickCount();
       double execution_time = (tick_global_act - tick_global_ant) / getTickFrequency();
       tick_global_ant = tick_global_act;
-
-      double execution_time_detect = (tick3-tick2) / getTickFrequency();
-      double execution_time_video_grab = (tick1-tick0) / getTickFrequency();
-      double execution_time_video_ret = (tick2-tick1) / getTickFrequency();
-
+      double execution_time_detect = (tick2-tick1) / getTickFrequency();
+      double execution_time_video_grab_and_ret = (tick1-tick0) / getTickFrequency();
       total_time += execution_time;
-
       totalIterations++;// TODO: eliminar esta variable ya que siempre valdrá 30
+
       /* Print data every 30 frames = 1 seg approx*/
       if(totalIterations % UPDATE_DEBUG_RATE == 0) {
-         #ifdef DEBUG
-         cout << "Image grabbing = " << execution_time_video_grab * 1000 << " ms " << endl;
-         cout << "Image retrieving = " << execution_time_video_ret * 1000 << " ms " << endl;
-         cout << "Detection time = " << execution_time_detect * 1000 << " ms " << endl;
+         cout << "Image grabbing and retrieving= " << execution_time_video_grab_and_ret * 1000 << " ms " << endl;
          cout << "Execution time = " << execution_time * 1000 << " ms " 
               << "(Mean = " << 1000 * total_time / float(UPDATE_DEBUG_RATE) << " ms)" << endl;
          cout << "Frames with position = " << n_position_get/float(UPDATE_DEBUG_RATE) * 100 << " \% " << endl;
 	 
          if(found_marker){
-            cout << est_pos << endl;
-            cout << "Original position:\t" << tvecs[0][0] << "\t" << tvecs[0][1] << "\t" << tvecs[0][2] << endl;
+            cout << "Estimated position:\t" 	<< pos[0] << "\t" << pos[1] << "\t" << pos[2] << endl;
+            cout << "Estimated orientation:\t" 	<< euler_angles[0] << "\t" << euler_angles[1] << "\t" << euler_angles[2] << endl;
          }
-         #endif 
          total_time=0;
          totalIterations=0;
          n_position_get=0;
 	 cout << endl;
       }
+      #endif 
       #ifdef OPEN_WINDOW
       	 char key = (char)waitKey(10);
       	 if(key == 27) break;
       #endif
-      
 
-      //sleep_for(milliseconds(25)); //40Hz
       std::this_thread::sleep_until(x);
       x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
     }

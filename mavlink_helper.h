@@ -1,4 +1,16 @@
-void wait_until_discover(Mavsdk& dc)
+class ComunicationClass{
+	public:
+		ComunicationClass();
+	private:
+		void wait_until_discover(Mavsdk& dc);
+        auto mocap = std::make_shared<Mocap>(system);
+        Mocap::VisionPositionEstimate  est_pos;
+        Mavsdk dc;
+        ConnectionResult connection_result;
+};
+
+
+void ComunicationClass::wait_until_discover(Mavsdk& dc)
 {
     std::cout << "Waiting to discover system..." << std::endl;
     std::promise<void> discover_promise;
@@ -12,17 +24,16 @@ void wait_until_discover(Mavsdk& dc)
     discover_future.wait();
 }
 
-auto mavlink_setup()
+bool ComunicationClass::ComunicationClass()
 {
-    Mavsdk dc;
-    ConnectionResult connection_result;
+
 
     connection_result = dc.add_any_connection(CONNECTION_URL);
 
     if (connection_result != ConnectionResult::Success) {
         std::cout << ERROR_CONSOLE_TEXT << "Connection failed: " << connection_result
                   << NORMAL_CONSOLE_TEXT << std::endl;
-        return 1;
+        return false;
     }
 
     bool connected = dc.is_connected(UUID);
@@ -34,5 +45,20 @@ auto mavlink_setup()
     System& system = dc.system(UUID);
 
     auto mocap = std::make_shared<Mocap>(system);
-    return mocap
+}
+
+void ComunicationClass::send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul)
+{
+    est_pos.position_body.x_m = pos[0];
+    est_pos.position_body.y_m = pos[1];
+    est_pos.position_body.z_m = pos[2];
+    est_pos.angle_body.roll_rad =  euler_angles[0];
+    est_pos.angle_body.pitch_rad = euler_angles[1];
+    est_pos.angle_body.yaw_rad =   euler_angles[2];
+    std::vector<float> covariance{NAN};
+    est_pos.pose_covariance.covariance_matrix=covariance;
+    Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
+    if(result!=Mocap::Result::Success){
+        std::cerr << ERROR_CONSOLE_TEXT << "Set vision position failed: " << result << NORMAL_CONSOLE_TEXT << std::endl;
+    }
 }

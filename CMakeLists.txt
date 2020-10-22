@@ -18,7 +18,7 @@ find_package( OpenCV REQUIRED PATHS ~/opencv-install/opencv-4.4.0)
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 	                          
 add_executable(offboard_vision
-    offboard_vision.cpp
+    main.cpp
 )
 
 target_link_libraries(offboard_vision
