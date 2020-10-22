@@ -21,8 +21,9 @@ using std::this_thread::sleep_for;
 #define ERROR_CONSOLE_TEXT "\033[31m" // Turn text on console red
 #define TELEMETRY_CONSOLE_TEXT "\033[34m" // Turn text on console blue
 #define NORMAL_CONSOLE_TEXT "\033[0m" // Restore normal console colour
-#define CONNECTION_URL  "serial:///dev/ttyUSB0"
-#define UUID 3690507541151037490
+#define CONNECTION_URL  "serial:///dev/ttyUSB0:921600"
+//#define UUID 3690507541151037490 // autopilot cube
+#define UUID 3762846584429098293 // autopilot cuav
 
 #include <Eigen/Dense>
 #include <opencv2/highgui.hpp>
@@ -32,21 +33,26 @@ using std::this_thread::sleep_for;
 
 #define CALIBRATION_PARAMETERS "calibration_parameters.txt"
 #define DICTIONARY 10   // 6x6 256
-#define MARKER_LENGTH 0.173 
+//#define MARKER_LENGTH 0.173 
+#define MARKER_LENGTH 0.179 
 // Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
 #define REFINEMENT_METHOD 1
 #define SHOW_REJECTED  false
 #define DEBUG
-//#define MAV_CONNECT
-#define OPEN_WINDOW
+#define MAV_CONNECT
+//#define OPEN_WINDOW
 //#define WRITE_IMAGES // very slow!
-#define DRAW_AXIS 
+//#define DRAW_AXIS 
 
 // The messages should be streamed at between 30Hz (33ms) (if containing covariances) and 50 Hz (20ms).
 #define LOOP_PERIOD_MS  20 
 
+// Print debug every 30 frames
+#define UPDATE_DEBUG_RATE  30
+
 using namespace std;
 using namespace cv;
+
 
 static bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs) {
     FileStorage fs(filename, FileStorage::READ);
@@ -164,7 +170,7 @@ int main(int argc, char** argv)
     }
 
     // Wait for the system to connect via heartbeat
-    //wait_until_discover(dc);
+   // wait_until_discover(dc);
 
     // System got discovered.
     bool connected = dc.is_connected(UUID);
@@ -188,10 +194,6 @@ int main(int argc, char** argv)
     detectorParams->cornerRefinementMethod = REFINEMENT_METHOD;
     std::cout << "Corner refinement method (0: None, 1: Subpixel, 2:contour, 3: AprilTag 2): " << detectorParams->cornerRefinementMethod << std::endl;
 
-    int camId = 0;
-
-    String video;
-
     Ptr<aruco::Dictionary> dictionary =
         aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME(DICTIONARY));
 
@@ -203,21 +205,15 @@ int main(int argc, char** argv)
         }
 
     VideoCapture inputVideo;
-    //int waitTime;
-    if(!video.empty()) {
-        inputVideo.open(video);
-        //waitTime = 0;
-    } else {
-        inputVideo.open(camId);
-        //waitTime = 10;
-    }
+    inputVideo.open(0);
+    inputVideo.set(cv::CAP_PROP_MONOCHROME, 1);
 
-    double total_time_detect = 0;
     double total_time = 0;
     int totalIterations = 0;
-    double tick_global_ant = (double)getTickCount();
+    int n_position_get = 0;
     auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
-    inputVideo.grab();
+    //inputVideo.grab();
+    double tick_global_ant = (double)getTickCount();
   
     /*** Main Loop ***/
     while(true){
@@ -322,7 +318,8 @@ int main(int argc, char** argv)
 
          std::vector<float> covariance{NAN};
          est_pos.pose_covariance.covariance_matrix=covariance;
-
+         
+         n_position_get++;
          #ifdef MAV_CONNECT
          Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
          if(result!=Mocap::Result::Success){
@@ -345,22 +342,27 @@ int main(int argc, char** argv)
       double execution_time_video_grab = (tick1-tick0) / getTickFrequency();
       double execution_time_video_ret = (tick2-tick1) / getTickFrequency();
 
-      total_time_detect += execution_time_detect;
       total_time += execution_time;
 
-      totalIterations++;
-      /* Print data */
-      if(totalIterations % 30 == 0) {
+      totalIterations++;// TODO: eliminar esta variable ya que siempre valdrá 30
+      /* Print data every 30 frames = 1 seg approx*/
+      if(totalIterations % UPDATE_DEBUG_RATE == 0) {
          #ifdef DEBUG
          cout << "Image grabbing = " << execution_time_video_grab * 1000 << " ms " << endl;
          cout << "Image retrieving = " << execution_time_video_ret * 1000 << " ms " << endl;
-         cout << "Detection Time = " << execution_time_detect * 1000 << " ms "
-              << "(Mean = " << 1000 * total_time_detect / double(totalIterations) << " ms)" << endl;
-         cout << "Execution Time = " << execution_time * 1000 << " ms " 
-              << "(Mean = " << 1000 * total_time / double(totalIterations) << " ms)" << endl;
-         if(found_marker)
+         cout << "Detection time = " << execution_time_detect * 1000 << " ms " << endl;
+         cout << "Execution time = " << execution_time * 1000 << " ms " 
+              << "(Mean = " << 1000 * total_time / float(UPDATE_DEBUG_RATE) << " ms)" << endl;
+         cout << "Frames with position = " << n_position_get/float(UPDATE_DEBUG_RATE) * 100 << " \% " << endl;
+	 
+         if(found_marker){
             cout << est_pos << endl;
+            cout << "Original position:\t" << tvecs[0][0] << "\t" << tvecs[0][1] << "\t" << tvecs[0][2] << endl;
+         }
          #endif 
+         total_time=0;
+         totalIterations=0;
+         n_position_get=0;
 	 cout << endl;
       }
       #ifdef OPEN_WINDOW
