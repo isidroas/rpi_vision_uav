@@ -7,9 +7,7 @@
 #include<unistd.h> 
 
 #include <mavsdk/mavsdk.h>
-#include <mavsdk/plugins/action/action.h>
 #include <mavsdk/plugins/offboard/offboard.h>
-#include <mavsdk/plugins/telemetry/telemetry.h>
 #include <mavsdk/plugins/mocap/mocap.h>
 
 using namespace mavsdk;
@@ -53,15 +51,8 @@ using std::this_thread::sleep_for;
 using namespace std;
 using namespace cv;
 
-
-static bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs) {
-    FileStorage fs(filename, FileStorage::READ);
-    if(!fs.isOpened())
-        return false;
-    fs["camera_matrix"] >> camMatrix;
-    fs["distortion_coefficients"] >> distCoeffs;
-    return true;
-}
+#include "marker_vision.h"
+#include "mavlink_helper.h"
 
 
 void wait_until_discover(Mavsdk& dc)
@@ -78,56 +69,10 @@ void wait_until_discover(Mavsdk& dc)
     discover_future.wait();
 }
 
-void usage(std::string bin_name)
-{
-    std::cout << NORMAL_CONSOLE_TEXT << "Usage : " << bin_name << " <connection_url>" << std::endl
-              << "Connection URL format should be :" << std::endl
-              << " For TCP : tcp://[server_host][:server_port]" << std::endl
-              << " For UDP : udp://[bind_host][:bind_port]" << std::endl
-              << " For Serial : serial:///path/to/serial/dev[:baudrate]" << std::endl
-              << "For example, to connect to the simulator use URL: udp://:14540" << std::endl;
-}
-
-// Checks if a matrix is a valid rotation matrix.
-bool isRotationMatrix(Mat &R)
-{
-    Mat Rt;
-    transpose(R, Rt);
-    Mat shouldBeIdentity = Rt * R;
-    Mat I = Mat::eye(3,3, shouldBeIdentity.type());
-    
-    return  norm(I, shouldBeIdentity) < 1e-6;
-    
-}
 
 // Calculates rotation matrix to euler angles
 // The result is the same as MATLAB except the order
 // of the euler angles ( x and z are swapped ).
-Vec3d rotationMatrixToEulerAngles(Mat &R)
-{
-
-    assert(isRotationMatrix(R));
-    
-    float sy = sqrt(R.at<double>(0,0) * R.at<double>(0,0) +  R.at<double>(1,0) * R.at<double>(1,0) );
-
-    bool singular = sy < 1e-6; // If
-
-    float x, y, z;
-    if (!singular)
-    {
-        x = atan2(R.at<double>(2,1) , R.at<double>(2,2));
-        y = atan2(-R.at<double>(2,0), sy);
-        z = atan2(R.at<double>(1,0), R.at<double>(0,0));
-    }
-    else
-    {
-        x = atan2(-R.at<double>(1,2), R.at<double>(1,1));
-        y = atan2(-R.at<double>(2,0), sy);
-        z = 0;
-    }
-    return Vec3f(x, y, z);
-}
-
 Eigen::Vector3d rotationMatrixToEulerAngles_eig(Eigen::Matrix3d &R)
 {
 
@@ -158,33 +103,7 @@ int main(int argc, char** argv)
     cout << argv << endl;
 
     #ifdef MAV_CONNECT
-    Mavsdk dc;
-    ConnectionResult connection_result;
-
-    connection_result = dc.add_any_connection(CONNECTION_URL);
-
-    if (connection_result != ConnectionResult::Success) {
-        std::cout << ERROR_CONSOLE_TEXT << "Connection failed: " << connection_result
-                  << NORMAL_CONSOLE_TEXT << std::endl;
-        return 1;
-    }
-
-    // Wait for the system to connect via heartbeat
-   // wait_until_discover(dc);
-
-    // System got discovered.
-    bool connected = dc.is_connected(UUID);
-    while(connected==false){
-       connected = dc.is_connected(UUID);
-       cout << "Waiting system for connection ..." << endl;
-       sleep_for(milliseconds(500));
-    }
-    System& system = dc.system(UUID);
-
-    auto action = std::make_shared<Action>(system);
-    auto offboard = std::make_shared<Offboard>(system);
-    auto telemetry = std::make_shared<Telemetry>(system);
-    auto mocap = std::make_shared<Mocap>(system);
+    auto mocap = mavlink_setup()
     #endif
 	 
     /*** Vision setup ***/
@@ -212,7 +131,6 @@ int main(int argc, char** argv)
     int totalIterations = 0;
     int n_position_get = 0;
     auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
-    //inputVideo.grab();
     double tick_global_ant = (double)getTickCount();
   
     /*** Main Loop ***/
@@ -295,19 +213,12 @@ int main(int argc, char** argv)
          Eigen::Matrix3d rot_mat_aux=x_rotation*rot_mat_eig.transpose()*z_rotation; 
 
          // Get position and rotation of camera in marker axis
-         //tvecs_trans=transpose(rot_mat)*tvecs[0];
          Eigen::Vector3d t_in(tvecs[0][0],tvecs[0][1],tvecs[0][2]);
-         //Eigen::Matrix3d rot_mat_inv = rot_mat_eig.transpose();
-         //vector<Vec3d> pos_inv;
-         //Eigen::Vector3d t_out = rot_mat_inv*t_in;
-         //Eigen::Vector3d t_out2 = -xz_rotation*t_out;
-         //Eigen::Vector3d t_out2 = x_rotation*t_out;
          // TODO: why is neccesary minus sign?
          Eigen::Vector3d t_out2 = -rot_mat_aux*t_in;
 
          Eigen::Vector3d euler_angles_aux = rotationMatrixToEulerAngles_eig(rot_mat_aux);
 
-         // This on get camera postion in marker coordinates (but is negated -> why?)
          est_pos.position_body.x_m = t_out2[0];
          est_pos.position_body.y_m = t_out2[1];
          est_pos.position_body.z_m = t_out2[2];
