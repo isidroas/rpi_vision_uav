@@ -6,7 +6,6 @@
 #include <thread>
 #include <unistd.h> 
 #include <Eigen/Dense>
-#define OPEN_WINDOW
 #include "marker_vision.h"
 #include "mavlink_helper.h"
 

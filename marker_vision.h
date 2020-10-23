@@ -6,15 +6,13 @@ using namespace cv;
 using namespace std;
 
 #define DICTIONARY 10   // 6x6 256
+#define REFINEMENT_METHOD 1  // Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
 //#define MARKER_LENGTH 0.173 
+
 #define MARKER_LENGTH 0.179 
-// Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
-//#define CALIBRATION_PARAMETERS "calibration_parameters.txt"
-//#define CALIBRATION_PARAMETERS "/home/pi/rpi_vision_uav/calibration/rpi_eyefish_camera/cal.ylm"
-#define CALIBRATION_PARAMETERS "/home/pi/rpi_vision_uav/calibration/rpi_v2_camera/calibration_parameters_rpi2.txt"
-#define REFINEMENT_METHOD 1
+#define CALIBRATION_PARAMETERS "../calibration/rpi_eyefish_camera/cal.yaml"
+
 #define SHOW_REJECTED  false
-#define DRAW_AXIS 
 #define OPEN_WINDOW
 
 
@@ -43,7 +41,7 @@ class VisionClass {
        	    inputVideo.grab();
             inputVideo.retrieve(image);
 	}
-	bool detect_marker(Eigen::Vector3d pos, Eigen::Vector3d eul);
+	bool detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul);
     private: 	
         Mat image;
         Mat imageCopy;
@@ -85,19 +83,9 @@ Eigen::Vector3d VisionClass::rotationMatrixToEulerAngles(Eigen::Matrix3d &R)
     return Eigen::Vector3d(x, y, z);
 }
 
-// Checks if a matrix is a valid rotation matrix.
-bool VisionClass::isRotationMatrix(Mat &R)
-{
-    Mat Rt;
-    transpose(R, Rt);
-    Mat shouldBeIdentity = Rt * R;
-    Mat I = Mat::eye(3,3, shouldBeIdentity.type());
-    
-    return  norm(I, shouldBeIdentity) < 1e-6;
-    
-}
 
 bool VisionClass::readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs) {
+    cout << "Using calibration in" <<  filename << endl;
     FileStorage fs(filename, FileStorage::READ);
     if(!fs.isOpened())
         return false;
@@ -107,14 +95,14 @@ bool VisionClass::readCameraParameters(string filename, Mat &camMatrix, Mat &dis
 }
 
 
-bool VisionClass::detect_marker(Eigen::Vector3d pos, Eigen::Vector3d eul){
+bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
     aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
     bool found_marker=ids.size() > 0;
     if(found_marker)
         aruco::estimatePoseSingleMarkers(corners, MARKER_LENGTH, camMatrix, distCoeffs, rvecs, tvecs);
         
 
-     #ifdef DRAW_AXIS
+     #ifdef OPEN_WINDOW
         // draw results
         image.copyTo(imageCopy);
         //imageCopy=image;
@@ -125,8 +113,6 @@ bool VisionClass::detect_marker(Eigen::Vector3d pos, Eigen::Vector3d eul){
 
         if(SHOW_REJECTED && rejected.size() > 0)
             aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
-     #endif
-     #ifdef OPEN_WINDOW
         imshow("out", imageCopy);
      #endif
 
@@ -137,15 +123,9 @@ bool VisionClass::detect_marker(Eigen::Vector3d pos, Eigen::Vector3d eul){
          // rvecs are rotation_vectors. Here it is transformed to rotation matrix
          cv::Mat  rot_mat;
          Rodrigues(rvecs[0],rot_mat);
-         //if (!isRotationMatrix(rot_mat)){
-         //    break;
-         //}
-         //Vec3d euler_angles = rotationMatrixToEulerAngles(rot_mat);
 
-         //Eigen::Matrix3d rot_mat_eig, rot_mat_aux2; 
          Eigen::Matrix3d rot_mat_eig; 
          cv::cv2eigen(rot_mat,rot_mat_eig);
-         //rot_mat_eig=-rot_mat_aux2; 
 
 
          // rotate 180 degrees in x axis in order to get z point down. Also rotate 180º in z axis
