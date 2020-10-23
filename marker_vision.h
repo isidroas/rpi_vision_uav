@@ -1,3 +1,21 @@
+#include <opencv2/highgui.hpp>
+#include <opencv2/aruco.hpp>
+#include <opencv2/calib3d.hpp>
+#include <opencv2/core/eigen.hpp>
+using namespace cv;
+using namespace std;
+
+#define DICTIONARY 10   // 6x6 256
+//#define MARKER_LENGTH 0.173 
+#define MARKER_LENGTH 0.179 
+// Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
+#define CALIBRATION_PARAMETERS "calibration_parameters.txt"
+#define REFINEMENT_METHOD 1
+#define SHOW_REJECTED  false
+#define DRAW_AXIS 
+#define OPEN_WINDOW
+
+
 class VisionClass {
     public:
 	VisionClass(){

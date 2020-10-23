@@ -1,12 +1,28 @@
+#include <mavsdk/mavsdk.h>
+#include <mavsdk/plugins/offboard/offboard.h>
+#include <mavsdk/plugins/mocap/mocap.h>
+#include <Eigen/Dense>
+
+using namespace mavsdk;
+using std::chrono::milliseconds;
+using std::this_thread::sleep_for;
+
+#define CONNECTION_URL  "serial:///dev/ttyUSB0:921600"
+//#define UUID 3690507541151037490 // autopilot cube
+#define UUID 3762846584429098293 // autopilot cuav
+#define ERROR_CONSOLE_TEXT "\033[31m" // Turn text on console red
+#define NORMAL_CONSOLE_TEXT "\033[0m" // Restore normal console colour
+
 class ComunicationClass{
 	public:
 		ComunicationClass();
+		void send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul);
 	private:
 		void wait_until_discover(Mavsdk& dc);
-        auto mocap = std::make_shared<Mocap>(system);
-        Mocap::VisionPositionEstimate  est_pos;
-        Mavsdk dc;
-        ConnectionResult connection_result;
+                shared_ptr<Mocap> mocap;
+                Mocap::VisionPositionEstimate  est_pos;
+                Mavsdk dc;
+                ConnectionResult connection_result;
 };
 
 
@@ -24,16 +40,14 @@ void ComunicationClass::wait_until_discover(Mavsdk& dc)
     discover_future.wait();
 }
 
-bool ComunicationClass::ComunicationClass()
+ComunicationClass::ComunicationClass()
 {
-
-
     connection_result = dc.add_any_connection(CONNECTION_URL);
 
     if (connection_result != ConnectionResult::Success) {
         std::cout << ERROR_CONSOLE_TEXT << "Connection failed: " << connection_result
                   << NORMAL_CONSOLE_TEXT << std::endl;
-        return false;
+        exit(0);
     }
 
     bool connected = dc.is_connected(UUID);
@@ -44,7 +58,7 @@ bool ComunicationClass::ComunicationClass()
     }
     System& system = dc.system(UUID);
 
-    auto mocap = std::make_shared<Mocap>(system);
+    mocap = std::make_shared<Mocap>(system);
 }
 
 void ComunicationClass::send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul)
@@ -52,9 +66,9 @@ void ComunicationClass::send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul)
     est_pos.position_body.x_m = pos[0];
     est_pos.position_body.y_m = pos[1];
     est_pos.position_body.z_m = pos[2];
-    est_pos.angle_body.roll_rad =  euler_angles[0];
-    est_pos.angle_body.pitch_rad = euler_angles[1];
-    est_pos.angle_body.yaw_rad =   euler_angles[2];
+    est_pos.angle_body.roll_rad =  eul[0];
+    est_pos.angle_body.pitch_rad = eul[1];
+    est_pos.angle_body.yaw_rad =   eul[2];
     std::vector<float> covariance{NAN};
     est_pos.pose_covariance.covariance_matrix=covariance;
     Mocap::Result result= mocap->set_vision_position_estimate(est_pos);
