@@ -9,7 +9,9 @@ using namespace std;
 //#define MARKER_LENGTH 0.173 
 #define MARKER_LENGTH 0.179 
 // Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
-#define CALIBRATION_PARAMETERS "calibration_parameters.txt"
+//#define CALIBRATION_PARAMETERS "calibration_parameters.txt"
+//#define CALIBRATION_PARAMETERS "/home/pi/rpi_vision_uav/calibration/rpi_eyefish_camera/cal.ylm"
+#define CALIBRATION_PARAMETERS "/home/pi/rpi_vision_uav/calibration/rpi_v2_camera/calibration_parameters_rpi2.txt"
 #define REFINEMENT_METHOD 1
 #define SHOW_REJECTED  false
 #define DRAW_AXIS 
