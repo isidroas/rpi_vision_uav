@@ -15,6 +15,7 @@ using namespace std;
 #define SHOW_REJECTED  false
 #define OPEN_WINDOW
 
+#define VIDEO_FILE "/home/isidro/Desktop/vuelo2.h264"
 
 class VisionClass {
     public:
@@ -34,8 +35,12 @@ class VisionClass {
     		        exit(0);
     		    }
 
+		#ifdef VIDEO_FILE
+    		inputVideo.open(VIDEO_FILE);
+		#else
     		inputVideo.open(0);
-    		inputVideo.set(cv::CAP_PROP_MONOCHROME, 1);
+		#endif
+    		//inputVideo.set(cv::CAP_PROP_MONOCHROME, 1);
 	}
 	void grab_and_retrieve_image(){
        	    inputVideo.grab();
@@ -151,6 +156,10 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
          pos = -rot_mat_aux*t_in;
 
          eul = rotationMatrixToEulerAngles(rot_mat_aux);
+    }
+    else{
+        pos[0]=pos[1]=pos[2]=NAN;
+        eul[0]=eul[1]=eul[2]=NAN;
     }
 
     return found_marker;
