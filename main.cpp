@@ -22,9 +22,9 @@ using namespace std;
 #define DEBUG
 //#define MAV_CONNECT
 //#define WRITE_IMAGES // very slow!
-#define LOG_FILE
+//#define LOG_FILE
 
-#define LOOP_PERIOD_MS  0  // Mínimo periodo del bucle
+//#define LOOP_PERIOD_MS  0  // Mínimo periodo del bucle
 
 #define UPDATE_DEBUG_RATE  30 // Cada cuantas iteraciones se calculan e imprimen las estadísticas
 #define WAIT_KEY_MILL      1 // tiempo de espera entre fotogramas cuando se abre la ventana, si vale 0, solo avanza cuando se presiona alguna tecla
@@ -45,7 +45,9 @@ int main(int argc, char** argv)
     double total_time = 0;
     int totalIterations = 0;
     int n_position_get = 0;
+    #ifdef LOOP_PERIOD_MS
     auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
+    #endif
     double tick_global_ant = (double)getTickCount();
     Eigen::Vector3d pos, euler_angles ;
     
@@ -86,39 +88,42 @@ int main(int argc, char** argv)
         double execution_time_detect = (tick2-tick1) / getTickFrequency();
         double execution_time_video_grab_and_ret = (tick1-tick0) / getTickFrequency();
         total_time += execution_time;
-        totalIterations++;// TODO: eliminar esta variable ya que siempre valdrá 30
+        totalIterations++;
 
         /* Print data every 30 frames = 1 seg approx*/
         if(totalIterations % UPDATE_DEBUG_RATE == 0) {
             cout << "Image grabbing and retrieving= " << execution_time_video_grab_and_ret * 1000 << " ms " << endl;
-            cout << "Marker detection" << execution_time_detect * 1000 << " ms " << endl;
+            cout << "Marker detection= " << execution_time_detect * 1000 << " ms " << endl;
             cout << "Execution time = " << execution_time * 1000 << " ms " 
                  << "(Mean = " << 1000 * total_time / float(UPDATE_DEBUG_RATE) << " ms)" << endl;
             cout << "Frames with position = " << n_position_get/float(UPDATE_DEBUG_RATE) * 100 << " \% " << endl;
 	 
             if(found_marker){
-               cout << "Estimated position:\t" 	<< pos[0] << "\t" << pos[1] << "\t" << pos[2] << endl;
-               cout << "Estimated orientation:\t" 	<< euler_angles[0] << "\t" << euler_angles[1] << "\t" << euler_angles[2] << endl;
+               cout << "Estimated position:\t" <<       pos[0] << "\t" <<           pos[1] << "\t" <<           pos[2] << endl;
+               cout << "Estimated orientation:\t" <<    euler_angles[0] << "\t" <<  euler_angles[1] << "\t" <<  euler_angles[2] << endl;
             }
             total_time=0;
-            totalIterations=0;
             n_position_get=0;
 	        cout << endl;
         }
         #endif 
+
         #ifdef OPEN_WINDOW
             char key = (char)waitKey( WAIT_KEY_MILL );
         	if(key == 27) break;
         #endif
+
         #ifdef LOG_FILE
         double seconds = getTickCount()/ getTickFrequency() - seconds_init;
         myfile << pos[0] << "," << pos[1] << "," << pos[2] << "," << euler_angles[0] << "," << euler_angles[1] << "," << euler_angles[2] << "," << seconds << "\n";
         #endif
 
-
+        #ifdef LOOP_PERIOD_MS
         std::this_thread::sleep_until(x);
         x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
+        #endif
     }
+
     #ifdef LOG_FILE
     myfile.close();
     #endif
