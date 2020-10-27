@@ -19,6 +19,7 @@ with open('build/log.csv','r') as csvfile:
 
 
 DT=0.025
+#DT=0
 
 t=np.linspace(0,len(px)*0.025,len(px))
 
@@ -34,7 +35,7 @@ def draw_animation(x, y1, y2, y3, label1, label2, label3):
     ln3, = plt.plot([], [], "tab:blue", label=label3)
 
     def init():
-        margin = 1
+        margin = 0
         ax.set_xlim(min(x) - margin, max(x) + margin)
         total_min=min(np.nanmin(y1), np.nanmin(y2), np.nanmin(y3))
         total_max=max(np.nanmax(y1), np.nanmax(y2), np.nanmax(y3))
