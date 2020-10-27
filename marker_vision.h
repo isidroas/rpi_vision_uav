@@ -7,15 +7,16 @@ using namespace std;
 
 #define DICTIONARY 10   // 6x6 256
 #define REFINEMENT_METHOD 1  // Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
-//#define MARKER_LENGTH 0.173 
 
+
+//#define MARKER_LENGTH 0.173 
 #define MARKER_LENGTH 0.179 
-#define CALIBRATION_PARAMETERS "../calibration/rpi_eyefish_camera/cal.yaml"
+#define CALIBRATION_PARAMETERS "../calibration/rpi_v2_camera/calibration_parameters_rpi2.txt"
 
 #define SHOW_REJECTED  false
-#define OPEN_WINDOW
+//#define OPEN_WINDOW
 
-#define VIDEO_FILE "/home/isidro/Desktop/vuelo2.h264"
+//#define VIDEO_FILE "/home/isidro/Desktop/vuelo2.h264"
 
 class VisionClass {
     public:
@@ -39,8 +40,9 @@ class VisionClass {
     		inputVideo.open(VIDEO_FILE);
 		#else
     		inputVideo.open(0);
+		// TODO: move to parameters file
+		system("v4l2-ctl -d /dev/video0 -c exposure_time_absolute=50 -c auto_exposure=1 -p 60");
 		#endif
-    		//inputVideo.set(cv::CAP_PROP_MONOCHROME, 1);
 	}
 	void grab_and_retrieve_image(){
        	    inputVideo.grab();
