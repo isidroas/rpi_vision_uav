@@ -1,0 +1,17 @@
+%YAML:1.0
+camera_parameters: "../calibration/rpi_v2_camera/calibration_parameters_rpi2.txt"
+open_window: true
+show_rejected: false
+marker_length: 0.179
+dict_type: 10   # 6x6 256
+video_file: "/home/isidro/Desktop/vuelo2.h264"
+#write_images: false
+
+exposure_time: 50
+fps: 60
+
+
+## General parameters
+mav_connect: false
+log_file: false
+loop_period_ms: 0 

@@ -5,44 +5,106 @@
 using namespace cv;
 using namespace std;
 
-#define DICTIONARY 10   // 6x6 256
-#define REFINEMENT_METHOD 1  // Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1," "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}"
+#define WAIT_KEY_MILL      1 // tiempo de espera entre fotogramas cuando se abre la ventana, si vale 0, solo avanza cuando se presiona alguna tecla
+//#define WRITE_IMAGES // very slow!
 
+static bool readVisionParameters(string filename, string &calibration_file, string &video_file, bool &open_window, bool &show_rejected, float &marker_length, int &dict_type, int &exposure_time, int &fps  ) {
+    FileStorage fs(filename, FileStorage::READ);
+    if(!fs.isOpened())
+        return false;
 
-//#define MARKER_LENGTH 0.173 
-#define MARKER_LENGTH 0.179 
-#define CALIBRATION_PARAMETERS "../calibration/rpi_v2_camera/calibration_parameters_rpi2.txt"
+    fs["camera_parameters"] >> calibration_file;
+    fs["video_file"] >> video_file;
+    open_window = (string)fs["open_window"]=="true";
+    show_rejected = (string)fs["show_rejected"]=="true";
+    marker_length = (float)fs["marker_length"];
+    dict_type = (int)fs["dict_type"];
+    exposure_time = (int)fs["exposure_time"];
+    fps = (int)fs["fps"];
 
-#define SHOW_REJECTED  false
-//#define OPEN_WINDOW
-
-//#define VIDEO_FILE "/home/isidro/Desktop/vuelo2.h264"
+    // Print them
+    cout << "Parámetros de la visión:" <<  endl;
+    cout << "\tEl fichero de calibracion es:\t" <<  calibration_file << endl;
+    cout << "\tArchivo de video:\t\t" <<  video_file << endl;
+    cout << "\tActivación de la ventana:\t" <<  open_window << endl;
+    cout << "\tMostrar rechazados:\t\t" <<  show_rejected << endl;
+    cout << "\tTamaño del marcador:\t\t" <<  marker_length << endl;
+    cout << "\tTipo de diccionario:\t\t" <<  dict_type << endl;
+    cout << "\tTiempo de exposición:\t\t" <<  exposure_time << endl;
+    cout << "\tFPS:\t\t\t" <<  fps << endl;
+    cout << endl;
+    return true;
+}
+static bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameters> &params) {
+    FileStorage fs(filename, FileStorage::READ);
+    if(!fs.isOpened())
+        return false;
+    fs["adaptiveThreshWinSizeMin"] >> params->adaptiveThreshWinSizeMin;
+    fs["adaptiveThreshWinSizeMax"] >> params->adaptiveThreshWinSizeMax;
+    fs["adaptiveThreshWinSizeStep"] >> params->adaptiveThreshWinSizeStep;
+    fs["adaptiveThreshConstant"] >> params->adaptiveThreshConstant;
+    fs["minMarkerPerimeterRate"] >> params->minMarkerPerimeterRate;
+    fs["maxMarkerPerimeterRate"] >> params->maxMarkerPerimeterRate;
+    fs["polygonalApproxAccuracyRate"] >> params->polygonalApproxAccuracyRate;
+    fs["minCornerDistanceRate"] >> params->minCornerDistanceRate;
+    fs["minDistanceToBorder"] >> params->minDistanceToBorder;
+    fs["minMarkerDistanceRate"] >> params->minMarkerDistanceRate;
+    fs["cornerRefinementMethod"] >> params->cornerRefinementMethod;
+    fs["cornerRefinementWinSize"] >> params->cornerRefinementWinSize;
+    fs["cornerRefinementMaxIterations"] >> params->cornerRefinementMaxIterations;
+    fs["cornerRefinementMinAccuracy"] >> params->cornerRefinementMinAccuracy;
+    fs["markerBorderBits"] >> params->markerBorderBits;
+    fs["perspectiveRemovePixelPerCell"] >> params->perspectiveRemovePixelPerCell;
+    fs["perspectiveRemoveIgnoredMarginPerCell"] >> params->perspectiveRemoveIgnoredMarginPerCell;
+    fs["maxErroneousBitsInBorderRate"] >> params->maxErroneousBitsInBorderRate;
+    fs["minOtsuStdDev"] >> params->minOtsuStdDev;
+    fs["errorCorrectionRate"] >> params->errorCorrectionRate;
+    return true;
+}
 
 class VisionClass {
     public:
 	VisionClass(){
-    		/*** Vision setup ***/
-    		detectorParams = aruco::DetectorParameters::create();
+        bool readOk = readVisionParameters("../vision_params.yml", calibration_file, video_file, open_window, show_rejected, marker_length, dict_type, exposure_time, fps);
+        if(!readOk) {
+            cerr << "Invalid general vision parameters file" << endl;
+            exit(0);
+        }
 
-    		//override cornerRefinementMethod read from config file
-    		detectorParams->cornerRefinementMethod = REFINEMENT_METHOD;
-    		std::cout << "Corner refinement method (0: None, 1: Subpixel, 2:contour, 3: AprilTag 2): " << detectorParams->cornerRefinementMethod << std::endl;
+        /*** Vision setup ***/
+    	detectorParams = aruco::DetectorParameters::create();
+        readOk = readDetectorParameters( "../detector_params.yml", detectorParams );
+        if(!readOk) {
+            cerr << "Invalid detector parameters file" << endl;
+            exit(0);
+        }
+    	//std::cout << "Corner refinement method (0: None, 1: Subpixel, 2:contour, 3: AprilTag 2): " << detectorParams->cornerRefinementMethod << std::endl;
 
-    		dictionary = aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME(DICTIONARY));
+    	dictionary = aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME(dict_type));
 
-    		    bool readOk = readCameraParameters(CALIBRATION_PARAMETERS, camMatrix, distCoeffs);
-    		    if(!readOk) {
-    		        cerr << "Invalid camera file" << endl;
-    		        exit(0);
-    		    }
+    	readOk = readCameraParameters(calibration_file, camMatrix, distCoeffs);
+    	if(!readOk) {
+    	    cerr << "Invalid camera file" << endl;
+    	    exit(0);
+    	}
 
-		#ifdef VIDEO_FILE
-    		inputVideo.open(VIDEO_FILE);
-		#else
+        if (video_file!=""){
+    		inputVideo.open(video_file);
+        }
+        else{
     		inputVideo.open(0);
-		// TODO: move to parameters file
-		system("v4l2-ctl -d /dev/video0 -c exposure_time_absolute=50 -c auto_exposure=1 -p 60");
-		#endif
+            string cmd;
+            if (fps!=0){
+                cmd="v4l2-ctl -d /dev/video0 -p "+ fps;
+                const char* aux1=cmd.data();
+		        system(aux1);
+            }
+            if (exposure_time!=0){
+                cmd="v4l2-ctl -d /dev/video0 -c auto_exposure=1 -c exposure_time_absolute="+ exposure_time;
+                const char* aux2=cmd.data();
+		        system(aux2);
+            }
+        }
 	}
 	void grab_and_retrieve_image(){
        	    inputVideo.grab();
@@ -55,14 +117,22 @@ class VisionClass {
     	VideoCapture inputVideo;
         bool isRotationMatrix(Mat &R);
         Eigen::Vector3d rotationMatrixToEulerAngles(Eigen::Matrix3d &R);
-	static bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs); 
+	    static bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs); 
         vector< int > ids;
         vector< vector< Point2f > > corners, rejected;
         vector< Vec3d > rvecs, tvecs;
     	Ptr<aruco::Dictionary> dictionary;
         Ptr<aruco::DetectorParameters> detectorParams;
     	Mat camMatrix; 
-	Mat distCoeffs;
+	    Mat distCoeffs;
+        string calibration_file;
+        string video_file;
+        bool open_window;
+        bool show_rejected;
+        float marker_length;
+        int dict_type;
+        int exposure_time;
+        int fps;
 };
 
 
@@ -92,7 +162,6 @@ Eigen::Vector3d VisionClass::rotationMatrixToEulerAngles(Eigen::Matrix3d &R)
 
 
 bool VisionClass::readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs) {
-    cout << "Using calibration in" <<  filename << endl;
     FileStorage fs(filename, FileStorage::READ);
     if(!fs.isOpened())
         return false;
@@ -106,21 +175,29 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
     aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
     bool found_marker=ids.size() > 0;
     if(found_marker)
-        aruco::estimatePoseSingleMarkers(corners, MARKER_LENGTH, camMatrix, distCoeffs, rvecs, tvecs);
+        aruco::estimatePoseSingleMarkers(corners, marker_length, camMatrix, distCoeffs, rvecs, tvecs);
         
 
-     #ifdef OPEN_WINDOW
+     if (open_window){
         // draw results
         image.copyTo(imageCopy);
         //imageCopy=image;
         if(found_marker){
            aruco::drawDetectedMarkers(imageCopy, corners, ids);
-           aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[0], tvecs[0], MARKER_LENGTH * 0.5f);
+           aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[0], tvecs[0], marker_length * 0.5f);
         }
 
-        if(SHOW_REJECTED && rejected.size() > 0)
+        if(show_rejected && rejected.size() > 0)
             aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
         imshow("out", imageCopy);
+        waitKey( WAIT_KEY_MILL );
+        //char key = (char)waitKey( WAIT_KEY_MILL );
+        //if(key == 27) break;
+     }
+     #ifdef WRITE_IMAGES
+     //char path [30];
+     //sprintf(path,"./images/image%d.png", totalIterations);
+     //imwrite(path,image);
      #endif
 
      if (found_marker){

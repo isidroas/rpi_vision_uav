@@ -20,43 +20,58 @@ using namespace std;
 
 
 #define DEBUG
-//#define MAV_CONNECT
-//#define WRITE_IMAGES // very slow!
-//#define LOG_FILE
 
-//#define LOOP_PERIOD_MS  0  // Mínimo periodo del bucle
 
 #define UPDATE_DEBUG_RATE  30 // Cada cuantas iteraciones se calculan e imprimen las estadísticas
-#define WAIT_KEY_MILL      1 // tiempo de espera entre fotogramas cuando se abre la ventana, si vale 0, solo avanza cuando se presiona alguna tecla
+
+static bool readParameters(string filename, bool &mav_connect, bool &log_file, int &loop_period_ms) {
+    FileStorage fs(filename, FileStorage::READ);
+    if(!fs.isOpened())
+        return false;
+    mav_connect = (string)fs["mav_connect"]=="true";
+    log_file = (string)fs["log_file"]=="true";
+    loop_period_ms = (int)fs["loop_period_ms"];
+    cout << "Parámetros generales:" <<  endl;
+    cout << "\tConexion mavlink:\t\t\t" <<  mav_connect << endl;
+    cout << "\tLog de medidas:\t\t\t\t" <<  log_file << endl;
+    cout << "\tPeriodo minimo de actualización:\t" <<  loop_period_ms << endl;
+    cout << endl;
+    return true;
+}
 
 
 
-int main(int argc, char** argv)
+int main()
 {
-    cout << argc << endl;
-    cout << argv << endl;
+    cout << "------------------------------------------" << endl;
+    cout << "--------Vision position estimator---------" << endl;
+    cout << "------------------------------------------" << endl;
+    cout << endl;
 
-    #ifdef MAV_CONNECT	
-    ComunicationClass commObj; 
-    #endif
+    bool mav_connect, log_file;
+    int loop_period_ms;
+    readParameters("../vision_params.yml", mav_connect, log_file, loop_period_ms);
+
+    ComunicationClass commObj;
+    if (mav_connect)
+        commObj.init();
 	 
     VisionClass  visionMarker; 
     
     double total_time = 0;
     int totalIterations = 0;
     int n_position_get = 0;
-    #ifdef LOOP_PERIOD_MS
-    auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
-    #endif
+    auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(loop_period_ms);
     double tick_global_ant = (double)getTickCount();
     Eigen::Vector3d pos, euler_angles ;
     
-    #ifdef LOG_FILE
-    std::ofstream myfile;
-    myfile.open("log.csv");
-    myfile << "px" << "," << "py" << "," << "pz" << "," << "roll" << "," << "pitch" << "," << "yaw" << "," << "t" <<"\n";
     double seconds_init = (double)getTickCount()/getTickFrequency();
-    #endif
+
+    std::ofstream myfile;
+    if (log_file){
+        myfile.open("log.csv");
+        myfile << "px" << "," << "py" << "," << "pz" << "," << "roll" << "," << "pitch" << "," << "yaw" << "," << "t" <<"\n";
+    }
   
     /*** Main Loop ***/
     while(true){
@@ -69,16 +84,10 @@ int main(int argc, char** argv)
         double tick2 = (double)getTickCount();
 
         if (found_marker){
-            #ifdef MAV_CONNECT
-	        commObj.send_msg(pos, euler_angles);
-            #endif
+            if (mav_connect)
+	            commObj.send_msg(pos, euler_angles);
             n_position_get++;
         }
-        #ifdef WRITE_IMAGES
-        //char path [30];
-        //sprintf(path,"./images/image%d.png", totalIterations);
-        //imwrite(path,image);
-        #endif
 
         #ifdef DEBUG
         // Update counters
@@ -108,25 +117,20 @@ int main(int argc, char** argv)
         }
         #endif 
 
-        #ifdef OPEN_WINDOW
-            char key = (char)waitKey( WAIT_KEY_MILL );
-        	if(key == 27) break;
-        #endif
 
-        #ifdef LOG_FILE
-        double seconds = getTickCount()/ getTickFrequency() - seconds_init;
-        myfile << pos[0] << "," << pos[1] << "," << pos[2] << "," << euler_angles[0] << "," << euler_angles[1] << "," << euler_angles[2] << "," << seconds << "\n";
-        #endif
+        if (log_file){
+            double seconds = getTickCount()/ getTickFrequency() - seconds_init;
+            myfile << pos[0] << "," << pos[1] << "," << pos[2] << "," << euler_angles[0] << "," << euler_angles[1] << "," << euler_angles[2] << "," << seconds << "\n";
+        }
 
-        #ifdef LOOP_PERIOD_MS
-        std::this_thread::sleep_until(x);
-        x = std::chrono::steady_clock::now() + std::chrono::milliseconds(LOOP_PERIOD_MS);
-        #endif
+        if (loop_period_ms!=0){
+            std::this_thread::sleep_until(x);
+            x = std::chrono::steady_clock::now() + std::chrono::milliseconds(loop_period_ms);
+        }
     }
 
-    #ifdef LOG_FILE
-    myfile.close();
-    #endif
+    if (log_file)
+        myfile.close();
     std::cout << "Finished..." << std::endl;
     return EXIT_SUCCESS;
 }

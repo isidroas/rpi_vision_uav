@@ -15,14 +15,14 @@ using std::this_thread::sleep_for;
 
 class ComunicationClass{
 	public:
-		ComunicationClass();
 		void send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul);
+        void init();
 	private:
 		void wait_until_discover(Mavsdk& dc);
-                shared_ptr<Mocap> mocap;
-                Mocap::VisionPositionEstimate  est_pos;
-                Mavsdk dc;
-                ConnectionResult connection_result;
+        shared_ptr<Mocap> mocap;
+        Mocap::VisionPositionEstimate  est_pos;
+        Mavsdk dc;
+        ConnectionResult connection_result;
 };
 
 
@@ -40,7 +40,7 @@ void ComunicationClass::wait_until_discover(Mavsdk& dc)
     discover_future.wait();
 }
 
-ComunicationClass::ComunicationClass()
+void ComunicationClass::init()
 {
     connection_result = dc.add_any_connection(CONNECTION_URL);
 
