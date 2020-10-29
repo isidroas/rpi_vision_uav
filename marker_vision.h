@@ -53,14 +53,17 @@ class VisionClass {
     		inputVideo.open(0);
             string cmd;
             if (fps!=0){
-                cmd="v4l2-ctl -d /dev/video0 -p "+ fps;
+                cmd=(string)"v4l2-ctl -d /dev/video0 -p "+ to_string(fps);
                 const char* aux1=cmd.data();
-		        system(aux1);
+		system(aux1);
             }
             if (exposure_time!=0){
-                cmd="v4l2-ctl -d /dev/video0 -c auto_exposure=1 -c exposure_time_absolute="+ exposure_time;
+                cmd=(string)"v4l2-ctl -d /dev/video0 -c auto_exposure=1 -c exposure_time_absolute="+ to_string(exposure_time);
                 const char* aux2=cmd.data();
-		        system(aux2);
+		system(aux2);
+            }
+	    else{
+		system("v4l2-ctl -d /dev/video0 -c auto_exposure=0");
             }
         }
 	}

@@ -1,6 +1,6 @@
 %YAML:1.0
-#camera_parameters: "../calibration/rpi_v2_camera/calibration_parameters_rpi2.txt"
-camera_parameters: "../calibration/hp_camera/cal.yml"
+camera_parameters: "../calibration/rpi_v2_camera/calibration_parameters_rpi2.txt"
+#camera_parameters: "../calibration/hp_camera/cal.yml"
 open_window: true
 show_rejected: false
 marker_length: 0.179
@@ -10,13 +10,13 @@ dict_type: 10   # 6x6 256
 
 ## Charuco
 charuco: true
-refindStrategy: false # x10 slow
+refindStrategy: true # x10 slow
 squaresX: 5
 squaresY: 7
 squareLength: 0.0365
 markerLength: 0.022
 
-exposure_time: 50
+exposure_time: 0
 fps: 60
 
 
