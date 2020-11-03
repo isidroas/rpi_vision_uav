@@ -1,10 +1,13 @@
 %YAML:1.0
 camera_parameters: "../calibration/rpi_v2_camera/calibration_parameters_rpi2.txt"
 #camera_parameters: "../calibration/hp_camera/cal.yml"
-open_window: true
 show_rejected: false
 marker_length: 0.179
 dict_type: 10   # 6x6 256
+frame_width: 640
+frame_height: 480
+#frame_width: 1280
+#frame_height: 720 
 #video_file: "/home/isidro/Desktop/vuelo2.h264"
 #write_images: false
 
@@ -16,11 +19,13 @@ squaresY: 7
 squareLength: 0.0365
 markerLength: 0.022
 
-exposure_time: 0
-fps: 60
+exposure_time: 20
+#fps: 40 # if fps>40, fov decreases
+fps: 0
 
 
 ## General parameters
 mav_connect: false
 log_file: false
 loop_period_ms: 0 
+open_window: true

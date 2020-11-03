@@ -3,6 +3,7 @@
 #include <opencv2/aruco/charuco.hpp>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core/eigen.hpp>
+#include <unistd.h> // for sleep
 using namespace cv;
 using namespace std;
 
@@ -51,27 +52,37 @@ class VisionClass {
         }
         else{
     		inputVideo.open(0);
+            inputVideo.set(CAP_PROP_FRAME_WIDTH, frame_width);
+            inputVideo.set(CAP_PROP_FRAME_HEIGHT, frame_height);
             string cmd;
             if (fps!=0){
                 cmd=(string)"v4l2-ctl -d /dev/video0 -p "+ to_string(fps);
                 const char* aux1=cmd.data();
-		system(aux1);
+                system(aux1);
             }
             if (exposure_time!=0){
                 cmd=(string)"v4l2-ctl -d /dev/video0 -c auto_exposure=1 -c exposure_time_absolute="+ to_string(exposure_time);
                 const char* aux2=cmd.data();
-		system(aux2);
+                system(aux2);
             }
-	    else{
-		system("v4l2-ctl -d /dev/video0 -c auto_exposure=0");
+	        else{
+		        system("v4l2-ctl -d /dev/video0 -c auto_exposure=0");
             }
+            system(" v4l2-ctl -V");
         }
+        /* Test an image */
+        grab_and_retrieve_image();
+        cout << "Ancho de la imagen:\t"<< image.cols << endl;
+        cout << "Alto de la imagen:\t"<< image.rows << endl << endl;
 	}
+
 	void grab_and_retrieve_image(){
        	    inputVideo.grab();
             inputVideo.retrieve(image);
 	}
+
 	bool detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul);
+
     private: 	
         bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameters> &params);
         bool readVisionParameters(string filename);
@@ -82,7 +93,7 @@ class VisionClass {
     	VideoCapture inputVideo;
         bool isRotationMatrix(Mat &R);
         Eigen::Vector3d rotationMatrixToEulerAngles(Eigen::Matrix3d &R);
-	    static bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs); 
+        static bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs); 
         vector< int > ids, charucoIds;
         vector< vector< Point2f > > corners, rejected;
         vector< Vec3d > rvecs, tvecs;
@@ -90,7 +101,7 @@ class VisionClass {
     	Ptr<aruco::Dictionary> dictionary;
         Ptr<aruco::DetectorParameters> detectorParams;
     	Mat camMatrix; 
-	    Mat distCoeffs;
+        Mat distCoeffs;
         string calibration_file;
         string video_file;
         bool open_window;
@@ -100,6 +111,8 @@ class VisionClass {
         int exposure_time;
         int fps;
         float axisLength;
+        int frame_width;
+        int frame_height;
         // charuco specific
         bool charuco;
         bool refindStrategy;
@@ -275,6 +288,8 @@ bool VisionClass::readVisionParameters(string filename) {
     markerLength = (float)fs["markerLength"];
     squareLength = (float)fs["squareLength"];
     squaresY = (int)fs["squaresY"];
+    frame_height = (int)fs["frame_height"];
+    frame_width = (int)fs["frame_width"];
 
     // Print them
     cout << "Parámetros de la visión:" <<  endl;
