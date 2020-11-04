@@ -7,8 +7,7 @@
 using namespace cv;
 using namespace std;
 
-#define WAIT_KEY_MILL      1 // tiempo de espera entre fotogramas cuando se abre la ventana, si vale 0, solo avanza cuando se presiona alguna tecla
-//#define WRITE_IMAGES // very slow!
+//#define WAIT_KEY_MILL      1 // tiempo de espera entre fotogramas cuando se abre la ventana, si vale 0, solo avanza cuando se presiona alguna tecla
 #define AUTO_SCALE_FACTOR 1
 
 
@@ -77,9 +76,10 @@ class VisionClass {
         cout << "Alto de la imagen:\t"<< image.rows << endl << endl;
 	}
 
-	void grab_and_retrieve_image(){
-       	    inputVideo.grab();
+	int grab_and_retrieve_image(){
+       	    int res = inputVideo.grab();
             inputVideo.retrieve(image);
+            return res;
 	}
 
 	bool detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul);
@@ -100,15 +100,18 @@ class VisionClass {
         Mat distCoeffs;
         string calibration_file;
         string video_file;
-        bool open_window;
         bool show_rejected;
         float marker_length;
         int dict_type;
+        float axisLength;
+        bool open_window;
+        bool write_images;
+        // camera config
         int exposure_time;
         int fps;
-        float axisLength;
         int frame_width;
         int frame_height;
+        // diamond specific
         bool diamond;
         bool autoScale;
         // charuco specific
@@ -120,7 +123,8 @@ class VisionClass {
         float marker_length_ch;
         Ptr<aruco::CharucoBoard> charucoboard;
         Ptr<aruco::Board> board;
-
+        // logging
+        int totalIterations=0;
 
 };
 
@@ -253,13 +257,13 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
             aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
 
         imshow("out", imageCopy);
-        waitKey( WAIT_KEY_MILL );
+        if (write_images){
+            char path [100];
+            sprintf(path,"../results/latest/images/image%d.png", totalIterations);
+            imwrite(path,imageCopy);
+        }
+//        waitKey( WAIT_KEY_MILL );
      }
-     #ifdef WRITE_IMAGES
-     //char path [30];
-     //sprintf(path,"./images/image%d.png", totalIterations);
-     //imwrite(path,image);
-     #endif
 
     if (valid_pose){
         InvertPose(pos, eul, rvec, tvec);
@@ -268,6 +272,8 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
         pos[0]=pos[1]=pos[2]=NAN;
         eul[0]=eul[1]=eul[2]=NAN;
     }
+    
+    totalIterations++;
 
     return valid_pose;
 }
@@ -333,6 +339,7 @@ bool VisionClass::readVisionParameters(string filename) {
     frame_width = (int)fs["frame_width"];
     diamond = (string)fs["diamond"]=="true";
     autoScale = (string)fs["autoScale"]=="true";
+    write_images = (string)fs["write_images"]=="true";
 
     // Print them
     cout << "Parámetros de la visión:" <<  endl;
