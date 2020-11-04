@@ -120,6 +120,14 @@ class VisionClass {
         float marker_length_ch;
         Ptr<aruco::CharucoBoard> charucoboard;
         Ptr<aruco::Board> board;
+
+    vector< int > ids, charucoIds;
+    vector< vector< Point2f > > corners, rejected;
+    vector< Vec3d > rvecs, tvecs;
+    Vec3d rvec, tvec;
+    vector< Point2f > charucoCorners;
+    vector< vector< Point2f > > diamondCorners;
+    vector< Vec4i > diamondIds;
 };
 
 
@@ -160,19 +168,13 @@ bool VisionClass::readCameraParameters(string filename, Mat &camMatrix, Mat &dis
 
 bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
 
-    bool valid_pose = false;
-    int interpolatedCorners = 0;
-    vector< int > ids, charucoIds;
-    vector< vector< Point2f > > corners, rejected;
-    vector< Vec3d > rvecs, tvecs;
-    Vec3d rvec, tvec;
-    vector< Point2f > charucoCorners;
-    vector< vector< Point2f > > diamondCorners;
-    vector< Vec4i > diamondIds;
+
 
     aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
 
     bool found_marker=ids.size() > 0;
+    bool valid_pose = false;
+    int interpolatedCorners = 0;
 
     if (charuco){
         if(refindStrategy)
@@ -189,30 +191,30 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
         valid_pose = aruco::estimatePoseCharucoBoard(charucoCorners, charucoIds, charucoboard,
                                                     camMatrix, distCoeffs, rvec, tvec);
     }
-    else if (diamond){
-        if (found_marker){
-            aruco::detectCharucoDiamond(image, marker_length_ch, ids,
-                                        square_length / marker_length_ch, diamondCorners, diamondIds,
-                                        camMatrix, distCoeffs);
-            valid_pose= true;
-            if(!autoScale) {
-                aruco::estimatePoseSingleMarkers(diamondCorners, square_length, camMatrix,
-                                                 distCoeffs, rvecs, tvecs);
-            } else {
-                // if autoscale, extract square size from last diamond id
-                for(unsigned int i = 0; i < diamondCorners.size(); i++) {
-                    float autoSquareLength = AUTO_SCALE_FACTOR * float(diamondIds[i].val[3]);
-                    vector< vector< Point2f > > currentCorners;
-                    vector< Vec3d > currentRvec, currentTvec;
-                    currentCorners.push_back(diamondCorners[i]);
-                    aruco::estimatePoseSingleMarkers(currentCorners, autoSquareLength, camMatrix,
-                                                     distCoeffs, currentRvec, currentTvec);
-                    rvecs.push_back(currentRvec[0]);
-                    tvecs.push_back(currentTvec[0]);
-                }
-            }
-        }
-    }
+    //else if (diamond){
+    //    if (found_marker){
+    //        aruco::detectCharucoDiamond(image, marker_length_ch, ids,
+    //                                    square_length / marker_length_ch, diamondCorners, diamondIds,
+    //                                    camMatrix, distCoeffs);
+    //        valid_pose= true;
+    //        if(!autoScale) {
+    //            aruco::estimatePoseSingleMarkers(diamondCorners, square_length, camMatrix,
+    //                                             distCoeffs, rvecs, tvecs);
+    //        } else {
+    //            // if autoscale, extract square size from last diamond id
+    //            for(unsigned int i = 0; i < diamondCorners.size(); i++) {
+    //                float autoSquareLength = AUTO_SCALE_FACTOR * float(diamondIds[i].val[3]);
+    //                vector< vector< Point2f > > currentCorners;
+    //                vector< Vec3d > currentRvec, currentTvec;
+    //                currentCorners.push_back(diamondCorners[i]);
+    //                aruco::estimatePoseSingleMarkers(currentCorners, autoSquareLength, camMatrix,
+    //                                                 distCoeffs, currentRvec, currentTvec);
+    //                rvecs.push_back(currentRvec[0]);
+    //                tvecs.push_back(currentTvec[0]);
+    //            }
+    //        }
+    //    }
+    //}
     else{
         if(found_marker){
             aruco::estimatePoseSingleMarkers(corners, marker_length, camMatrix, distCoeffs, rvecs, tvecs);
