@@ -34,6 +34,9 @@ exposure_time: 20
 #fps: 40 # if fps>40, fov decreases
 fps: 0
 
+diamond: true
+autoScale: true
+
 
 ## General parameters
 mav_connect: false

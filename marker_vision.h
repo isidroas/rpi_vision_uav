@@ -9,6 +9,7 @@ using namespace std;
 
 #define WAIT_KEY_MILL      1 // tiempo de espera entre fotogramas cuando se abre la ventana, si vale 0, solo avanza cuando se presiona alguna tecla
 //#define WRITE_IMAGES // very slow!
+#define AUTO_SCALE_FACTOR 1
 
 
 
@@ -38,9 +39,9 @@ class VisionClass {
     	}
 
         if (charuco){
-            charucoboard = aruco::CharucoBoard::create(squaresX, squaresY, squareLength, markerLength, dictionary);
+            charucoboard = aruco::CharucoBoard::create(squaresX, squaresY, square_length, marker_length_ch, dictionary);
             board = charucoboard.staticCast<aruco::Board>();
-            axisLength = 0.5f * ((float)min(squaresX, squaresY) * (squareLength));
+            axisLength = 0.5f * ((float)min(squaresX, squaresY) * (square_length));
         }
         else{
             axisLength = 0.5f * marker_length;
@@ -87,17 +88,12 @@ class VisionClass {
         bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameters> &params);
         bool readVisionParameters(string filename);
         void InvertPose(Eigen::Vector3d &pos, Eigen::Vector3d &eul, Vec3d &rvec, Vec3d &tvec);
+        bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs); 
+        Eigen::Vector3d rotationMatrixToEulerAngles(Eigen::Matrix3d &R);
 
         Mat image;
         Mat imageCopy;
     	VideoCapture inputVideo;
-        bool isRotationMatrix(Mat &R);
-        Eigen::Vector3d rotationMatrixToEulerAngles(Eigen::Matrix3d &R);
-        static bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs); 
-        vector< int > ids, charucoIds;
-        vector< vector< Point2f > > corners, rejected;
-        vector< Vec3d > rvecs, tvecs;
-        Vec3d rvec, tvec;
     	Ptr<aruco::Dictionary> dictionary;
         Ptr<aruco::DetectorParameters> detectorParams;
     	Mat camMatrix; 
@@ -113,16 +109,17 @@ class VisionClass {
         float axisLength;
         int frame_width;
         int frame_height;
+        bool diamond;
+        bool autoScale;
         // charuco specific
         bool charuco;
         bool refindStrategy;
         int squaresX;
         int squaresY;
-        float squareLength;
-        float markerLength;
+        float square_length;
+        float marker_length_ch;
         Ptr<aruco::CharucoBoard> charucoboard;
         Ptr<aruco::Board> board;
-        vector< Point2f > charucoCorners;
 };
 
 
@@ -163,10 +160,20 @@ bool VisionClass::readCameraParameters(string filename, Mat &camMatrix, Mat &dis
 
 bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
 
-    aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
-    bool found_marker=ids.size() > 0;
     bool valid_pose = false;
     int interpolatedCorners = 0;
+    vector< int > ids, charucoIds;
+    vector< vector< Point2f > > corners, rejected;
+    vector< Vec3d > rvecs, tvecs;
+    Vec3d rvec, tvec;
+    vector< Point2f > charucoCorners;
+    vector< vector< Point2f > > diamondCorners;
+    vector< Vec4i > diamondIds;
+
+    aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
+
+    bool found_marker=ids.size() > 0;
+
     if (charuco){
         if(refindStrategy)
              aruco::refineDetectedMarkers(image, board, corners, ids, rejected,
@@ -181,8 +188,32 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
         // estimate charuco board pose
         valid_pose = aruco::estimatePoseCharucoBoard(charucoCorners, charucoIds, charucoboard,
                                                     camMatrix, distCoeffs, rvec, tvec);
-     }
-     else{
+    }
+    else if (diamond){
+        if (found_marker){
+            aruco::detectCharucoDiamond(image, marker_length_ch, ids,
+                                        square_length / marker_length_ch, diamondCorners, diamondIds,
+                                        camMatrix, distCoeffs);
+            valid_pose= true;
+            if(!autoScale) {
+                aruco::estimatePoseSingleMarkers(diamondCorners, square_length, camMatrix,
+                                                 distCoeffs, rvecs, tvecs);
+            } else {
+                // if autoscale, extract square size from last diamond id
+                for(unsigned int i = 0; i < diamondCorners.size(); i++) {
+                    float autoSquareLength = AUTO_SCALE_FACTOR * float(diamondIds[i].val[3]);
+                    vector< vector< Point2f > > currentCorners;
+                    vector< Vec3d > currentRvec, currentTvec;
+                    currentCorners.push_back(diamondCorners[i]);
+                    aruco::estimatePoseSingleMarkers(currentCorners, autoSquareLength, camMatrix,
+                                                     distCoeffs, currentRvec, currentTvec);
+                    rvecs.push_back(currentRvec[0]);
+                    tvecs.push_back(currentTvec[0]);
+                }
+            }
+        }
+    }
+    else{
         if(found_marker){
             aruco::estimatePoseSingleMarkers(corners, marker_length, camMatrix, distCoeffs, rvecs, tvecs);
             valid_pose = true;
@@ -285,11 +316,13 @@ bool VisionClass::readVisionParameters(string filename) {
     fps = (int)fs["fps"];
     squaresX = (int)fs["squaresX"];
     squaresY = (int)fs["squaresY"];
-    markerLength = (float)fs["markerLength"];
-    squareLength = (float)fs["squareLength"];
+    marker_length_ch = (float)fs["markerLength"];
+    square_length = (float)fs["squareLength"];
     squaresY = (int)fs["squaresY"];
     frame_height = (int)fs["frame_height"];
     frame_width = (int)fs["frame_width"];
+    diamond = (string)fs["diamond"]=="true";
+    autoScale = (string)fs["autoScale"]=="true";
 
     // Print them
     cout << "Parámetros de la visión:" <<  endl;
@@ -305,8 +338,8 @@ bool VisionClass::readVisionParameters(string filename) {
     cout << endl;
     cout << "Charuco:" << endl;
     cout << "\trefindStrategy:\t\t" <<  refindStrategy << endl;
-    cout << "\tmarkerLength:\t\t" <<  markerLength << endl;
-    cout << "\tsquareLength:\t\t" <<  squareLength << endl;
+    cout << "\tmarkerLength:\t\t" <<  marker_length_ch << endl;
+    cout << "\tsquareLength:\t\t" <<  square_length << endl;
     cout << "\tsquaresX:\t\t" <<  squaresX << endl;
     cout << "\tsquaresY:\t\t" <<  squaresY << endl;
     }
