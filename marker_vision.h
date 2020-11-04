@@ -121,13 +121,7 @@ class VisionClass {
         Ptr<aruco::CharucoBoard> charucoboard;
         Ptr<aruco::Board> board;
 
-    vector< int > ids, charucoIds;
-    vector< vector< Point2f > > corners, rejected;
-    vector< Vec3d > rvecs, tvecs;
-    Vec3d rvec, tvec;
-    vector< Point2f > charucoCorners;
-    vector< vector< Point2f > > diamondCorners;
-    vector< Vec4i > diamondIds;
+
 };
 
 
@@ -168,6 +162,13 @@ bool VisionClass::readCameraParameters(string filename, Mat &camMatrix, Mat &dis
 
 bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
 
+    vector< int > ids, charucoIds;
+    vector< vector< Point2f > > corners, rejected;
+    vector< Vec3d > rvecs, tvecs;
+    Vec3d rvec, tvec;
+    vector< Point2f > charucoCorners;
+    vector< vector< Point2f > > diamondCorners;
+    vector< Vec4i > diamondIds;
 
 
     aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
@@ -191,30 +192,37 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
         valid_pose = aruco::estimatePoseCharucoBoard(charucoCorners, charucoIds, charucoboard,
                                                     camMatrix, distCoeffs, rvec, tvec);
     }
-    //else if (diamond){
-    //    if (found_marker){
-    //        aruco::detectCharucoDiamond(image, marker_length_ch, ids,
-    //                                    square_length / marker_length_ch, diamondCorners, diamondIds,
-    //                                    camMatrix, distCoeffs);
-    //        valid_pose= true;
-    //        if(!autoScale) {
-    //            aruco::estimatePoseSingleMarkers(diamondCorners, square_length, camMatrix,
-    //                                             distCoeffs, rvecs, tvecs);
-    //        } else {
-    //            // if autoscale, extract square size from last diamond id
-    //            for(unsigned int i = 0; i < diamondCorners.size(); i++) {
-    //                float autoSquareLength = AUTO_SCALE_FACTOR * float(diamondIds[i].val[3]);
-    //                vector< vector< Point2f > > currentCorners;
-    //                vector< Vec3d > currentRvec, currentTvec;
-    //                currentCorners.push_back(diamondCorners[i]);
-    //                aruco::estimatePoseSingleMarkers(currentCorners, autoSquareLength, camMatrix,
-    //                                                 distCoeffs, currentRvec, currentTvec);
-    //                rvecs.push_back(currentRvec[0]);
-    //                tvecs.push_back(currentTvec[0]);
-    //            }
-    //        }
-    //    }
-    //}
+    else if (diamond){
+        if (found_marker){
+            aruco::detectCharucoDiamond(image, corners, ids,
+                                        square_length / marker_length_ch, diamondCorners, diamondIds,
+                                        camMatrix, distCoeffs);
+
+            if(!autoScale) {
+                aruco::estimatePoseSingleMarkers(diamondCorners, square_length, camMatrix,
+                                                 distCoeffs, rvecs, tvecs);
+            } else {
+                // if autoscale, extract square size from last diamond id
+                //for(unsigned int i = 0; i < diamondCorners.size(); i++) {
+                //    float autoSquareLength = AUTO_SCALE_FACTOR * float(diamondIds[i].val[3]);
+                //    vector< vector< Point2f > > currentCorners;
+                //    vector< Vec3d > currentRvec, currentTvec;
+                //    currentCorners.push_back(diamondCorners[i]);
+                //    aruco::estimatePoseSingleMarkers(currentCorners, autoSquareLength, camMatrix,
+                //                                     distCoeffs, currentRvec, currentTvec);
+                //    rvecs.push_back(currentRvec[0]);
+                //    tvecs.push_back(currentTvec[0]);
+                //}
+                cout << "Autoscale todavía no implementado" <<endl;
+                exit(0);
+            }
+            if (tvecs.size()>0){
+                rvec=rvecs[0];
+                tvec=tvecs[0];
+                valid_pose= true;
+            }
+        }
+    }
     else{
         if(found_marker){
             aruco::estimatePoseSingleMarkers(corners, marker_length, camMatrix, distCoeffs, rvecs, tvecs);
@@ -337,14 +345,20 @@ bool VisionClass::readVisionParameters(string filename) {
     cout << "\tTiempo de exposición:\t\t" <<  exposure_time << endl;
     cout << "\tFPS:\t\t\t\t" <<  fps << endl;
     if (charuco){
-    cout << endl;
-    cout << "Charuco:" << endl;
-    cout << "\trefindStrategy:\t\t" <<  refindStrategy << endl;
-    cout << "\tmarkerLength:\t\t" <<  marker_length_ch << endl;
-    cout << "\tsquareLength:\t\t" <<  square_length << endl;
-    cout << "\tsquaresX:\t\t" <<  squaresX << endl;
-    cout << "\tsquaresY:\t\t" <<  squaresY << endl;
+        cout << endl;
+        cout << "Charuco:" << endl;
+        cout << "\trefindStrategy:\t\t" <<  refindStrategy << endl;
+        cout << "\tmarkerLength:\t\t" <<  marker_length_ch << endl;
+        cout << "\tsquareLength:\t\t" <<  square_length << endl;
+        cout << "\tsquaresX:\t\t" <<  squaresX << endl;
+        cout << "\tsquaresY:\t\t" <<  squaresY << endl;
     }
+    else if(diamond){
+        cout << endl;
+        cout << "Diamond:" << endl;
+        cout << "\tautoScale:\t\t" <<  autoScale << endl;
+    }
+
     cout << endl;
     return true;
 }

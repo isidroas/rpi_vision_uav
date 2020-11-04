@@ -10,32 +10,32 @@ frame_height: 480
 #frame_height: 720 
 #video_file: "/home/isidro/Desktop/vuelo2.h264"
 #write_images: false
+diamond: true
+autoScale: false # not implemented yet
 
 ## Charuco
-charuco: true
+charuco: false
 refindStrategy: true # x10 slow
-
-#squaresX: 5
-#squaresY: 7
-#squareLength: 0.0365
-#markerLength: 0.022
+# Charuco Boards
+squaresX: 5
+squaresY: 7
+squareLength: 0.0365
+markerLength: 0.022
 #
 #squareLength: 0.0601
 #markerLength: 0.0362
 #squaresX: 4
 #squaresY: 6
 #
-squareLength: 0.0832
-markerLength: 0.05
-squaresX: 3
-squaresY: 3
+#squareLength: 0.0832
+#markerLength: 0.05
+#squaresX: 3
+#squaresY: 3
 
 exposure_time: 20
 #fps: 40 # if fps>40, fov decreases
 fps: 0
 
-diamond: true
-autoScale: true
 
 
 ## General parameters
