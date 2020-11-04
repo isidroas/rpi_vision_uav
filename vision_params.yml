@@ -14,10 +14,21 @@ frame_height: 480
 ## Charuco
 charuco: true
 refindStrategy: true # x10 slow
-squaresX: 5
-squaresY: 7
-squareLength: 0.0365
-markerLength: 0.022
+
+#squaresX: 5
+#squaresY: 7
+#squareLength: 0.0365
+#markerLength: 0.022
+#
+#squareLength: 0.0601
+#markerLength: 0.0362
+#squaresX: 4
+#squaresY: 6
+#
+squareLength: 0.0832
+markerLength: 0.05
+squaresX: 3
+squaresY: 3
 
 exposure_time: 20
 #fps: 40 # if fps>40, fov decreases
