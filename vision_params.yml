@@ -1,22 +1,18 @@
 %YAML:1.0
-camera_parameters: "../calibration/rpi_v2_camera/calibration_parameters_rpi2.txt"
-#camera_parameters: "../calibration/hp_camera/cal.yml"
-show_rejected: false
+dict_type: 10   # 6x6 256
+
+## Single marker
 #marker_length: 0.179
 marker_length: 0.2335
-dict_type: 10   # 6x6 256
-frame_width: 640
-frame_height: 480
-#frame_width: 1280
-#frame_height: 720 
-#video_file: "/home/isidro/Desktop/vuelo4_crop.h264"
-#write_images: false
+
+## Diamond
 diamond: false
-autoScale: false # not implemented yet
+# autoscale not implemented yet
+autoScale: false
 
 ## Charuco
 charuco: false
-refindStrategy: true # x10 slow
+refindStrategy: true
 # Charuco Boards
 squaresX: 5
 squaresY: 7
@@ -35,16 +31,29 @@ markerLength: 0.0282
 #squareLength: 0.0465
 #markerLength: 0.0765
  
-
+## Camera
 exposure_time: 20
-fps: 40 # if fps>40, fov decreases
+# if fps>40, fov decreases
+fps: 40
+video_file: "../videos/single_marker.h264"
+frame_width: 640
+frame_height: 480
+#frame_width: 1280
+#frame_height: 720 
+camera_parameters: "../calibration/rpi_v2_camera/calibration_parameters_rpi2.txt"
+#camera_parameters: "../calibration/hp_camera/cal.yml"
 
 
 ## General parameters
 mav_connect: false
-log_file: false
 loop_period_ms: 0 
 open_window: true
-write_images: false
 wait_key_mill: 1
-wait_key: true #TODO: this is mandatory when open_window=true
+#TODO: this is mandatory when open_window=true
+wait_key: true
+show_rejected: false
+
+## Logging
+write_images: false
+log_file: false
+generate_video_from_images: false
