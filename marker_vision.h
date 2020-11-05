@@ -191,10 +191,14 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
             interpolatedCorners =
                 aruco::interpolateCornersCharuco(corners, ids, image, charucoboard,
                                                  charucoCorners, charucoIds, camMatrix, distCoeffs);
-
-        // estimate charuco board pose
-        valid_pose = aruco::estimatePoseCharucoBoard(charucoCorners, charucoIds, charucoboard,
+        if ((int)ids.size()==squaresX*squaresY){
+            // estimate charuco board pose
+            valid_pose = aruco::estimatePoseCharucoBoard(charucoCorners, charucoIds, charucoboard,
                                                     camMatrix, distCoeffs, rvec, tvec);
+        }
+        else{
+            valid_pose= false;
+        }
     }
     else if (diamond){
         if (found_marker){
