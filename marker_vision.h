@@ -191,7 +191,7 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
             interpolatedCorners =
                 aruco::interpolateCornersCharuco(corners, ids, image, charucoboard,
                                                  charucoCorners, charucoIds, camMatrix, distCoeffs);
-        if ((int)ids.size()==squaresX*squaresY){
+        if ((int)ids.size()==17){
             // estimate charuco board pose
             valid_pose = aruco::estimatePoseCharucoBoard(charucoCorners, charucoIds, charucoboard,
                                                     camMatrix, distCoeffs, rvec, tvec);

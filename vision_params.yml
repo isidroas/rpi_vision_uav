@@ -11,7 +11,7 @@ diamond: false
 autoScale: false
 
 ## Charuco
-charuco: false
+charuco: true
 refindStrategy: true
 # Charuco Boards
 squaresX: 5
