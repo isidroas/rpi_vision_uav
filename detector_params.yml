@@ -1,10 +1,14 @@
 %YAML:1.0
 nmarkers: 1024
+
+## Thresholding
 adaptiveThreshWinSizeMin: 3
 adaptiveThreshWinSizeMax: 23
 adaptiveThreshWinSizeStep: 10
 adaptiveThreshWinSize: 21
 adaptiveThreshConstant: 7
+
+## Contour filtering
 minMarkerPerimeterRate: 0.03
 maxMarkerPerimeterRate: 4.0
 polygonalApproxAccuracyRate: 0.05
@@ -12,13 +16,19 @@ minCornerDistance: 10.0
 minDistanceToBorder: 3
 minMarkerDistance: 10.0
 minMarkerDistanceRate: 0.05
+
+## Corner refinement
 cornerRefinementMethod: 1 #(0: None, 1: Subpixel, 2:contour, 3: AprilTag 2)
 cornerRefinementWinSize: 5
 cornerRefinementMaxIterations: 30
 cornerRefinementMinAccuracy: 0.1
+
+## Bit extraction
 markerBorderBits: 1
 perspectiveRemovePixelPerCell: 8
 perspectiveRemoveIgnoredMarginPerCell: 0.13
-maxErroneousBitsInBorderRate: 0.04
 minOtsuStdDev: 5.0
+
+## Marker identification
+maxErroneousBitsInBorderRate: 0.04
 errorCorrectionRate: 0.6
