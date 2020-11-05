@@ -15,6 +15,11 @@ with open('../vision_params.yml') as file:
     file.readline()
     params = yaml.load(file.read(), Loader=yaml.FullLoader)
 
+write_images=params["write_images"]
+log_file=params["log_file"]
+if (not write_images or not log_file):
+    quit(0)
+
 # crear las carpetas necesarias si no existen
 exists_dirs=os.path.exists('../results/latest')
 if not exists_dirs:
@@ -22,13 +27,11 @@ if not exists_dirs:
 else:
     shutil.rmtree('../results/latest')
 
-write_images=params["write_images"]
 if write_images:
     os.makedirs('../results/latest/images')
 else:
     os.makedirs('../results/latest')
 
-log_file=params["log_file"]
 if log_file:
     os.system('touch ../results/latest/log.csv')
 

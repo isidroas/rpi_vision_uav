@@ -42,9 +42,9 @@ fps: 40 # if fps>40, fov decreases
 
 ## General parameters
 mav_connect: false
-log_file: true
+log_file: false
 loop_period_ms: 0 
 open_window: true
-write_images: true
+write_images: false
 wait_key_mill: 1
-wait_key: true
+wait_key: true #TODO: this is mandatory when open_window=true

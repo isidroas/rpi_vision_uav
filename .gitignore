@@ -2,5 +2,4 @@ build/
 *.swp
 calibration_parameters.txt
 install/
-videos/
 results/
