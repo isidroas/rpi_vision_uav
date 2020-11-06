@@ -309,14 +309,18 @@ void VisionClass::InvertPose(Eigen::Vector3d &pos, Eigen::Vector3d &eul, Vec3d &
     z_rotation <<-1,   0,   0,
                   0,  -1,   0,
                   0,   0,   1;
-    Eigen::Matrix3d rot_mat_aux=x_rotation*rot_mat_eig.transpose()*z_rotation; 
+    //Eigen::Matrix3d rot_mat_aux=x_rotation*rot_mat_eig.transpose()*z_rotation; 
+    //Eigen::Matrix3d rot_mat_aux=rot_mat_eig.transpose(); 
     
     // Get position and rotation of camera in marker axis
     Eigen::Vector3d t_in(tvec[0],tvec[1],tvec[2]);
     // TODO: why is neccesary minus sign?
-    pos = -rot_mat_aux*t_in;
+    //pos = -rot_mat_aux*t_in;
+    //pos = rot_mat_eig.transpose()*t_in;
+    pos = t_in;
     
-    eul = rotationMatrixToEulerAngles(rot_mat_aux);
+    //eul = rotationMatrixToEulerAngles(rot_mat_aux);
+    eul = rotationMatrixToEulerAngles(rot_mat_eig);
 }
 
 bool VisionClass::readVisionParameters(string filename) {
