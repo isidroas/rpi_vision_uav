@@ -14,6 +14,9 @@ else()
     add_definitions("-Werror") # threat warnings as errors
 endif()
 
+# For use with pdb without optimization
+#set(CMAKE_BUILD_TYPE Debug)
+
 find_package(MAVSDK REQUIRED)
 find_package( OpenCV REQUIRED PATHS ~/opencv-install/opencv-4.4.0)
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)

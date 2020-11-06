@@ -36,7 +36,7 @@ exposure_time: 10
 # if fps>40, fov decreases
 fps: 40
 #video_file: "../videos/chess5x7_2.h264"
-video_file: "../videos/test_axis.h264"
+video_file: "../videos/test_axis_2.h264"
 frame_width: 640
 frame_height: 480
 #frame_width: 1280
