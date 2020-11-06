@@ -32,7 +32,7 @@ markerLength: 0.0282
 #markerLength: 0.0765
  
 ## Camera
-exposure_time: 40
+exposure_time: 10 
 # if fps>40, fov decreases
 fps: 40
 #video_file: "../videos/single_marker.h264"
