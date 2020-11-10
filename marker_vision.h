@@ -313,13 +313,19 @@ void VisionClass::InvertPose(Eigen::Vector3d &pos, Eigen::Vector3d &eul, Vec3d &
     rot_mat_camera_from_uav     << -1,   0,   0,
                                     0,  -1,   0,
                                     0,   0,   1;
-    Eigen::Matrix3d             rot_mat_marker_from_uav = rot_mat_marker_from_camera * rot_mat_camera_from_uav; 
+    Eigen::Matrix3d             rot_mat_marker_from_uav = rot_mat_camera_from_uav * rot_mat_marker_from_camera; 
 
     // Se obtiene la orientación del uav visto desde el marcador
     Eigen::Matrix3d             rot_mat_uav_from_marker = rot_mat_marker_from_uav.transpose() ; 
 
     // Se obtiene los ángulos de Tait–Bryan en el orden Z-Y-X (ángulos de euler)
     eul = rotationMatrixToEulerAngles(rot_mat_uav_from_marker);
+
+    // Transformaciones después de invertir la posición y la orientación. Queremos que la posición y la orientación del UAV
+    // esté expresado en un sistema de referencia con su eje z apuntando hacia abajo. El del marcador apunta hacia arriba, así 
+    // que se rotará 180º en el eje x
+
+    // WIP
 }
 
 bool VisionClass::readVisionParameters(string filename) {
