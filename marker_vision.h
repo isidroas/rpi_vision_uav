@@ -10,7 +10,7 @@ using namespace std;
 //#define WAIT_KEY_MILL      1 // tiempo de espera entre fotogramas cuando se abre la ventana, si vale 0, solo avanza cuando se presiona alguna tecla
 #define AUTO_SCALE_FACTOR 1
 
-#define ROT_POS_ORI
+//#define ROT_POS_ORI
 
 class VisionClass {
     public:
