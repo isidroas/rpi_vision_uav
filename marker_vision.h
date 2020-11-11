@@ -10,7 +10,7 @@ using namespace std;
 //#define WAIT_KEY_MILL      1 // tiempo de espera entre fotogramas cuando se abre la ventana, si vale 0, solo avanza cuando se presiona alguna tecla
 #define AUTO_SCALE_FACTOR 1
 
-
+#define ROT_POS_ORI
 
 class VisionClass {
     public:
@@ -307,8 +307,8 @@ void VisionClass::InvertPose(Eigen::Vector3d &pos, Eigen::Vector3d &eul, Vec3d &
     // Si queremos que la posición esté centrada en el marcador y no en la cámara, es necesario negarla
     pos = -pos_marker_in_marker_axis;
     
-    // Aquí debemos de tener en cuenta la rotación de la cámara con respecto al uav. Esta es de 180º alrededor del eje z
-    // (de la cámara o del uav, da igual, por tanto da igual postmultiplicar que premultiplicar)
+    // Aquí debemos de tener en cuenta la rotación de la cámara con respecto al uav. Esta es de 180º alrededor del eje z. 
+    // Queremos rotar en ejes absolutos y no en los ejes de rot_mat_marker_from_camera, por lo tanto premultiplicamos. 
     Eigen::Matrix3d             rot_mat_camera_from_uav;
     rot_mat_camera_from_uav     << -1,   0,   0,
                                     0,  -1,   0,
@@ -321,11 +321,20 @@ void VisionClass::InvertPose(Eigen::Vector3d &pos, Eigen::Vector3d &eul, Vec3d &
     // Se obtiene los ángulos de Tait–Bryan en el orden Z-Y-X (ángulos de euler)
     eul = rotationMatrixToEulerAngles(rot_mat_uav_from_marker);
 
+    #ifdef ROT_POS_ORI
     // Transformaciones después de invertir la posición y la orientación. Queremos que la posición y la orientación del UAV
     // esté expresado en un sistema de referencia con su eje z apuntando hacia abajo. El del marcador apunta hacia arriba, así 
     // que se rotará 180º en el eje x
+    Eigen::Matrix3d             rot_mat_marker_from_NED;
+    rot_mat_marker_from_NED <<  1,   0,   0,
+                                0,  -1,   0,
+                                0,   0,  -1;    
+    Eigen::Matrix3d             rot_mat_uav_from_NED =  rot_mat_marker_from_NED * rot_mat_uav_from_marker; 
 
-    // WIP
+    eul = rotationMatrixToEulerAngles(rot_mat_uav_from_NED);
+    pos = rot_mat_marker_from_NED * -pos_marker_in_marker_axis;
+    #endif
+
 }
 
 bool VisionClass::readVisionParameters(string filename) {
