@@ -1,5 +1,6 @@
 %YAML:1.0
-dict_type: 10   # 6x6 256
+#dict_type: 10   # 6x6 256
+dict_type: 0   # 6x6 256
 
 ## Single marker
 #marker_length: 0.179
@@ -16,23 +17,14 @@ refindStrategy: true
 # Charuco Boards
 squaresX: 5
 squaresY: 7
-#squareLength: 0.0365
-#markerLength: 0.022
-squareLength: 0.0471
-markerLength: 0.0282
+squareLength: 0.0475
+markerLength: 0.0285
+#squareLength: 0.0471
+#markerLength: 0.0282
  
-#squaresX: 4
-#squaresY: 6
-#squareLength: 0.0601
-#markerLength: 0.0362
- 
-#squaresX: 3
-#squaresY: 4
-#squareLength: 0.0465
-#markerLength: 0.0765
  
 ## Camera
-exposure_time: 10 
+exposure_time: 20 
 # if fps>40, fov decreases
 fps: 40
 #video_file: "../videos/chess5x7_2.h264"
