@@ -40,12 +40,14 @@ os.system("v4l2-ctl -V")
 # Record Video
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 output_file="videos/"+ timestamp+"." + OUTPUT_FORMAT
-cmd = f"ffmpeg -f v4l2 -video_size {WIDTH}x{HEIGHT} -i /dev/video0 "
+# h264_omx es el acelerador hardware de la rpi
+cmd = f"ffmpeg -f v4l2 -video_size {WIDTH}x{HEIGHT} -i /dev/video0 -c:v h264_omx "
 # El siguiente parámetro es para que se parezca a opencv, pero no se puede reproducir luego
 #cmd = cmd + "-input_format bgr24 " 
 if FPS!=0:
     cmd = cmd + f"-framerate {FPS} "
 cmd = cmd + output_file
+print(cmd)
 os.system(cmd)
 
 # Wait to print in screen since ffmpeg continue printing
