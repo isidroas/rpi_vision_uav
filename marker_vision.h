@@ -282,14 +282,14 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
     return valid_pose;
 }
 
-void VisionClass::InvertPose(Eigen::Vector3d &pos, Eigen::Vector3d &eul, Vec3d &rvec, Vec3d &tvec){
-    /* @brief Invierte la posición y la rotación. También corrige la posición de la cámara con respecto al UAV
-     * @param pos   posición del uav/cámara con respecto al marcador
-     * @param eul   orientación del uav con respecto al marcador. El orden de los elementos son 0: roll, 1: pitch, 2: yaw
-     * @param rvec  Vector de rotación del marcador con respecto a los ejes de la cámara
-     * @param tvec  Vector de translación del marcador con respecto a los ejes de la cámara
-     */
-
+/* @brief Invierte la posición y la rotación. También corrige la posición de la cámara con respecto al UAV 
+ * @param rvec  Vector de entrada. Vector de rotación del marcador con respecto a los ejes de la cámara
+ * @param tvec  Vector de entrada. Translación del marcador con respecto a los ejes de la cámara
+ * @param pos   Vector de salida. Posición del uav/cámara con respecto al marcador
+ * @param eul   Vector de salida. Orientación del uav con respecto al marcador. El orden de los elementos son 0: roll, 1: pitch, 2: yaw
+ */
+void VisionClass::InvertPose(Eigen::Vector3d &pos, Eigen::Vector3d &eul, Vec3d &rvec, Vec3d &tvec){//$\label{line:invertPose}$
+     
     Eigen::Vector3d     pos_marker_in_camera(tvec[0],tvec[1],tvec[2]);
     
     // Transformación de vector de rotación a matriz de rotación
