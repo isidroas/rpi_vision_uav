@@ -37,7 +37,7 @@ camera_parameters: "../calibration/rpi_v2_camera/cal.yml"
 
 
 ## General parameters
-mav_connect: false
+mav_connect: true
 loop_period_ms: 0 
 open_window: true
 wait_key_mill: 1

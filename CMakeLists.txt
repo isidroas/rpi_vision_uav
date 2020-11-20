@@ -20,6 +20,7 @@ endif()
 find_package(MAVSDK REQUIRED)
 find_package( OpenCV REQUIRED PATHS ~/opencv-install/opencv-4.4.0)
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+find_package (Curses REQUIRED)
 	                          
 add_executable(offboard_vision
     main.cpp
@@ -37,3 +38,17 @@ target_link_libraries(offboard_vision
 
 add_custom_target(install2
 COMMAND cp offboard_vision ../install)
+
+# Executable to test trayectory genrator
+add_executable(trayectory_gen
+    trayectory_gen.cpp)
+target_link_libraries(trayectory_gen
+    MAVSDK::mavsdk_action
+    MAVSDK::mavsdk_offboard
+    MAVSDK::mavsdk_telemetry
+    MAVSDK::mavsdk_mocap
+    MAVSDK::mavsdk
+    ${OpenCV_LIBS}
+    Eigen3::Eigen
+    ${CURSES_LIBRARIES}
+)

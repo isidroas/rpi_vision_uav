@@ -68,16 +68,22 @@ int main()
     if (mav_connect)
         commObj.init();
 	 
-    VisionClass  visionMarker; 
     
     double total_time = 0;
     int totalIterations = 0;
-    int n_position_get = 0;
-    auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(loop_period_ms);
+    auto wake_up_time = std::chrono::steady_clock::now() + std::chrono::milliseconds(loop_period_ms);
     double tick_global_ant = (double)getTickCount();
     Eigen::Vector3d pos, euler_angles ;
     
     double seconds_init = (double)getTickCount()/getTickFrequency();
+
+    //TODO: transladar estos parámetros al archivo.
+    bool vision_activated=true;
+
+    VisionClass  visionMarker; 
+    if (vision_activated)
+        visionMarker.init(); 
+
 
     std::ofstream myfile;
     if (log_file){
@@ -88,19 +94,16 @@ int main()
     /*** Main Loop ***/
     while(true){
 
-        // TODO: move perf counter to vision class
-        double tick0 = (double)getTickCount();
-        // Grab image and exists if there is no one
-        if (!visionMarker.grab_and_retrieve_image()) break;
-        double tick1 = (double)getTickCount();
-        // detect markers
-        bool found_marker = visionMarker.detect_marker(pos, euler_angles);
-        double tick2 = (double)getTickCount();
+        if (vision_activated){
+            // Grab image and exists if there is no one
+            if (!visionMarker.grab_and_retrieve_image()) break;
+            // detect markers
+            bool found_marker = visionMarker.detect_marker(pos, euler_angles);
 
-        if (found_marker){
-            if (mav_connect)
-	            commObj.send_msg(pos, euler_angles);
-            n_position_get++;
+            if (found_marker){
+                if (mav_connect)
+	                commObj.send_msg(pos, euler_angles);
+            }
         }
 
 
@@ -109,25 +112,16 @@ int main()
         double tick_global_act = (double)getTickCount();
         double execution_time = (tick_global_act - tick_global_ant) / getTickFrequency();
         tick_global_ant = tick_global_act;
-        double execution_time_detect = (tick2-tick1) / getTickFrequency();
-        double execution_time_video_grab_and_ret = (tick1-tick0) / getTickFrequency();
         total_time += execution_time;
         totalIterations++;
 
         /* Print data every 30 frames = 1 seg approx*/
         if(totalIterations % UPDATE_DEBUG_RATE == 0) {
-            cout << "Image grabbing and retrieving= " << execution_time_video_grab_and_ret * 1000 << " ms " << endl;
-            cout << "Marker detection= " << execution_time_detect * 1000 << " ms " << endl;
             cout << "Execution time = " << execution_time * 1000 << " ms " 
                  << "(Mean = " << 1000 * total_time / float(UPDATE_DEBUG_RATE) << " ms)" << endl;
-            cout << "Frames with position = " << n_position_get/float(UPDATE_DEBUG_RATE) * 100 << " \% " << endl;
-	 
-            if(found_marker){
-               cout << "Estimated position:\t" <<       pos[0] << "\t" <<           pos[1] << "\t" <<           pos[2] << endl;
-               cout << "Estimated orientation:\t" <<    euler_angles[0] << "\t" <<  euler_angles[1] << "\t" <<  euler_angles[2] << endl;
-            }
+            if (vision_activated)
+                visionMarker.print_statistics(pos, euler_angles);
             total_time=0;
-            n_position_get=0;
 	        cout << endl;
         }
         #endif 
@@ -135,12 +129,13 @@ int main()
 
         if (log_file){
             double seconds = getTickCount()/ getTickFrequency() - seconds_init;
-            myfile << pos[0] << "," << pos[1] << "," << pos[2] << "," << euler_angles[0] << "," << euler_angles[1] << "," << euler_angles[2] << "," << seconds << "\n";
+            myfile << pos[0] << "," << pos[1] << "," << pos[2] << "," << euler_angles[0] << "," << 
+                              euler_angles[1] << "," << euler_angles[2] << "," << seconds << "\n";
         }
 
         if (loop_period_ms!=0){
-            std::this_thread::sleep_until(x);
-            x = std::chrono::steady_clock::now() + std::chrono::milliseconds(loop_period_ms);
+            std::this_thread::sleep_until(wake_up_time);
+            wake_up_time = std::chrono::steady_clock::now() + std::chrono::milliseconds(loop_period_ms);
         }
 
         if (wait_key){
