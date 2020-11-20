@@ -9,6 +9,7 @@
 #include <Eigen/Dense>
 #include "marker_vision.h"
 #include "mavlink_helper.h"
+#include "shared_memory_helper.h"
 
 using std::chrono::milliseconds;
 using std::chrono::seconds;
@@ -78,7 +79,7 @@ int main()
     double seconds_init = (double)getTickCount()/getTickFrequency();
 
     //TODO: transladar estos parámetros al archivo.
-    bool vision_activated=true;
+    bool vision_activated=false;
 
     VisionClass  visionMarker; 
     if (vision_activated)
@@ -88,7 +89,8 @@ int main()
     std::ofstream myfile;
     if (log_file){
         myfile.open("../results/latest/log.csv");
-        myfile << "px" << "," << "py" << "," << "pz" << "," << "roll" << "," << "pitch" << "," << "yaw" << "," << "t" <<"\n";
+        myfile << "px" << "," << "py" << "," << "pz" << "," << "roll" << "," 
+                       << "pitch" << "," << "yaw" << "," << "t" <<"\n";
     }
   
     /*** Main Loop ***/
@@ -100,11 +102,27 @@ int main()
             // detect markers
             bool found_marker = visionMarker.detect_marker(pos, euler_angles);
 
-            if (found_marker){
-                if (mav_connect)
+            if (found_marker and mav_connect)
 	                commObj.send_msg(pos, euler_angles);
-            }
+            
         }
+        
+        //TODO: hacer esto con menor frecuencia
+        // Get position setpoint from Trayectory Generator
+        Eigen::Vector3d pos_setpoint;
+        get_pos_from_tray_gen(pos_setpoint); 
+
+        // Send setpoint to autopilot
+        commObj.send_pos_setpoint(pos_setpoint);
+
+        // Get position from autopilot. Not blocking function
+        Eigen::Vector3d pos_ned;
+        bool valid_ned = commObj.get_pos_ned(pos_ned);
+
+        // Send ned position to Trayectory Generator
+        if (valid_ned)
+            send_pos_ned_to_tray_gen(pos_ned); 
+            //cout << "Posición NED: " << pos_ned;
 
 
         #ifdef DEBUG

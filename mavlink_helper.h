@@ -20,12 +20,14 @@ using std::this_thread::sleep_for;
 static float pos_north=0;
 static float pos_east=0;
 static float pos_down=0;
+static bool valid_ned=false;
 
 class ComunicationClass{
 	public:
 		void send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul);
-		void send_pos_setpoint(float x, float y, float z);
+		void send_pos_setpoint(Eigen::Vector3d );
         void init();
+        bool get_pos_ned(Eigen::Vector3d &pos);
 	private:
 		void wait_until_discover(Mavsdk& dc);
         shared_ptr<Mocap> mocap;
@@ -83,6 +85,7 @@ void ComunicationClass::init()
         pos_north=posvel.position.north_m;
         pos_east=posvel.position.east_m;
         pos_down=posvel.position.down_m;
+        valid_ned=true;
     });
 }
 
@@ -102,15 +105,21 @@ void ComunicationClass::send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul)
     }
 }
 
-void ComunicationClass::send_pos_setpoint(float x, float y, float z)
+void ComunicationClass::send_pos_setpoint(Eigen::Vector3d pos)
 {
     Offboard::PositionNedYaw pos_setpoint{};
-    pos_setpoint.north_m=x;
-    pos_setpoint.east_m=y;
-    pos_setpoint.down_m=z;
+    pos_setpoint.north_m=pos[0];
+    pos_setpoint.east_m=pos[1];
+    pos_setpoint.down_m=pos[2];
     pos_setpoint.yaw_deg=0; // TODO: decide yaw. Se podrá Nan?
     Offboard::Result result = offboard->set_position_ned(pos_setpoint);
     if(result!=Offboard::Result::Success){
         std::cerr << ERROR_CONSOLE_TEXT << "Set offboard position setpoint failed: " << result << NORMAL_CONSOLE_TEXT << std::endl;
     }
+}
+bool ComunicationClass::get_pos_ned(Eigen::Vector3d &pos){
+    pos[0]=pos_north;
+    pos[1]=pos_east;
+    pos[2]=pos_down;
+    return valid_ned;
 }
