@@ -79,7 +79,7 @@ int main()
     double seconds_init = (double)getTickCount()/getTickFrequency();
 
     //TODO: transladar estos parámetros al archivo.
-    bool vision_activated=false;
+    bool vision_activated=true;
 
     VisionClass  visionMarker; 
     if (vision_activated)
@@ -92,6 +92,9 @@ int main()
         myfile << "px" << "," << "py" << "," << "pz" << "," << "roll" << "," 
                        << "pitch" << "," << "yaw" << "," << "t" <<"\n";
     }
+
+    // Inicializa la memoria compartida 
+    shmem_init();
   
     /*** Main Loop ***/
     while(true){
@@ -112,17 +115,19 @@ int main()
         Eigen::Vector3d pos_setpoint;
         get_pos_from_tray_gen(pos_setpoint); 
 
-        // Send setpoint to autopilot
-        commObj.send_pos_setpoint(pos_setpoint);
+        if (mav_connect){
+            // Send setpoint to autopilot
+            commObj.send_pos_setpoint(pos_setpoint);
 
-        // Get position from autopilot. Not blocking function
-        Eigen::Vector3d pos_ned;
-        bool valid_ned = commObj.get_pos_ned(pos_ned);
+            // Get position from autopilot. Not blocking function
+            Eigen::Vector3d pos_ned;
+            bool valid_ned = commObj.get_pos_ned(pos_ned);
 
-        // Send ned position to Trayectory Generator
-        if (valid_ned)
-            send_pos_ned_to_tray_gen(pos_ned); 
-            //cout << "Posición NED: " << pos_ned;
+            // Send ned position to Trayectory Generator
+            if (valid_ned)
+                send_pos_ned_to_tray_gen(pos_ned); 
+                //cout << "Posición NED: " << pos_ned;
+        }
 
 
         #ifdef DEBUG
@@ -170,6 +175,7 @@ int main()
         cout << "El script de apagado ha fallado con código " << res << endl;
         exit(1);
     }
+    shmem_cleanup();
     std::cout << "Finished..." << std::endl;
     return EXIT_SUCCESS;
 }

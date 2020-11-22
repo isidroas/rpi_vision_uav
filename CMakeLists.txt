@@ -21,6 +21,7 @@ find_package(MAVSDK REQUIRED)
 find_package( OpenCV REQUIRED PATHS ~/opencv-install/opencv-4.4.0)
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 find_package (Curses REQUIRED)
+find_package(Threads REQUIRED)
 	                          
 add_executable(offboard_vision
     main.cpp
@@ -34,6 +35,8 @@ target_link_libraries(offboard_vision
     MAVSDK::mavsdk
     ${OpenCV_LIBS}
     Eigen3::Eigen
+    rt
+    Threads::Threads
 )
 
 add_custom_target(install2
@@ -51,4 +54,6 @@ target_link_libraries(trayectory_gen
     ${OpenCV_LIBS}
     Eigen3::Eigen
     ${CURSES_LIBRARIES}
+    rt
+    Threads::Threads
 )
