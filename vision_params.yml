@@ -1,6 +1,7 @@
 %YAML:1.0
 #dict_type: 10   # 6x6 256
-dict_type: 0   # 6x6 256
+#dict_type: 0   # 4x4 50
+dict_type: 2   # 4x4 256 
 
 ## Single marker
 #marker_length: 0.179
@@ -15,12 +16,15 @@ autoScale: false
 charuco: true
 refindStrategy: true
 # Charuco Boards
-squaresX: 5
-squaresY: 7
-squareLength: 0.0475
-markerLength: 0.0285
-#squareLength: 0.0471
-#markerLength: 0.0282
+squaresX: 16 
+squaresY: 23 
+#squaresX: 5
+#squaresY: 7
+squareLength: 0.05
+markerLength: 0.03
+#squareLength: 0.0475
+#markerLength: 0.0285
+minMarkers: 17
  
  
 ## Camera
@@ -38,7 +42,7 @@ camera_parameters: "../calibration/rpi_v2_camera/cal.yml"
 
 
 ## General parameters
-mav_connect: true
+mav_connect: false
 loop_period_ms: 0 
 open_window: true
 wait_key_mill: 1

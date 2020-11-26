@@ -41,7 +41,10 @@ os.system("v4l2-ctl -V")
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 output_file="videos/"+ timestamp+"." + OUTPUT_FORMAT
 # h264_omx es el acelerador hardware de la rpi
-cmd = f"ffmpeg -f v4l2 -video_size {WIDTH}x{HEIGHT} -i /dev/video0 -c:v h264_omx "
+#cmd = f"ffmpeg -f v4l2 -video_size {WIDTH}x{HEIGHT} -i /dev/video0 -c:v h264_omx "
+
+# Elimino el acelerador ya que me crea archivos en negro
+cmd = f"ffmpeg -f v4l2 -video_size {WIDTH}x{HEIGHT} -i /dev/video0 "
 # El siguiente parámetro es para que se parezca a opencv, pero no se puede reproducir luego
 #cmd = cmd + "-input_format bgr24 " 
 if FPS!=0:

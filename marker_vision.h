@@ -10,7 +10,7 @@ using namespace std;
 //#define WAIT_KEY_MILL      1 // tiempo de espera entre fotogramas cuando se abre la ventana, si vale 0, solo avanza cuando se presiona alguna tecla
 #define AUTO_SCALE_FACTOR 1
 
-//#define ROT_POS_ORI
+#define ROT_POS_ORI
 
 class VisionClass {
     public:
@@ -121,6 +121,7 @@ class VisionClass {
         int squaresY;
         float square_length;
         float marker_length_ch;
+        int minMarkers;
         Ptr<aruco::CharucoBoard> charucoboard;
         Ptr<aruco::Board> board;
         // logging
@@ -191,7 +192,7 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
             interpolatedCorners =
                 aruco::interpolateCornersCharuco(corners, ids, image, charucoboard,
                                                  charucoCorners, charucoIds, camMatrix, distCoeffs);
-        if ((int)ids.size()==17){
+        if ((int)ids.size()>=minMarkers){
             // estimate charuco board pose
             valid_pose = aruco::estimatePoseCharucoBoard(charucoCorners, charucoIds, charucoboard,
                                                     camMatrix, distCoeffs, rvec, tvec);
@@ -362,6 +363,7 @@ bool VisionClass::readVisionParameters(string filename) {
     diamond = (string)fs["diamond"]=="true";
     autoScale = (string)fs["autoScale"]=="true";
     write_images = (string)fs["write_images"]=="true";
+    minMarkers = (int)fs["minMarkers"];
 
     // Print them
     cout << "Parámetros de la visión:" <<  endl;
@@ -381,6 +383,7 @@ bool VisionClass::readVisionParameters(string filename) {
         cout << "\tsquareLength:\t\t" <<  square_length << endl;
         cout << "\tsquaresX:\t\t" <<  squaresX << endl;
         cout << "\tsquaresY:\t\t" <<  squaresY << endl;
+        cout << "\tminMarkers:\t\t" <<  minMarkers << endl;
     }
     else if(diamond){
         cout << endl;
