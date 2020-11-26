@@ -14,75 +14,17 @@ using namespace std;
 
 class VisionClass {
     public:
-	VisionClass(){
-        bool readOk = readVisionParameters("../vision_params.yml");
-        if(!readOk) {
-            cerr << "Invalid general vision parameters file" << endl;
-            exit(0);
-        }
-
-        /*** Vision setup ***/
-    	detectorParams = aruco::DetectorParameters::create();
-        readOk = readDetectorParameters( "../detector_params.yml", detectorParams );
-        if(!readOk) {
-            cerr << "Invalid detector parameters file" << endl;
-            exit(0);
-        }
-
-    	dictionary = aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME(dict_type));
-
-    	readOk = readCameraParameters(calibration_file, camMatrix, distCoeffs);
-    	if(!readOk) {
-    	    cerr << "Invalid camera file" << endl;
-    	    exit(0);
-    	}
-
-        if (charuco){
-            charucoboard = aruco::CharucoBoard::create(squaresX, squaresY, square_length, marker_length_ch, dictionary);
-            board = charucoboard.staticCast<aruco::Board>();
-            axisLength = 0.5f * ((float)min(squaresX, squaresY) * (square_length));
-        }
-        else{
-            axisLength = 0.5f * marker_length;
-        }
-
-
-        if (video_file!=""){
-    		inputVideo.open(video_file);
-        }
-        else{
-    		inputVideo.open(0);
-            inputVideo.set(CAP_PROP_FRAME_WIDTH, frame_width);
-            inputVideo.set(CAP_PROP_FRAME_HEIGHT, frame_height);
-            string cmd;
-            if (fps!=0){
-                cmd=(string)"v4l2-ctl -d /dev/video0 -p "+ to_string(fps);
-                const char* aux1=cmd.data();
-                system(aux1);
-            }
-            if (exposure_time!=0){
-                cmd=(string)"v4l2-ctl -d /dev/video0 -c auto_exposure=1 -c exposure_time_absolute="+ to_string(exposure_time);
-                const char* aux2=cmd.data();
-                system(aux2);
-            }
-	        else{
-		        system("v4l2-ctl -d /dev/video0 -c auto_exposure=0");
-            }
-            system(" v4l2-ctl -V");
-        }
-        /* Test an image */
-        grab_and_retrieve_image();
-        cout << "Ancho de la imagen:\t"<< image.cols << endl;
-        cout << "Alto de la imagen:\t"<< image.rows << endl << endl;
-	}
-
+    void init();
 	int grab_and_retrieve_image(){
+            double tick0 = (double)getTickCount();
        	    int res = inputVideo.grab();
             inputVideo.retrieve(image);
+            double tick1 = (double)getTickCount();
+            execution_time_video_grab_and_ret = (tick1-tick0) / getTickFrequency();
             return res;
 	}
-
 	bool detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul);
+    void print_statistics(Eigen::Vector3d &pos, Eigen::Vector3d &eul);
 
     private: 	
         bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameters> &params);
@@ -126,6 +68,11 @@ class VisionClass {
         Ptr<aruco::Board> board;
         // logging
         int totalIterations=0;
+        double execution_time_video_grab_and_ret;
+        double execution_time_detect;
+        double n_position_get=0;
+        double n_since_call_statistics=0;
+        double valid_pose;
 
 };
 
@@ -166,6 +113,7 @@ bool VisionClass::readCameraParameters(string filename, Mat &camMatrix, Mat &dis
 
 
 bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
+    double tick0 = (double)getTickCount();
 
     vector< int > ids, charucoIds;
     vector< vector< Point2f > > corners, rejected;
@@ -179,7 +127,7 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
     aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
 
     bool found_marker=ids.size() > 0;
-    bool valid_pose = false;
+    valid_pose = false;
     int interpolatedCorners = 0;
 
     if (charuco){
@@ -280,17 +228,24 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
     
     totalIterations++;
 
+    double tick1 = (double)getTickCount();
+
+    execution_time_detect = (tick1-tick0) / getTickFrequency();
+    n_since_call_statistics++;
+    if (valid_pose)
+        n_position_get++;
+
     return valid_pose;
 }
 
-void VisionClass::InvertPose(Eigen::Vector3d &pos, Eigen::Vector3d &eul, Vec3d &rvec, Vec3d &tvec){
-    /* @brief Invierte la posición y la rotación. También corrige la posición de la cámara con respecto al UAV
-     * @param pos   posición del uav/cámara con respecto al marcador
-     * @param eul   orientación del uav con respecto al marcador. El orden de los elementos son 0: roll, 1: pitch, 2: yaw
-     * @param rvec  Vector de rotación del marcador con respecto a los ejes de la cámara
-     * @param tvec  Vector de translación del marcador con respecto a los ejes de la cámara
-     */
-
+/* @brief Invierte la posición y la rotación. También corrige la posición de la cámara con respecto al UAV 
+ * @param rvec  Vector de entrada. Vector de rotación del marcador con respecto a los ejes de la cámara
+ * @param tvec  Vector de entrada. Translación del marcador con respecto a los ejes de la cámara
+ * @param pos   Vector de salida. Posición del uav/cámara con respecto al marcador
+ * @param eul   Vector de salida. Orientación del uav con respecto al marcador. El orden de los elementos son 0: roll, 1: pitch, 2: yaw
+ */
+void VisionClass::InvertPose(Eigen::Vector3d &pos, Eigen::Vector3d &eul, Vec3d &rvec, Vec3d &tvec){//$\label{line:invertPose}$
+     
     Eigen::Vector3d     pos_marker_in_camera(tvec[0],tvec[1],tvec[2]);
     
     // Transformación de vector de rotación a matriz de rotación
@@ -420,4 +375,80 @@ bool VisionClass::readDetectorParameters(string filename, Ptr<aruco::DetectorPar
     fs["minOtsuStdDev"] >> params->minOtsuStdDev;
     fs["errorCorrectionRate"] >> params->errorCorrectionRate;
     return true;
+}
+
+void VisionClass::init(){
+        bool readOk = readVisionParameters("../vision_params.yml");
+        if(!readOk) {
+            cerr << "Invalid general vision parameters file" << endl;
+            exit(0);
+        }
+
+        /*** Vision setup ***/
+    	detectorParams = aruco::DetectorParameters::create();
+        readOk = readDetectorParameters( "../detector_params.yml", detectorParams );
+        if(!readOk) {
+            cerr << "Invalid detector parameters file" << endl;
+            exit(0);
+        }
+
+    	dictionary = aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME(dict_type));
+
+    	readOk = readCameraParameters(calibration_file, camMatrix, distCoeffs);
+    	if(!readOk) {
+    	    cerr << "Invalid camera file" << endl;
+    	    exit(0);
+    	}
+
+        if (charuco){
+            charucoboard = aruco::CharucoBoard::create(squaresX, squaresY, square_length, marker_length_ch, dictionary);
+            board = charucoboard.staticCast<aruco::Board>();
+            axisLength = 0.5f * ((float)min(squaresX, squaresY) * (square_length));
+        }
+        else{
+            axisLength = 0.5f * marker_length;
+        }
+
+
+        if (video_file!=""){
+    		inputVideo.open(video_file);
+        }
+        else{
+    		inputVideo.open(0);
+            inputVideo.set(CAP_PROP_FRAME_WIDTH, frame_width);
+            inputVideo.set(CAP_PROP_FRAME_HEIGHT, frame_height);
+            string cmd;
+            if (fps!=0){
+                cmd=(string)"v4l2-ctl -d /dev/video0 -p "+ to_string(fps);
+                const char* aux1=cmd.data();
+                system(aux1);
+            }
+            if (exposure_time!=0){
+                cmd=(string)"v4l2-ctl -d /dev/video0 -c auto_exposure=1 -c exposure_time_absolute="+ to_string(exposure_time);
+                const char* aux2=cmd.data();
+                system(aux2);
+            }
+	        else{
+		        system("v4l2-ctl -d /dev/video0 -c auto_exposure=0");
+            }
+            system(" v4l2-ctl -V");
+        }
+        /* Test an image */
+        grab_and_retrieve_image();
+        cout << "Ancho de la imagen:\t"<< image.cols << endl;
+        cout << "Alto de la imagen:\t"<< image.rows << endl << endl;
+	}
+
+void VisionClass::print_statistics(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
+            cout << "Image grabbing and retrieving= " << execution_time_video_grab_and_ret * 1000 << " ms " << endl;
+            cout << "Marker detection= " << execution_time_detect * 1000 << " ms " << endl;
+            cout << "Frames with position = " << n_position_get/n_since_call_statistics * 100 << " \% " << endl;
+	 
+            if(valid_pose){
+               cout << "Estimated position:\t" <<       pos[0] << "\t" <<           pos[1] << "\t" <<           pos[2] << endl;
+               cout << "Estimated orientation:\t" <<    eul[0] << "\t" <<  eul[1] << "\t" <<  eul[2] << endl;
+            }
+            n_position_get=0;
+            n_since_call_statistics=0;
+	        cout << endl;
 }
