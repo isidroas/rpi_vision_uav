@@ -10,7 +10,7 @@ using namespace std;
 //#define WAIT_KEY_MILL      1 // tiempo de espera entre fotogramas cuando se abre la ventana, si vale 0, solo avanza cuando se presiona alguna tecla
 #define AUTO_SCALE_FACTOR 1
 
-#define ROT_POS_ORI
+//#define ROT_POS_ORI
 
 class VisionClass {
     public:
@@ -403,7 +403,8 @@ void VisionClass::init(){
         if (charuco){
             charucoboard = aruco::CharucoBoard::create(squaresX, squaresY, square_length, marker_length_ch, dictionary);
             board = charucoboard.staticCast<aruco::Board>();
-            axisLength = 0.5f * ((float)min(squaresX, squaresY) * (square_length));
+            //axisLength = 0.5f * ((float)min(squaresX, squaresY) * (square_length));
+            axisLength =  3* square_length;
         }
         else{
             axisLength = 0.5f * marker_length;

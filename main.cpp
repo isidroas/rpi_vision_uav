@@ -25,22 +25,21 @@ using namespace std;
 
 #define UPDATE_DEBUG_RATE  30 // Cada cuantas iteraciones se calculan e imprimen las estadísticas
 
-static bool readParameters(string filename, bool &mav_connect, bool &log_file, int &loop_period_ms, bool &wait_key, int &wait_key_mill) {
+static bool readParameters(string filename, bool &mav_connect, bool &log_file, int &loop_period_ms, int &wait_key_mill, bool &open_window, bool &vision_activated) {
     FileStorage fs(filename, FileStorage::READ);
     if(!fs.isOpened())
         return false;
     mav_connect = (string)fs["mav_connect"]=="true";
     log_file = (string)fs["log_file"]=="true";
+    vision_activated = (string)fs["vision_activated"]=="true";
+    open_window = (string)fs["open_window"]=="true";
     loop_period_ms = (int)fs["loop_period_ms"];
     wait_key_mill = (int)fs["wait_key_mill"];
-    wait_key = (string)fs["wait_key"]=="true";
     cout << "Parámetros generales:" <<  endl;
     cout << "\tConexion mavlink:\t\t\t" <<  mav_connect << endl;
     cout << "\tLog de medidas:\t\t\t\t" <<  log_file << endl;
     cout << "\tPeriodo minimo de actualización:\t" <<  loop_period_ms << endl;
-    if (wait_key){
     cout << "\tEspera a la presión de una tecla:\t" <<  wait_key_mill << endl;
-    }
     cout << endl;
     return true;
 }
@@ -61,9 +60,9 @@ int main()
         exit(1);
     }
 
-    bool mav_connect, log_file, wait_key;
+    bool mav_connect, log_file, open_window, vision_activated;
     int loop_period_ms, wait_key_mill;
-    readParameters("../vision_params.yml", mav_connect, log_file, loop_period_ms, wait_key, wait_key_mill);
+    readParameters("../vision_params.yml", mav_connect, log_file, loop_period_ms, wait_key_mill, open_window, vision_activated);
 
     ComunicationClass commObj;
     if (mav_connect)
@@ -79,7 +78,7 @@ int main()
     double seconds_init = (double)getTickCount()/getTickFrequency();
 
     //TODO: transladar estos parámetros al archivo.
-    bool vision_activated=true;
+    //bool vision_activated=true;
 
     VisionClass  visionMarker; 
     if (vision_activated)
@@ -161,7 +160,7 @@ int main()
             wake_up_time = std::chrono::steady_clock::now() + std::chrono::milliseconds(loop_period_ms);
         }
 
-        if (wait_key){
+        if (open_window){
             int key =waitKey( wait_key_mill );
             if(key == 27) break; // exits if esc is pressed in window
         }
