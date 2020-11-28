@@ -124,7 +124,7 @@ int main()
 
             // Send ned position to Trayectory Generator
             if (valid_ned)
-                send_pos_ned_to_tray_gen(pos_ned); 
+                send_pos_ned_to_tray_gen(pos_ned);
                 //cout << "Posición NED: " << pos_ned;
         }
 
