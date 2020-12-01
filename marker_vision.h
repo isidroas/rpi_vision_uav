@@ -65,7 +65,8 @@ class VisionClass {
         float square_length;
         float marker_length_ch;
         int minMarkers;
-	int max_n_markers=16;
+        int n_charuco_corners;
+        int max_n_markers=16;
         Ptr<aruco::CharucoBoard> charucoboard;
         Ptr<aruco::Board> board;
         // logging
@@ -133,11 +134,12 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
     int interpolatedCorners = 0;
     n_markers = ids.size();
 
-    if (charuco){
+    //if (charuco){
+    if (false){
 
-	// Reduce number of markers due to computation time
-    if (n_markers>max_n_markers)
-        vector< int >  ids_red(&ids[0],&ids[max_n_markers]);
+	    // Reduce number of markers due to computation time
+        if (n_markers>max_n_markers)
+            vector< int >  ids_red(&ids[0],&ids[max_n_markers]);
 	
 	
         if(refindStrategy)
@@ -149,6 +151,8 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
             interpolatedCorners =
                 aruco::interpolateCornersCharuco(corners, ids, image, charucoboard,
                                                  charucoCorners, charucoIds, camMatrix, distCoeffs);
+        n_charuco_corners= charucoIds.size();
+
         if ((int)ids.size()>=minMarkers){
             // estimate charuco board pose
             valid_pose = aruco::estimatePoseCharucoBoard(charucoCorners, charucoIds, charucoboard,
@@ -444,6 +448,8 @@ void VisionClass::print_statistics(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
             cout << "Frames with position = " << n_position_get/n_since_call_statistics * 100 << " \% " << endl;
             cout << "Number of markers = " << n_markers  << endl;
             if (charuco) 
+                cout << "Number of chess corners = " << n_charuco_corners  << endl;
+                
                 
 	 
             if(valid_pose){
