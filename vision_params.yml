@@ -47,6 +47,7 @@ open_window: false
 wait_key_mill: 1
 show_rejected: false
 vision_activated: true
+tray_gen: false
 
 ## Logging
 write_images: false

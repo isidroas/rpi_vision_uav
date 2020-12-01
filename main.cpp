@@ -25,7 +25,7 @@ using namespace std;
 
 #define UPDATE_DEBUG_RATE  30 // Cada cuantas iteraciones se calculan e imprimen las estadísticas
 
-static bool readParameters(string filename, bool &mav_connect, bool &log_file, int &loop_period_ms, int &wait_key_mill, bool &open_window, bool &vision_activated) {
+static bool readParameters(string filename, bool &mav_connect, bool &log_file, int &loop_period_ms, int &wait_key_mill, bool &open_window, bool &vision_activated, bool &tray_gen) {
     FileStorage fs(filename, FileStorage::READ);
     if(!fs.isOpened())
         return false;
@@ -33,6 +33,7 @@ static bool readParameters(string filename, bool &mav_connect, bool &log_file, i
     log_file = (string)fs["log_file"]=="true";
     vision_activated = (string)fs["vision_activated"]=="true";
     open_window = (string)fs["open_window"]=="true";
+    tray_gen = (string)fs["tray_gen"]=="true";
     loop_period_ms = (int)fs["loop_period_ms"];
     wait_key_mill = (int)fs["wait_key_mill"];
     cout << "Parámetros generales:" <<  endl;
@@ -60,9 +61,9 @@ int main()
         exit(1);
     }
 
-    bool mav_connect, log_file, open_window, vision_activated;
+    bool mav_connect, log_file, open_window, vision_activated, tray_gen;
     int loop_period_ms, wait_key_mill;
-    readParameters("../vision_params.yml", mav_connect, log_file, loop_period_ms, wait_key_mill, open_window, vision_activated);
+    readParameters("../vision_params.yml", mav_connect, log_file, loop_period_ms, wait_key_mill, open_window, vision_activated, tray_gen);
 
     ComunicationClass commObj;
     if (mav_connect)
@@ -93,7 +94,8 @@ int main()
     }
 
     // Inicializa la memoria compartida 
-    shmem_init();
+    if (tray_gen)
+        shmem_init();
   
     /*** Main Loop ***/
     while(true){
@@ -112,9 +114,10 @@ int main()
         //TODO: hacer esto con menor frecuencia
         // Get position setpoint from Trayectory Generator
         Eigen::Vector3d pos_setpoint;
-        get_pos_from_tray_gen(pos_setpoint); 
+        if (tray_gen)
+            get_pos_from_tray_gen(pos_setpoint); 
 
-        if (mav_connect){
+        if (mav_connect and tray_gen){
             // Send setpoint to autopilot
             commObj.send_pos_setpoint(pos_setpoint);
 
@@ -174,7 +177,8 @@ int main()
         cout << "El script de apagado ha fallado con código " << res << endl;
         exit(1);
     }
-    shmem_cleanup();
+    if (tray_gen)
+        shmem_cleanup();
     std::cout << "Finished..." << std::endl;
     return EXIT_SUCCESS;
 }
