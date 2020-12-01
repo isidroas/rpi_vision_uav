@@ -48,6 +48,7 @@ class VisionClass {
         float axisLength;
         bool open_window;
         bool write_images;
+        int n_markers;
         // camera config
         int exposure_time;
         int fps;
@@ -129,6 +130,7 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
     bool found_marker=ids.size() > 0;
     valid_pose = false;
     int interpolatedCorners = 0;
+    n_markers = ids.size();
 
     if (charuco){
         if(refindStrategy)
@@ -444,6 +446,7 @@ void VisionClass::print_statistics(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
             cout << "Image grabbing and retrieving= " << execution_time_video_grab_and_ret * 1000 << " ms " << endl;
             cout << "Marker detection= " << execution_time_detect * 1000 << " ms " << endl;
             cout << "Frames with position = " << n_position_get/n_since_call_statistics * 100 << " \% " << endl;
+            cout << "Number of markers = " << n_markers  << endl;
 	 
             if(valid_pose){
                cout << "Estimated position:\t" <<       pos[0] << "\t" <<           pos[1] << "\t" <<           pos[2] << endl;
