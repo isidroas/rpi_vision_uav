@@ -133,27 +133,23 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
     valid_pose = false;
     int interpolatedCorners = 0;
     n_markers = ids.size();
+    bool too_many_markers=n_markers>max_n_markers;
 
-    //if (charuco){
-    if (false){
+    if (charuco){
 
-	    // Reduce number of markers due to computation time
-        if (n_markers>max_n_markers)
-            vector< int >  ids_red(&ids[0],&ids[max_n_markers]);
 	
-	
-        if(refindStrategy)
+        if(refindStrategy and not too_many_markers)
              aruco::refineDetectedMarkers(image, board, corners, ids, rejected,
                                              camMatrix, distCoeffs);
 
         // interpolate charuco corners
-        if(found_marker)
+        if(found_marker and not too_many_markers)
             interpolatedCorners =
                 aruco::interpolateCornersCharuco(corners, ids, image, charucoboard,
                                                  charucoCorners, charucoIds, camMatrix, distCoeffs);
         n_charuco_corners= charucoIds.size();
 
-        if ((int)ids.size()>=minMarkers){
+        if (n_markers>=minMarkers and not too_many_markers){
             // estimate charuco board pose
             valid_pose = aruco::estimatePoseCharucoBoard(charucoCorners, charucoIds, charucoboard,
                                                     camMatrix, distCoeffs, rvec, tvec);
@@ -449,8 +445,6 @@ void VisionClass::print_statistics(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
             cout << "Number of markers = " << n_markers  << endl;
             if (charuco) 
                 cout << "Number of chess corners = " << n_charuco_corners  << endl;
-                
-                
 	 
             if(valid_pose){
                cout << "Estimated position:\t" <<       pos[0] << "\t" <<           pos[1] << "\t" <<           pos[2] << endl;
