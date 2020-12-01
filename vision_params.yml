@@ -24,14 +24,15 @@ squareLength: 0.05
 markerLength: 0.03
 #squareLength: 0.0475
 #markerLength: 0.0285
-minMarkers: 17
+#minMarkers: 17
+minMarkers: 10 
  
  
 ## Camera
-exposure_time: 20 
+exposure_time: 40 
 # if fps>40, fov decreases
 fps: 40
-video_file: "../videos/board16_23.mp4"
+#video_file: "../videos/board16_23.mp4"
 frame_width: 640
 frame_height: 480
 #frame_width: 1280

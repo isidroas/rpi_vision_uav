@@ -65,6 +65,7 @@ class VisionClass {
         float square_length;
         float marker_length_ch;
         int minMarkers;
+	int max_n_markers=16;
         Ptr<aruco::CharucoBoard> charucoboard;
         Ptr<aruco::Board> board;
         // logging
@@ -133,6 +134,12 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
     n_markers = ids.size();
 
     if (charuco){
+
+	// Reduce number of markers due to computation time
+    if (n_markers>max_n_markers)
+        vector< int >  ids_red(&ids[0],&ids[max_n_markers]);
+	
+	
         if(refindStrategy)
              aruco::refineDetectedMarkers(image, board, corners, ids, rejected,
                                              camMatrix, distCoeffs);
@@ -161,17 +168,6 @@ bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
                 aruco::estimatePoseSingleMarkers(diamondCorners, square_length, camMatrix,
                                                  distCoeffs, rvecs, tvecs);
             } else {
-                // if autoscale, extract square size from last diamond id
-                //for(unsigned int i = 0; i < diamondCorners.size(); i++) {
-                //    float autoSquareLength = AUTO_SCALE_FACTOR * float(diamondIds[i].val[3]);
-                //    vector< vector< Point2f > > currentCorners;
-                //    vector< Vec3d > currentRvec, currentTvec;
-                //    currentCorners.push_back(diamondCorners[i]);
-                //    aruco::estimatePoseSingleMarkers(currentCorners, autoSquareLength, camMatrix,
-                //                                     distCoeffs, currentRvec, currentTvec);
-                //    rvecs.push_back(currentRvec[0]);
-                //    tvecs.push_back(currentTvec[0]);
-                //}
                 cout << "Autoscale todavía no implementado" <<endl;
                 exit(0);
             }
@@ -447,6 +443,8 @@ void VisionClass::print_statistics(Eigen::Vector3d &pos, Eigen::Vector3d &eul){
             cout << "Marker detection= " << execution_time_detect * 1000 << " ms " << endl;
             cout << "Frames with position = " << n_position_get/n_since_call_statistics * 100 << " \% " << endl;
             cout << "Number of markers = " << n_markers  << endl;
+            if (charuco) 
+                
 	 
             if(valid_pose){
                cout << "Estimated position:\t" <<       pos[0] << "\t" <<           pos[1] << "\t" <<           pos[2] << endl;
