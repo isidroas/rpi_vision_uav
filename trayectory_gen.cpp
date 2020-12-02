@@ -141,9 +141,10 @@ void shmem_cleanup (){
 }
 
 int main(void) {
-    initscr();
+    WINDOW *win = initscr();
     noecho();
-    cbreak();
+    //cbreak();
+    raw();
     timeout(1000); // tiempo esperando a una tecla. -1 es para siempre
     //nodelay(stdscr, TRUE);
     
@@ -153,28 +154,35 @@ int main(void) {
 
     key  = getch();
 
-    printf("Generador de trayectorias\r\n");
-    printf ("\t - Presiona 'q' para salir\r\n");
-    printf ("\t - Presiona 's' para comenzar la misión\r\n");
-    printf ("\t - Presiona 'w' para añadir un waypoint con espera\r\n");
-    printf ("\t - Presiona 'i' para añadir un waypoint sin espera\r\n");
+    printw("Generador de trayectorias\n");
+    printw("\t - Presiona 'q' para salir\n");
+    printw("\t - Presiona 's' para comenzar la misión\n");
+    printw("\t - Presiona 'w' para añadir un waypoint con espera\n");
+    printw("\t - Presiona 'i' para añadir un waypoint sin espera\n");
+    refresh();
 
+    int scr_x_ned, scr_y_ned;
+    getyx(win, scr_x_ned, scr_y_ned);
+    printw("La posición del cursor es: %d %d\n", scr_x_ned, scr_y_ned);
     shmem_init_est();
     shmem_init_set();
+
+    vector< Vec3d > waypoints;
+
     while(true){
         data_to_send position_estimated;
         bool valid_pos_est = shmem_read(position_estimated);
         if (valid_pos_est)
-            printf ("Posición NED recibida X: \t %f \r\n", position_estimated.x);
+            printw("Posición NED recibida X: \t %f \t %f \t %f \n", position_estimated.x, position_estimated.y, position_estimated.z);
         key  = getch();
         if (key==113) break; 
         switch (key){
             case 119:
-                printf("Se añade un waipoint\r\n");
+                printw("Se añade un waipoint\n");
                 break;
             case 115:
                 // s presionada
-                printf("Se comienza una misión\r\n");
+                printw("Se comienza una misión\n");
                 data_to_send msg;
                 msg.x=40;
                 msg.y=41;
@@ -185,11 +193,11 @@ int main(void) {
                 break;
             case 105:
                 // i presionada
-                printf("Se añade un waipoint intermedio\r\n");
+                printw("Se añade un waipoint intermedio\n");
                 break;
             default:
                 if (key!=-1)
-                    printf ("%d %c\r\n", key, key);
+                    printw("%d %c\n", key, key);
         }
 
     }
