@@ -10,6 +10,7 @@
 #include <string.h>
 #include <sys/shm.h>
 #include <Eigen/Dense>
+#include <vector>
 
 #define SHARED_NAME_SET   "/shm_set"
 #define SEMAPHORE_NAME_SET "/sem_set"
@@ -167,7 +168,7 @@ int main(void) {
     shmem_init_est();
     shmem_init_set();
 
-    vector< Vec3d > waypoints;
+    std::vector< Eigen::Vector3d > waypoints;
 
     while(true){
         data_to_send position_estimated;
