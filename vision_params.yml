@@ -16,23 +16,30 @@ autoScale: false
 charuco: true
 refindStrategy: true
 # Charuco Boards
-squaresX: 16 
-squaresY: 23 
+#squaresX: 16 
+#squaresY: 23 
+#squareLength: 0.05
+#markerLength: 0.03
+
+squaresX: 12 
+squaresY: 17 
+squareLength: 0.061
+markerLength: 0.0397
+
 #squaresX: 5
 #squaresY: 7
-squareLength: 0.05
-markerLength: 0.03
 #squareLength: 0.0475
 #markerLength: 0.0285
+
 #minMarkers: 17
 minMarkers: 4 
  
  
 ## Camera
-exposure_time: 40 
+exposure_time: 20 
 # if fps>40, fov decreases
 fps: 40
-video_file: "../videos/board16_23.mp4"
+#video_file: "../videos/board16_23.mp4"
 frame_width: 640
 frame_height: 480
 #frame_width: 1280
@@ -44,11 +51,11 @@ camera_parameters: "../calibration/rpi_v2_camera/cal.yml"
 ## General parameters
 mav_connect: false
 loop_period_ms: 0 
-open_window: false
+open_window: true
 wait_key_mill: 1
 show_rejected: false
-vision_activated: false
-tray_gen: true
+vision_activated: true
+tray_gen: false
 
 ## Logging
 write_images: false
