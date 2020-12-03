@@ -25,14 +25,14 @@ markerLength: 0.03
 #squareLength: 0.0475
 #markerLength: 0.0285
 #minMarkers: 17
-minMarkers: 4 
+minMarkers: 2 
  
  
 ## Camera
 exposure_time: 40 
 # if fps>40, fov decreases
 fps: 40
-video_file: "../videos/board16_23.mp4"
+video_file: "../videos/board12_17.mp4"
 frame_width: 640
 frame_height: 480
 #frame_width: 1280
@@ -44,13 +44,13 @@ camera_parameters: "../calibration/rpi_v2_camera/cal.yml"
 ## General parameters
 mav_connect: false
 loop_period_ms: 0 
-open_window: false
+open_window: true
 wait_key_mill: 1
 show_rejected: false
-vision_activated: false
+vision_activated: true
 tray_gen: true
 
 ## Logging
-write_images: false
-log_file: false
+write_images: true
+log_file: true
 generate_video_from_images: false
