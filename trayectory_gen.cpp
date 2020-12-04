@@ -70,7 +70,7 @@ void shmem_init_set() {
 
     //memcpy((char*)memptr_set,(char*) &msg, sizeof(msg));
     //sem_post(semptr);
-    if (sem_post(semptr_set) < 0) report_and_exit("sem_post");
+    //if (sem_post(semptr_set) < 0) report_and_exit("sem_post");
 
 }
 
@@ -174,12 +174,21 @@ int main(void) {
         data_to_send position_estimated;
         bool valid_pos_est = shmem_read(position_estimated);
         if (valid_pos_est)
-            printw("Posición NED recibida X: \t %f \t %f \t %f \n", position_estimated.x, position_estimated.y, position_estimated.z);
+            printw("Posición NED actual: \t %f \t %f \t %f \n", position_estimated.x, position_estimated.y, position_estimated.z);
         key  = getch();
         if (key==113) break; 
         switch (key){
             case 119:
                 printw("Se añade un waipoint\n");
+                if (valid_pos_est){
+                    Eigen::Vector3d newWaypoint(position_estimated.x, position_estimated.y, position_estimated.z); 
+                    waypoints.push_back(newWaypoint); 
+                    printw("Waypoint %d establecido en:\t %f \t %f \t %f \n", waypoints.size(), position_estimated.x, position_estimated.y, position_estimated.z);
+                }
+                else{
+                    printw("No se tiene posición para añadir waypoint\n");
+                }
+                refresh();
                 break;
             case 115:
                 // s presionada
