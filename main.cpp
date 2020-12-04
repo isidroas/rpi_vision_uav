@@ -78,9 +78,6 @@ int main()
     
     double seconds_init = (double)getTickCount()/getTickFrequency();
 
-    //TODO: transladar estos parámetros al archivo.
-    //bool vision_activated=true;
-
     VisionClass  visionMarker; 
     if (vision_activated)
         visionMarker.init(); 

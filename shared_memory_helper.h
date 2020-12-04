@@ -106,6 +106,7 @@ bool get_pos_from_tray_gen(Eigen::Vector3d &pos_setpoint){
         pos_setpoint[1]=recv->y;
         pos_setpoint[2]=recv->z;
         res = true and recv->valid;
+        recv->valid=false;
         sem_post(semptr_set);
     }
     if (res)
@@ -153,7 +154,6 @@ void shmem_init_est() {
 }
 
 void send_pos_ned_to_tray_gen(Eigen::Vector3d pos_ned){
-    cout << "Posición NED del autopiloto: " << pos_ned << endl;
     data_to_send *env;
     if (!sem_trywait(semptr_est)) { /* wait until semaphore != 0 */
         env=(data_to_send*)memptr_est;
