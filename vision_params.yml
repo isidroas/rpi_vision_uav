@@ -23,7 +23,7 @@ refindStrategy: true
 
 squaresX: 12 
 squaresY: 17 
-squareLength: 0.061
+squareLength: 0.066
 markerLength: 0.0397
 
 #squaresX: 5
@@ -36,7 +36,7 @@ minMarkers: 2
  
  
 ## Camera
-exposure_time: 20 
+exposure_time: 40 
 # if fps>40, fov decreases
 fps: 40
 video_file: "../videos/board12_17.mp4"
@@ -49,13 +49,22 @@ camera_parameters: "../calibration/rpi_v2_camera/cal.yml"
 
 
 ## General parameters
-mav_connect: false
+mav_connect: true
 loop_period_ms: 0 
-open_window: true
+open_window: false
 wait_key_mill: 1
 show_rejected: false
 vision_activated: true
 tray_gen: true
+
+
+## Comunicaton params
+connection_url:  "serial:///dev/ttyUSB0:921600"
+#connection_url:  "udp://:14540"
+# Autopilot
+UUID: "3762846584429098293"
+# Simulation
+#UUID: "5283920058631409231"
 
 ## Logging
 write_images: true

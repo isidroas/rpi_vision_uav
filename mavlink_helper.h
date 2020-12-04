@@ -24,18 +24,21 @@ static bool valid_ned=false;
 
 class ComunicationClass{
 	public:
-		void send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul);
-		void send_pos_setpoint(Eigen::Vector3d );
+        void send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul);
+        void send_pos_setpoint(Eigen::Vector3d );
         void init();
         bool get_pos_ned(Eigen::Vector3d &pos);
 	private:
-		void wait_until_discover(Mavsdk& dc);
+        void wait_until_discover(Mavsdk& dc);
+        bool readCommParameters(string filename);
         shared_ptr<Mocap> mocap;
         shared_ptr<Telemetry> telemetry;
         shared_ptr<Offboard> offboard;
         Mocap::VisionPositionEstimate  est_pos;
         Mavsdk dc;
         ConnectionResult connection_result;
+        uint64_t _uuid;
+        string connection_url;
 };
 
 
@@ -55,7 +58,8 @@ void ComunicationClass::wait_until_discover(Mavsdk& dc)
 
 void ComunicationClass::init()
 {
-    connection_result = dc.add_any_connection(CONNECTION_URL);
+    readCommParameters("../vision_params.yml");
+    connection_result = dc.add_any_connection(connection_url);
 
     if (connection_result != ConnectionResult::Success) {
         std::cout << ERROR_CONSOLE_TEXT << "Connection failed: " << connection_result
@@ -63,13 +67,13 @@ void ComunicationClass::init()
         exit(0);
     }
 
-    bool connected = dc.is_connected(UUID);
+    bool connected = dc.is_connected(_uuid);
     while(connected==false){
-       connected = dc.is_connected(UUID);
+       connected = dc.is_connected(_uuid);
        cout << "Waiting system for connection ..." << endl;
        sleep_for(milliseconds(500));
     }
-    System& system = dc.system(UUID);
+    System& system = dc.system(_uuid);
 
     mocap = std::make_shared<Mocap>(system);
     telemetry = std::make_shared<Telemetry>(system);
@@ -122,4 +126,19 @@ bool ComunicationClass::get_pos_ned(Eigen::Vector3d &pos){
     pos[1]=pos_east;
     pos[2]=pos_down;
     return valid_ned;
+}
+
+bool ComunicationClass::readCommParameters(string filename) {
+    FileStorage fs(filename, FileStorage::READ);
+    if(!fs.isOpened())
+        return false;
+
+    string uuid_aux = (string)fs["UUID"];
+    _uuid = stoull(uuid_aux);
+    connection_url = (string)fs["connection_url"];
+    cout << "Parámetros de la comunicación:" <<  endl;
+    cout << "\tUUID:\t\t" <<  _uuid << endl;
+    cout << "\tconnection_url:\t" <<  connection_url << endl;
+    cout << endl;
+    return true;
 }
