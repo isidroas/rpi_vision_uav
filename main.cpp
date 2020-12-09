@@ -109,23 +109,27 @@ int main()
         }
         
         //TODO: hacer esto con menor frecuencia
-        // Get position setpoint from Trayectory Generator
-        Eigen::Vector3d pos_setpoint;
-        bool setpoint_valid = false;
-        if (tray_gen)
-            setpoint_valid = get_pos_from_tray_gen(pos_setpoint); 
-
-        if (mav_connect and tray_gen and setpoint_valid){
-            // Send setpoint to autopilot
-            commObj.send_pos_setpoint(pos_setpoint);
-
+        if (mav_connect and tray_gen){
             // Get position from autopilot. Not blocking function
+            // TODO: get position from vision
             Eigen::Vector3d pos_ned;
-            bool valid_ned = commObj.get_pos_ned(pos_ned);
+            float yaw;
+            bool valid_ned = commObj.get_pos_ned(pos_ned,yaw);
 
             // Send ned position to Trayectory Generator
             if (valid_ned)
-                send_pos_ned_to_tray_gen(pos_ned);
+                send_pos_ned_to_tray_gen(pos_ned, yaw);
+
+            // Get position setpoint from Trayectory Generator
+            Eigen::Vector3d pos_setpoint;
+            float yaw_setpoint;
+            bool setpoint_valid = false;
+            setpoint_valid = get_pos_from_tray_gen(pos_setpoint, yaw_setpoint); 
+
+            // Send setpoint to autopilot
+            if (setpoint_valid)
+                commObj.send_pos_setpoint(pos_setpoint, yaw_setpoint);
+            
         }
 
 

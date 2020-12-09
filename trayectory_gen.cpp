@@ -1,6 +1,5 @@
 #include "trayectory_gen.h"
-#define WAIT_LOOP 1000 // Periodo de ejecución (ms)
-#define WAIT_WP 1.0 // Tiempo de espera en el modo automatico (s)
+#define WAIT_LOOP 200 // Periodo de ejecución (ms)
 #define DIST_THR 0.1 // umbral en el que se considera que se ha llegado al WP (m)
 
 float get_current_time(){
@@ -32,8 +31,7 @@ int main(void) {
     int number_waypoints=0;
     bool automatico=0;
     const float init_sec = get_current_time();
-      
-    //shmem_init(); 
+    float yaw_setpoint=0;
 
     key  = getch();
 
@@ -41,7 +39,6 @@ int main(void) {
     printw("\t - Presiona 'q' para salir\n");
     printw("\t - Presiona 's' para comenzar la misión\n");
     printw("\t - Presiona 'w' para añadir un waypoint\n");
-    //printw("\t - Presiona 'i' para añadir un waypoint sin espera\n");
     printw("\t - Presiona 'e' para terminar la misión\n");
     printw("\t - Presiona 'n' avanzar al siguiente waypoint \n");
     printw("\t - Presiona 'a' Para activar o desactivar el modo automatico \n\n");
@@ -50,11 +47,17 @@ int main(void) {
     int scr_x_ned, scr_y_ned;
     getyx(win, scr_y_ned, scr_x_ned);
 
-    int  scr_x_set=scr_x_ned; 
-    int  scr_y_set=scr_y_ned+1;
+    int  scr_x_yaw_act=scr_x_ned; 
+    int  scr_y_yaw_act=scr_y_ned+1;
 
-    int  scr_x_mis=scr_x_set; 
-    int  scr_y_mis=scr_y_set+1;
+    int  scr_x_set=scr_x_yaw_act; 
+    int  scr_y_set=scr_y_yaw_act+1;
+
+    int  scr_x_yaw=scr_x_set; 
+    int  scr_y_yaw=scr_y_set+1;
+
+    int  scr_x_mis=scr_x_yaw; 
+    int  scr_y_mis=scr_y_yaw+1;
 
     int  scr_x_msg=scr_x_mis; 
     int  scr_y_msg=scr_y_mis+2;
@@ -72,8 +75,15 @@ int main(void) {
 
         data_to_send position_estimated;
         bool valid_pos_est = shmem_read(position_estimated);
-        if (valid_pos_est)
+        if (valid_pos_est){
             mvprintw(scr_y_ned,scr_x_ned,"Posición NED actual: \t %f \t %f \t %f \n", position_estimated.x, position_estimated.y, position_estimated.z);
+            mvprintw(scr_y_yaw_act,scr_x_yaw_act,"Angulo yaw: \t %f\n", position_estimated.yaw);
+        }
+        else{
+            mvprintw(scr_y_ned,scr_x_ned,"No se recibe posición \n");
+            move(scr_y_yaw_act,scr_x_yaw_act);
+            clrtoeol();
+        }
 
         float seconds = get_current_time()-init_sec;
 
@@ -83,8 +93,8 @@ int main(void) {
                 // 'w' pressed
                 if (valid_pos_est){
                     Eigen::Vector3d newWaypoint(position_estimated.x, position_estimated.y, position_estimated.z); 
+                    yaw_setpoint=position_estimated.yaw;
                     waypoints.push_back(newWaypoint); 
-                    //mvprintw(scr_y_msg, scr_x_msg, "Waypoint %d establecido en:\t %f \t %f \t %f \n", waypoints.size()-1, position_estimated.x, position_estimated.y, position_estimated.z);
                     print_tm(seconds, scr_y_msg, scr_x_msg, "Waypoint %d establecido en:\t %f \t %f \t %f \n", waypoints.size()-1, position_estimated.x, position_estimated.y, position_estimated.z);
                 }
                 else{
@@ -142,6 +152,7 @@ int main(void) {
             msg.x=waypoints[current_waypoint][0];
             msg.y=waypoints[current_waypoint][1];
             msg.z=waypoints[current_waypoint][2];
+            msg.yaw=yaw_setpoint;
             msg.valid=true;
             shmem_write(msg);
 
@@ -161,9 +172,12 @@ int main(void) {
             
 
             mvprintw(scr_y_set,scr_x_set,"Posición de referencia: \t %f \t %f \t %f \t (waypoint %d) (distancia %f)\n", msg.x, msg.y, msg.z, current_waypoint,dist);
+            mvprintw(scr_y_yaw,scr_x_yaw,"Yaw de referencia: \t %f\n", msg.yaw);
         }
         else{
             mvprintw(scr_y_set,scr_x_set,"No se envía posición de referencia\n");
+            move(scr_y_yaw,scr_x_yaw);
+            clrtoeol();
         }
 
         if (mission_in_progress){

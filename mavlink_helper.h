@@ -20,14 +20,15 @@ using std::this_thread::sleep_for;
 static float pos_north=0;
 static float pos_east=0;
 static float pos_down=0;
+static float yaw_autopilot_deg=0;
 static bool valid_ned=false;
 
 class ComunicationClass{
 	public:
         void send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul);
-        void send_pos_setpoint(Eigen::Vector3d );
+        void send_pos_setpoint(Eigen::Vector3d ,float);
         void init();
-        bool get_pos_ned(Eigen::Vector3d &pos);
+        bool get_pos_ned(Eigen::Vector3d &pos, float &yaw);
 	private:
         void wait_until_discover(Mavsdk& dc);
         bool readCommParameters(string filename);
@@ -91,6 +92,10 @@ void ComunicationClass::init()
         pos_down=posvel.position.down_m;
         valid_ned=true;
     });
+
+    telemetry->subscribe_attitude_euler([](Telemetry::EulerAngle euler) {
+        yaw_autopilot_deg=euler.yaw_deg;
+    });
 }
 
 void ComunicationClass::send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul)
@@ -109,22 +114,23 @@ void ComunicationClass::send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul)
     }
 }
 
-void ComunicationClass::send_pos_setpoint(Eigen::Vector3d pos)
+void ComunicationClass::send_pos_setpoint(Eigen::Vector3d pos, float yaw)
 {
     Offboard::PositionNedYaw pos_setpoint{};
     pos_setpoint.north_m=pos[0];
     pos_setpoint.east_m=pos[1];
     pos_setpoint.down_m=pos[2];
-    pos_setpoint.yaw_deg=NAN; // TODO: decide yaw. Se podrá Nan?
+    pos_setpoint.yaw_deg = yaw*180/M_PI; 
     Offboard::Result result = offboard->set_position_ned(pos_setpoint);
     if(result!=Offboard::Result::Success){
         std::cerr << ERROR_CONSOLE_TEXT << "Set offboard position setpoint failed: " << result << NORMAL_CONSOLE_TEXT << std::endl;
     }
 }
-bool ComunicationClass::get_pos_ned(Eigen::Vector3d &pos){
+bool ComunicationClass::get_pos_ned(Eigen::Vector3d &pos, float &yaw){
     pos[0]=pos_north;
     pos[1]=pos_east;
     pos[2]=pos_down;
+    yaw = yaw_autopilot_deg*M_PI/180;
     return valid_ned;
 }
 

@@ -90,22 +90,16 @@ void shmem_cleanup(){
     sem_unlink(SEMAPHORE_NAME_EST);
 }
 
-bool get_pos_from_tray_gen(Eigen::Vector3d &pos_setpoint){
+bool get_pos_from_tray_gen(Eigen::Vector3d &pos_setpoint, float &yaw){
     data_to_send *recv;
 
-    //int semval;
-    //sem_getvalue(semptr,&semval);
-    //cout << "el semaforo vale " << semval  << endl;
     bool res=false;
-    //cout << "El resultado de trywait es  " << res2 << endl;
-    //cout << "eagain vale " << EAGAIN << endl;
-    // doesn't lock
-    /* use semaphore as a mutex (lock) by waiting for writer to increment it */
     if (!sem_trywait(semptr_set)) { /* wait until semaphore != 0 */
         recv=(data_to_send*)memptr_set;
         pos_setpoint[0]=recv->x;
         pos_setpoint[1]=recv->y;
         pos_setpoint[2]=recv->z;
+        yaw = recv->yaw;
         res = true and recv->valid;
         recv->valid=false;
         sem_post(semptr_set);
@@ -154,13 +148,14 @@ void shmem_init_est() {
     if (sem_post(semptr_est) < 0) report_and_exit("sem_post");
 }
 
-void send_pos_ned_to_tray_gen(Eigen::Vector3d pos_ned){
+void send_pos_ned_to_tray_gen(Eigen::Vector3d pos_ned, float yaw){
     data_to_send *env;
     if (!sem_trywait(semptr_est)) { /* wait until semaphore != 0 */
         env=(data_to_send*)memptr_est;
         env->x=pos_ned[0];
         env->y=pos_ned[1];
         env->z=pos_ned[2];
+        env->yaw=yaw;
         env->valid=true;
         sem_post(semptr_est);
     }
