@@ -28,6 +28,7 @@ struct data_to_send{
   float x;
   float y;
   float z;
+  float yaw;
   bool valid;
 };
 

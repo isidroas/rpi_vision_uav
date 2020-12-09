@@ -115,7 +115,7 @@ void ComunicationClass::send_pos_setpoint(Eigen::Vector3d pos)
     pos_setpoint.north_m=pos[0];
     pos_setpoint.east_m=pos[1];
     pos_setpoint.down_m=pos[2];
-    pos_setpoint.yaw_deg=0; // TODO: decide yaw. Se podrá Nan?
+    pos_setpoint.yaw_deg=NAN; // TODO: decide yaw. Se podrá Nan?
     Offboard::Result result = offboard->set_position_ned(pos_setpoint);
     if(result!=Offboard::Result::Success){
         std::cerr << ERROR_CONSOLE_TEXT << "Set offboard position setpoint failed: " << result << NORMAL_CONSOLE_TEXT << std::endl;

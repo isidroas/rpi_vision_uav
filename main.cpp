@@ -111,10 +111,11 @@ int main()
         //TODO: hacer esto con menor frecuencia
         // Get position setpoint from Trayectory Generator
         Eigen::Vector3d pos_setpoint;
+        bool setpoint_valid = false;
         if (tray_gen)
-            get_pos_from_tray_gen(pos_setpoint); 
+            setpoint_valid = get_pos_from_tray_gen(pos_setpoint); 
 
-        if (mav_connect and tray_gen){
+        if (mav_connect and tray_gen and setpoint_valid){
             // Send setpoint to autopilot
             commObj.send_pos_setpoint(pos_setpoint);
 
@@ -125,7 +126,6 @@ int main()
             // Send ned position to Trayectory Generator
             if (valid_ned)
                 send_pos_ned_to_tray_gen(pos_ned);
-                //cout << "Posición NED: " << pos_ned;
         }
 
 

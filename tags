@@ -1,0 +1,490 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/isidro/google-drive/TFM/rpi_vision_uav/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20201206.0/
+$(VERBOSE).SILENT	build/Makefile	/^$(VERBOSE).SILENT:$/;"	t
+ARCHITECTURE_ID	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#   define ARCHITECTURE_ID /;"	d	file:
+ARCHITECTURE_ID	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define ARCHITECTURE_ID /;"	d	file:
+ARCHITECTURE_ID	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define ARCHITECTURE_ID$/;"	d	file:
+ARCHITECTURE_ID	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#   define ARCHITECTURE_ID /;"	d	file:
+ARCHITECTURE_ID	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define ARCHITECTURE_ID /;"	d	file:
+ARCHITECTURE_ID	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define ARCHITECTURE_ID$/;"	d	file:
+AUTO_SCALE_FACTOR	marker_vision.h	/^#define AUTO_SCALE_FACTOR /;"	d
+CMAKE_AR	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_AR "\/usr\/bin\/ar")$/;"	v
+CMAKE_AR	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_AR "\/usr\/bin\/ar")$/;"	v
+CMAKE_BINARY_DIR	build/Makefile	/^CMAKE_BINARY_DIR = \/home\/isidro\/google-drive\/TFM\/rpi_vision_uav\/build$/;"	m
+CMAKE_C11_COMPILE_FEATURES	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C11_COMPILE_FEATURES "c_std_11;c_static_assert")$/;"	v
+CMAKE_C90_COMPILE_FEATURES	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C90_COMPILE_FEATURES "c_std_90;c_function_prototypes")$/;"	v
+CMAKE_C99_COMPILE_FEATURES	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C99_COMPILE_FEATURES "c_std_99;c_restrict;c_variadic_macros")$/;"	v
+CMAKE_CL_SHOWINCLUDES_PREFIX	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^  set(CMAKE_CL_SHOWINCLUDES_PREFIX "${CMAKE_C_CL_SHOWINCLUDES_PREFIX}")$/;"	v
+CMAKE_CL_SHOWINCLUDES_PREFIX	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^  set(CMAKE_CL_SHOWINCLUDES_PREFIX "${CMAKE_CXX_CL_SHOWINCLUDES_PREFIX}")$/;"	v
+CMAKE_COMMAND	build/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
+CMAKE_COMPILER_IS_CYGWIN	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_COMPILER_IS_CYGWIN )$/;"	v
+CMAKE_COMPILER_IS_CYGWIN	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_COMPILER_IS_CYGWIN )$/;"	v
+CMAKE_COMPILER_IS_GNUCC	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_COMPILER_IS_GNUCC 1)$/;"	v
+CMAKE_COMPILER_IS_GNUCXX	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_COMPILER_IS_GNUCXX 1)$/;"	v
+CMAKE_COMPILER_IS_MINGW	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_COMPILER_IS_MINGW )$/;"	v
+CMAKE_COMPILER_IS_MINGW	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_COMPILER_IS_MINGW )$/;"	v
+CMAKE_CROSSCOMPILING	build/CMakeFiles/3.16.3/CMakeSystem.cmake	/^set(CMAKE_CROSSCOMPILING "FALSE")$/;"	v
+CMAKE_CROSSCOMPILING	build/cmake_install.cmake	/^  set(CMAKE_CROSSCOMPILING "FALSE")$/;"	v
+CMAKE_CXX11_COMPILE_FEATURES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX11_COMPILE_FEATURES "cxx_std_11;cxx_alias_templates;cxx_alignas;cxx_alignof;cxx_att/;"	v
+CMAKE_CXX14_COMPILE_FEATURES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX14_COMPILE_FEATURES "cxx_std_14;cxx_aggregate_default_initializers;cxx_attribute_de/;"	v
+CMAKE_CXX17_COMPILE_FEATURES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX17_COMPILE_FEATURES "cxx_std_17")$/;"	v
+CMAKE_CXX20_COMPILE_FEATURES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX20_COMPILE_FEATURES "cxx_std_20")$/;"	v
+CMAKE_CXX98_COMPILE_FEATURES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX98_COMPILE_FEATURES "cxx_std_98;cxx_template_template_parameters")$/;"	v
+CMAKE_CXX_ABI_COMPILED	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_ABI_COMPILED TRUE)$/;"	v
+CMAKE_CXX_CL_SHOWINCLUDES_PREFIX	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_CL_SHOWINCLUDES_PREFIX "")$/;"	v
+CMAKE_CXX_COMPILER	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER "\/usr\/bin\/c++")$/;"	v
+CMAKE_CXX_COMPILER_ABI	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_ABI "ELF")$/;"	v
+CMAKE_CXX_COMPILER_AR	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_AR "\/usr\/bin\/gcc-ar-9")$/;"	v
+CMAKE_CXX_COMPILER_ARG1	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_ARG1 "")$/;"	v
+CMAKE_CXX_COMPILER_ENV_VAR	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_ENV_VAR "CXX")$/;"	v
+CMAKE_CXX_COMPILER_FRONTEND_VARIANT	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_FRONTEND_VARIANT "")$/;"	v
+CMAKE_CXX_COMPILER_ID	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_ID "GNU")$/;"	v
+CMAKE_CXX_COMPILER_ID	build/CMakeFiles/offboard_vision.dir/DependInfo.cmake	/^set(CMAKE_CXX_COMPILER_ID "GNU")$/;"	v
+CMAKE_CXX_COMPILER_ID	build/CMakeFiles/trayectory_gen.dir/DependInfo.cmake	/^set(CMAKE_CXX_COMPILER_ID "GNU")$/;"	v
+CMAKE_CXX_COMPILER_ID_RUN	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_ID_RUN 1)$/;"	v
+CMAKE_CXX_COMPILER_LOADED	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_LOADED 1)$/;"	v
+CMAKE_CXX_COMPILER_RANLIB	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_RANLIB "\/usr\/bin\/gcc-ranlib-9")$/;"	v
+CMAKE_CXX_COMPILER_VERSION	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_VERSION "9.3.0")$/;"	v
+CMAKE_CXX_COMPILER_VERSION_INTERNAL	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_VERSION_INTERNAL "")$/;"	v
+CMAKE_CXX_COMPILER_WORKS	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_WORKS TRUE)$/;"	v
+CMAKE_CXX_COMPILER_WRAPPER	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILER_WRAPPER "")$/;"	v
+CMAKE_CXX_COMPILE_FEATURES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_COMPILE_FEATURES "cxx_std_98;cxx_template_template_parameters;cxx_std_11;cxx_alias/;"	v
+CMAKE_CXX_IGNORE_EXTENSIONS	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_IGNORE_EXTENSIONS inl;h;hpp;HPP;H;o;O;obj;OBJ;def;DEF;rc;RC)$/;"	v
+CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES "\/usr\/include\/c++\/9;\/usr\/include\/x86_64-linux-/;"	v
+CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES "\/usr\/lib\/gcc\/x86_64-linux-gnu\/9;\/usr\/lib\/x86_64/;"	v
+CMAKE_CXX_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "")$/;"	v
+CMAKE_CXX_IMPLICIT_LINK_LIBRARIES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_IMPLICIT_LINK_LIBRARIES "stdc++;m;gcc_s;gcc;c;gcc_s;gcc")$/;"	v
+CMAKE_CXX_INCLUDE_REGEX_COMPLAIN	build/CMakeFiles/CMakeDirectoryInformation.cmake	/^set(CMAKE_CXX_INCLUDE_REGEX_COMPLAIN ${CMAKE_C_INCLUDE_REGEX_COMPLAIN})$/;"	v
+CMAKE_CXX_INCLUDE_REGEX_SCAN	build/CMakeFiles/CMakeDirectoryInformation.cmake	/^set(CMAKE_CXX_INCLUDE_REGEX_SCAN ${CMAKE_C_INCLUDE_REGEX_SCAN})$/;"	v
+CMAKE_CXX_LIBRARY_ARCHITECTURE	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_LIBRARY_ARCHITECTURE "x86_64-linux-gnu")$/;"	v
+CMAKE_CXX_LINKER_PREFERENCE	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_LINKER_PREFERENCE 30)$/;"	v
+CMAKE_CXX_LINKER_PREFERENCE_PROPAGATES	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_LINKER_PREFERENCE_PROPAGATES 1)$/;"	v
+CMAKE_CXX_PLATFORM_ID	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_PLATFORM_ID "Linux")$/;"	v
+CMAKE_CXX_SIMULATE_ID	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_SIMULATE_ID "")$/;"	v
+CMAKE_CXX_SIMULATE_VERSION	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_SIMULATE_VERSION "")$/;"	v
+CMAKE_CXX_SIZEOF_DATA_PTR	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_SIZEOF_DATA_PTR "8")$/;"	v
+CMAKE_CXX_SOURCE_FILE_EXTENSIONS	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_SOURCE_FILE_EXTENSIONS C;M;c++;cc;cpp;cxx;m;mm;CPP)$/;"	v
+CMAKE_CXX_STANDARD_COMPUTED_DEFAULT	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_CXX_STANDARD_COMPUTED_DEFAULT "14")$/;"	v
+CMAKE_CXX_TARGET_INCLUDE_PATH	build/CMakeFiles/offboard_vision.dir/DependInfo.cmake	/^set(CMAKE_CXX_TARGET_INCLUDE_PATH$/;"	v
+CMAKE_CXX_TARGET_INCLUDE_PATH	build/CMakeFiles/trayectory_gen.dir/DependInfo.cmake	/^set(CMAKE_CXX_TARGET_INCLUDE_PATH$/;"	v
+CMAKE_C_ABI_COMPILED	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_ABI_COMPILED TRUE)$/;"	v
+CMAKE_C_CL_SHOWINCLUDES_PREFIX	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_CL_SHOWINCLUDES_PREFIX "")$/;"	v
+CMAKE_C_COMPILER	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER "\/usr\/bin\/cc")$/;"	v
+CMAKE_C_COMPILER_ABI	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_ABI "ELF")$/;"	v
+CMAKE_C_COMPILER_AR	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_AR "\/usr\/bin\/gcc-ar-9")$/;"	v
+CMAKE_C_COMPILER_ARG1	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_ARG1 "")$/;"	v
+CMAKE_C_COMPILER_ENV_VAR	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_ENV_VAR "CC")$/;"	v
+CMAKE_C_COMPILER_FRONTEND_VARIANT	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_FRONTEND_VARIANT "")$/;"	v
+CMAKE_C_COMPILER_ID	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_ID "GNU")$/;"	v
+CMAKE_C_COMPILER_ID_RUN	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_ID_RUN 1)$/;"	v
+CMAKE_C_COMPILER_LOADED	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_LOADED 1)$/;"	v
+CMAKE_C_COMPILER_RANLIB	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_RANLIB "\/usr\/bin\/gcc-ranlib-9")$/;"	v
+CMAKE_C_COMPILER_VERSION	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_VERSION "9.3.0")$/;"	v
+CMAKE_C_COMPILER_VERSION_INTERNAL	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_VERSION_INTERNAL "")$/;"	v
+CMAKE_C_COMPILER_WORKS	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_WORKS TRUE)$/;"	v
+CMAKE_C_COMPILER_WRAPPER	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILER_WRAPPER "")$/;"	v
+CMAKE_C_COMPILE_FEATURES	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_COMPILE_FEATURES "c_std_90;c_function_prototypes;c_std_99;c_restrict;c_variadic_macr/;"	v
+CMAKE_C_IGNORE_EXTENSIONS	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_IGNORE_EXTENSIONS h;H;o;O;obj;OBJ;def;DEF;rc;RC)$/;"	v
+CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES "\/usr\/lib\/gcc\/x86_64-linux-gnu\/9\/include;\/usr\/l/;"	v
+CMAKE_C_IMPLICIT_LINK_DIRECTORIES	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_IMPLICIT_LINK_DIRECTORIES "\/usr\/lib\/gcc\/x86_64-linux-gnu\/9;\/usr\/lib\/x86_64-l/;"	v
+CMAKE_C_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "")$/;"	v
+CMAKE_C_IMPLICIT_LINK_LIBRARIES	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_IMPLICIT_LINK_LIBRARIES "gcc;gcc_s;c;gcc;gcc_s")$/;"	v
+CMAKE_C_INCLUDE_REGEX_COMPLAIN	build/CMakeFiles/CMakeDirectoryInformation.cmake	/^set(CMAKE_C_INCLUDE_REGEX_COMPLAIN "^$")$/;"	v
+CMAKE_C_INCLUDE_REGEX_SCAN	build/CMakeFiles/CMakeDirectoryInformation.cmake	/^set(CMAKE_C_INCLUDE_REGEX_SCAN "^.*$")$/;"	v
+CMAKE_C_LIBRARY_ARCHITECTURE	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_LIBRARY_ARCHITECTURE "x86_64-linux-gnu")$/;"	v
+CMAKE_C_LINKER_PREFERENCE	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_LINKER_PREFERENCE 10)$/;"	v
+CMAKE_C_PLATFORM_ID	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_PLATFORM_ID "Linux")$/;"	v
+CMAKE_C_SIMULATE_ID	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_SIMULATE_ID "")$/;"	v
+CMAKE_C_SIMULATE_VERSION	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_SIMULATE_VERSION "")$/;"	v
+CMAKE_C_SIZEOF_DATA_PTR	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_SIZEOF_DATA_PTR "8")$/;"	v
+CMAKE_C_SOURCE_FILE_EXTENSIONS	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_SOURCE_FILE_EXTENSIONS c;m)$/;"	v
+CMAKE_C_STANDARD_COMPUTED_DEFAULT	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_C_STANDARD_COMPUTED_DEFAULT "11")$/;"	v
+CMAKE_DEPENDS_CHECK_CXX	build/CMakeFiles/offboard_vision.dir/DependInfo.cmake	/^set(CMAKE_DEPENDS_CHECK_CXX$/;"	v
+CMAKE_DEPENDS_CHECK_CXX	build/CMakeFiles/trayectory_gen.dir/DependInfo.cmake	/^set(CMAKE_DEPENDS_CHECK_CXX$/;"	v
+CMAKE_DEPENDS_GENERATOR	build/CMakeFiles/Makefile.cmake	/^set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")$/;"	v
+CMAKE_DEPENDS_LANGUAGES	build/CMakeFiles/install2.dir/DependInfo.cmake	/^set(CMAKE_DEPENDS_LANGUAGES$/;"	v
+CMAKE_DEPENDS_LANGUAGES	build/CMakeFiles/offboard_vision.dir/DependInfo.cmake	/^set(CMAKE_DEPENDS_LANGUAGES$/;"	v
+CMAKE_DEPENDS_LANGUAGES	build/CMakeFiles/trayectory_gen.dir/DependInfo.cmake	/^set(CMAKE_DEPENDS_LANGUAGES$/;"	v
+CMAKE_DEPEND_INFO_FILES	build/CMakeFiles/Makefile.cmake	/^set(CMAKE_DEPEND_INFO_FILES$/;"	v
+CMAKE_FORCE_UNIX_PATHS	build/CMakeFiles/CMakeDirectoryInformation.cmake	/^set(CMAKE_FORCE_UNIX_PATHS 1)$/;"	v
+CMAKE_Fortran_TARGET_MODULE_DIR	build/CMakeFiles/install2.dir/DependInfo.cmake	/^set(CMAKE_Fortran_TARGET_MODULE_DIR "")$/;"	v
+CMAKE_Fortran_TARGET_MODULE_DIR	build/CMakeFiles/offboard_vision.dir/DependInfo.cmake	/^set(CMAKE_Fortran_TARGET_MODULE_DIR "")$/;"	v
+CMAKE_Fortran_TARGET_MODULE_DIR	build/CMakeFiles/trayectory_gen.dir/DependInfo.cmake	/^set(CMAKE_Fortran_TARGET_MODULE_DIR "")$/;"	v
+CMAKE_HOST_SYSTEM	build/CMakeFiles/3.16.3/CMakeSystem.cmake	/^set(CMAKE_HOST_SYSTEM "Linux-5.4.0-54-generic")$/;"	v
+CMAKE_HOST_SYSTEM_NAME	build/CMakeFiles/3.16.3/CMakeSystem.cmake	/^set(CMAKE_HOST_SYSTEM_NAME "Linux")$/;"	v
+CMAKE_HOST_SYSTEM_PROCESSOR	build/CMakeFiles/3.16.3/CMakeSystem.cmake	/^set(CMAKE_HOST_SYSTEM_PROCESSOR "x86_64")$/;"	v
+CMAKE_HOST_SYSTEM_VERSION	build/CMakeFiles/3.16.3/CMakeSystem.cmake	/^set(CMAKE_HOST_SYSTEM_VERSION "5.4.0-54-generic")$/;"	v
+CMAKE_INSTALL_COMPONENT	build/cmake_install.cmake	/^    set(CMAKE_INSTALL_COMPONENT "${COMPONENT}")$/;"	v
+CMAKE_INSTALL_COMPONENT	build/cmake_install.cmake	/^    set(CMAKE_INSTALL_COMPONENT)$/;"	v
+CMAKE_INSTALL_CONFIG_NAME	build/cmake_install.cmake	/^    set(CMAKE_INSTALL_CONFIG_NAME "")$/;"	v
+CMAKE_INSTALL_MANIFEST	build/cmake_install.cmake	/^  set(CMAKE_INSTALL_MANIFEST "install_manifest.txt")$/;"	v
+CMAKE_INSTALL_MANIFEST	build/cmake_install.cmake	/^  set(CMAKE_INSTALL_MANIFEST "install_manifest_${CMAKE_INSTALL_COMPONENT}.txt")$/;"	v
+CMAKE_INSTALL_PREFIX	build/cmake_install.cmake	/^  set(CMAKE_INSTALL_PREFIX "\/usr\/local")$/;"	v
+CMAKE_INSTALL_SO_NO_EXE	build/cmake_install.cmake	/^  set(CMAKE_INSTALL_SO_NO_EXE "1")$/;"	v
+CMAKE_INTERNAL_PLATFORM_ABI	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^  set(CMAKE_INTERNAL_PLATFORM_ABI "${CMAKE_C_COMPILER_ABI}")$/;"	v
+CMAKE_INTERNAL_PLATFORM_ABI	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^  set(CMAKE_INTERNAL_PLATFORM_ABI "${CMAKE_CXX_COMPILER_ABI}")$/;"	v
+CMAKE_LIBRARY_ARCHITECTURE	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^  set(CMAKE_LIBRARY_ARCHITECTURE "x86_64-linux-gnu")$/;"	v
+CMAKE_LIBRARY_ARCHITECTURE	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^  set(CMAKE_LIBRARY_ARCHITECTURE "x86_64-linux-gnu")$/;"	v
+CMAKE_LINKER	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_LINKER "\/usr\/bin\/ld")$/;"	v
+CMAKE_LINKER	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_LINKER "\/usr\/bin\/ld")$/;"	v
+CMAKE_MAKEFILE_DEPENDS	build/CMakeFiles/Makefile.cmake	/^set(CMAKE_MAKEFILE_DEPENDS$/;"	v
+CMAKE_MAKEFILE_OUTPUTS	build/CMakeFiles/Makefile.cmake	/^set(CMAKE_MAKEFILE_OUTPUTS$/;"	v
+CMAKE_MAKEFILE_PRODUCTS	build/CMakeFiles/Makefile.cmake	/^set(CMAKE_MAKEFILE_PRODUCTS$/;"	v
+CMAKE_MT	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_MT "")$/;"	v
+CMAKE_MT	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_MT "")$/;"	v
+CMAKE_RANLIB	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^set(CMAKE_RANLIB "\/usr\/bin\/ranlib")$/;"	v
+CMAKE_RANLIB	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^set(CMAKE_RANLIB "\/usr\/bin\/ranlib")$/;"	v
+CMAKE_RELATIVE_PATH_TOP_BINARY	build/CMakeFiles/CMakeDirectoryInformation.cmake	/^set(CMAKE_RELATIVE_PATH_TOP_BINARY "\/home\/isidro\/google-drive\/TFM\/rpi_vision_uav\/build")$/;"	v
+CMAKE_RELATIVE_PATH_TOP_SOURCE	build/CMakeFiles/CMakeDirectoryInformation.cmake	/^set(CMAKE_RELATIVE_PATH_TOP_SOURCE "\/home\/isidro\/google-drive\/TFM\/rpi_vision_uav")$/;"	v
+CMAKE_SIZEOF_VOID_P	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^  set(CMAKE_SIZEOF_VOID_P "${CMAKE_C_SIZEOF_DATA_PTR}")$/;"	v
+CMAKE_SIZEOF_VOID_P	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^  set(CMAKE_SIZEOF_VOID_P "${CMAKE_CXX_SIZEOF_DATA_PTR}")$/;"	v
+CMAKE_SOURCE_DIR	build/Makefile	/^CMAKE_SOURCE_DIR = \/home\/isidro\/google-drive\/TFM\/rpi_vision_uav$/;"	m
+CMAKE_SYSTEM	build/CMakeFiles/3.16.3/CMakeSystem.cmake	/^set(CMAKE_SYSTEM "Linux-5.4.0-54-generic")$/;"	v
+CMAKE_SYSTEM_LOADED	build/CMakeFiles/3.16.3/CMakeSystem.cmake	/^set(CMAKE_SYSTEM_LOADED 1)$/;"	v
+CMAKE_SYSTEM_NAME	build/CMakeFiles/3.16.3/CMakeSystem.cmake	/^set(CMAKE_SYSTEM_NAME "Linux")$/;"	v
+CMAKE_SYSTEM_PROCESSOR	build/CMakeFiles/3.16.3/CMakeSystem.cmake	/^set(CMAKE_SYSTEM_PROCESSOR "x86_64")$/;"	v
+CMAKE_SYSTEM_VERSION	build/CMakeFiles/3.16.3/CMakeSystem.cmake	/^set(CMAKE_SYSTEM_VERSION "5.4.0-54-generic")$/;"	v
+CMAKE_TARGET_LINKED_INFO_FILES	build/CMakeFiles/install2.dir/DependInfo.cmake	/^set(CMAKE_TARGET_LINKED_INFO_FILES$/;"	v
+CMAKE_TARGET_LINKED_INFO_FILES	build/CMakeFiles/offboard_vision.dir/DependInfo.cmake	/^set(CMAKE_TARGET_LINKED_INFO_FILES$/;"	v
+CMAKE_TARGET_LINKED_INFO_FILES	build/CMakeFiles/trayectory_gen.dir/DependInfo.cmake	/^set(CMAKE_TARGET_LINKED_INFO_FILES$/;"	v
+COMPILER_ID	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define COMPILER_ID /;"	d	file:
+COMPILER_ID	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# define COMPILER_ID /;"	d	file:
+COMPILER_VERSION_INTERNAL	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define COMPILER_VERSION_INTERNAL /;"	d	file:
+COMPILER_VERSION_INTERNAL	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define COMPILER_VERSION_INTERNAL /;"	d	file:
+COMPILER_VERSION_INTERNAL	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define COMPILER_VERSION_INTERNAL /;"	d	file:
+COMPILER_VERSION_INTERNAL	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# define COMPILER_VERSION_INTERNAL /;"	d	file:
+COMPILER_VERSION_MAJOR	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^  # define COMPILER_VERSION_MAJOR /;"	d	file:
+COMPILER_VERSION_MAJOR	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define COMPILER_VERSION_MAJOR /;"	d	file:
+COMPILER_VERSION_MAJOR	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define COMPILER_VERSION_MAJOR /;"	d	file:
+COMPILER_VERSION_MAJOR	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^  # define COMPILER_VERSION_MAJOR /;"	d	file:
+COMPILER_VERSION_MAJOR	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define COMPILER_VERSION_MAJOR /;"	d	file:
+COMPILER_VERSION_MAJOR	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# define COMPILER_VERSION_MAJOR /;"	d	file:
+COMPILER_VERSION_MINOR	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^  # define COMPILER_VERSION_MINOR /;"	d	file:
+COMPILER_VERSION_MINOR	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define COMPILER_VERSION_MINOR /;"	d	file:
+COMPILER_VERSION_MINOR	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define COMPILER_VERSION_MINOR /;"	d	file:
+COMPILER_VERSION_MINOR	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^  # define COMPILER_VERSION_MINOR /;"	d	file:
+COMPILER_VERSION_MINOR	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define COMPILER_VERSION_MINOR /;"	d	file:
+COMPILER_VERSION_MINOR	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# define COMPILER_VERSION_MINOR /;"	d	file:
+COMPILER_VERSION_PATCH	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^  # define COMPILER_VERSION_PATCH /;"	d	file:
+COMPILER_VERSION_PATCH	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#   define COMPILER_VERSION_PATCH /;"	d	file:
+COMPILER_VERSION_PATCH	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define COMPILER_VERSION_PATCH /;"	d	file:
+COMPILER_VERSION_PATCH	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define COMPILER_VERSION_PATCH /;"	d	file:
+COMPILER_VERSION_PATCH	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^  # define COMPILER_VERSION_PATCH /;"	d	file:
+COMPILER_VERSION_PATCH	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#   define COMPILER_VERSION_PATCH /;"	d	file:
+COMPILER_VERSION_PATCH	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define COMPILER_VERSION_PATCH /;"	d	file:
+COMPILER_VERSION_PATCH	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# define COMPILER_VERSION_PATCH /;"	d	file:
+COMPILER_VERSION_TWEAK	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define COMPILER_VERSION_TWEAK /;"	d	file:
+COMPILER_VERSION_TWEAK	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define COMPILER_VERSION_TWEAK /;"	d	file:
+COMPILER_VERSION_TWEAK	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define COMPILER_VERSION_TWEAK /;"	d	file:
+COMPILER_VERSION_TWEAK	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# define COMPILER_VERSION_TWEAK /;"	d	file:
+CONNECTION_URL	mavlink_helper.h	/^#define CONNECTION_URL /;"	d
+CXX_STD	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#      define CXX_STD /;"	d	file:
+CXX_STD	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#    define CXX_STD /;"	d	file:
+CXX_STD	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define CXX_STD /;"	d	file:
+CYGWIN	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^  set(CYGWIN 1)$/;"	v
+CYGWIN	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^  set(CYGWIN 1)$/;"	v
+C_DIALECT	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define C_DIALECT /;"	d	file:
+C_DIALECT	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define C_DIALECT$/;"	d	file:
+C_DIALECT	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define C_DIALECT /;"	d	file:
+ComunicationClass	mavlink_helper.h	/^class ComunicationClass{$/;"	c
+DEBUG	main.cpp	/^#define DEBUG$/;"	d	file:
+DEC	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#define DEC(/;"	d	file:
+DEC	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define DEC(/;"	d	file:
+DIST_THR	trayectory_gen.cpp	/^#define DIST_THR /;"	d	file:
+DT	python_scripts/matplot_animation.py	/^DT=0.025$/;"	v
+EQUALS	build/Makefile	/^EQUALS = =$/;"	m
+ERROR_CONSOLE_TEXT	mavlink_helper.h	/^#define ERROR_CONSOLE_TEXT /;"	d
+EXPOSURE	python_scripts/rpi_video_recorder.py	/^EXPOSURE=params["exposure_time"]$/;"	v
+FPS	python_scripts/rpi_video_recorder.py	/^FPS=params["fps"]$/;"	v
+HEIGHT	python_scripts/rpi_video_recorder.py	/^HEIGHT=params["frame_height"]$/;"	v
+HEX	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#define HEX(/;"	d	file:
+HEX	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define HEX(/;"	d	file:
+ID_VOID_MAIN	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define ID_VOID_MAIN$/;"	d	file:
+IMAGE_EXTENSION	python_scripts/shutdown.py	/^IMAGE_EXTENSION=".png"$/;"	v
+InvertPose	marker_vision.h	/^void VisionClass::InvertPose(Eigen::Vector3d &pos, Eigen::Vector3d &eul, Vec3d &rvec, Vec3d &tve/;"	f	class:VisionClass	typeref:typename:void
+MEM_SIZE_EST	shared_memory_helper.h	/^#define MEM_SIZE_EST /;"	d
+MEM_SIZE_EST	trayectory_gen.h	/^#define MEM_SIZE_EST /;"	d
+MEM_SIZE_SET	shared_memory_helper.h	/^#define MEM_SIZE_SET /;"	d
+MEM_SIZE_SET	trayectory_gen.h	/^#define MEM_SIZE_SET /;"	d
+MINGW	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^  set(MINGW 1)$/;"	v
+MINGW	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^  set(MINGW 1)$/;"	v
+NORMAL_CONSOLE_TEXT	mavlink_helper.h	/^#define NORMAL_CONSOLE_TEXT /;"	d
+OUTPUT_FORMAT	python_scripts/rpi_video_recorder.py	/^OUTPUT_FORMAT = "h264"$/;"	v
+PLATFORM_ID	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define PLATFORM_ID /;"	d	file:
+PLATFORM_ID	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define PLATFORM_ID$/;"	d	file:
+PLATFORM_ID	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define PLATFORM_ID /;"	d	file:
+PLATFORM_ID	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define PLATFORM_ID$/;"	d	file:
+PLATFORM_ID	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define PLATFORM_ID /;"	d	file:
+PLATFORM_ID	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define PLATFORM_ID$/;"	d	file:
+PLATFORM_ID	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# define PLATFORM_ID /;"	d	file:
+PLATFORM_ID	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^# define PLATFORM_ID$/;"	d	file:
+RM	build/Makefile	/^RM = \/usr\/bin\/cmake -E remove -f$/;"	m
+SEMAPHORE_NAME_EST	shared_memory_helper.h	/^#define SEMAPHORE_NAME_EST /;"	d
+SEMAPHORE_NAME_EST	trayectory_gen.h	/^#define SEMAPHORE_NAME_EST /;"	d
+SEMAPHORE_NAME_SET	shared_memory_helper.h	/^#define SEMAPHORE_NAME_SET /;"	d
+SEMAPHORE_NAME_SET	trayectory_gen.h	/^#define SEMAPHORE_NAME_SET /;"	d
+SHARED_NAME_EST	shared_memory_helper.h	/^#define SHARED_NAME_EST /;"	d
+SHARED_NAME_EST	trayectory_gen.h	/^#define SHARED_NAME_EST /;"	d
+SHARED_NAME_SET	shared_memory_helper.h	/^#define SHARED_NAME_SET /;"	d
+SHARED_NAME_SET	trayectory_gen.h	/^#define SHARED_NAME_SET /;"	d
+SHELL	build/Makefile	/^SHELL = \/bin\/sh$/;"	m
+SIMULATE_ID	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define SIMULATE_ID /;"	d	file:
+SIMULATE_ID	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define SIMULATE_ID /;"	d	file:
+SIMULATE_VERSION_MAJOR	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define SIMULATE_VERSION_MAJOR /;"	d	file:
+SIMULATE_VERSION_MAJOR	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define SIMULATE_VERSION_MAJOR /;"	d	file:
+SIMULATE_VERSION_MINOR	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define SIMULATE_VERSION_MINOR /;"	d	file:
+SIMULATE_VERSION_MINOR	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define SIMULATE_VERSION_MINOR /;"	d	file:
+SIMULATE_VERSION_PATCH	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#  define SIMULATE_VERSION_PATCH /;"	d	file:
+SIMULATE_VERSION_PATCH	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#  define SIMULATE_VERSION_PATCH /;"	d	file:
+STRINGIFY	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#define STRINGIFY(/;"	d	file:
+STRINGIFY	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define STRINGIFY(/;"	d	file:
+STRINGIFY_HELPER	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^#define STRINGIFY_HELPER(/;"	d	file:
+STRINGIFY_HELPER	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^#define STRINGIFY_HELPER(/;"	d	file:
+SUFFIXES	build/Makefile	/^SUFFIXES =$/;"	m
+TELEMETRY_CONSOLE_TEXT	main.cpp	/^#define TELEMETRY_CONSOLE_TEXT /;"	d	file:
+UNIX	build/CMakeFiles/3.16.3/CMakeCCompiler.cmake	/^  set(UNIX 1)$/;"	v
+UNIX	build/CMakeFiles/3.16.3/CMakeCXXCompiler.cmake	/^  set(UNIX 1)$/;"	v
+UPDATE_DEBUG_RATE	main.cpp	/^#define UPDATE_DEBUG_RATE /;"	d	file:
+UUID	mavlink_helper.h	/^#define UUID /;"	d
+VisionClass	marker_vision.h	/^class VisionClass {$/;"	c
+WAIT_LOOP	trayectory_gen.cpp	/^#define WAIT_LOOP /;"	d	file:
+WAIT_WP	trayectory_gen.cpp	/^#define WAIT_WP /;"	d	file:
+WIDTH	python_scripts/rpi_video_recorder.py	/^WIDTH=params["frame_width"]$/;"	v
+__anon43f92cec0102	mavlink_helper.h	/^    dc.register_on_discover([&discover_promise](uint64_t uuid) {$/;"	f	function:ComunicationClass::wait_until_discover	file:
+__anon43f92cec0202	mavlink_helper.h	/^    telemetry->subscribe_position_velocity_ned([](Telemetry::PositionVelocityNed posvel) {$/;"	f	function:ComunicationClass::init	file:
+_uuid	mavlink_helper.h	/^        uint64_t _uuid;$/;"	m	class:ComunicationClass	typeref:typename:uint64_t
+all	build/Makefile	/^all: cmake_check_build_system$/;"	t
+autoScale	marker_vision.h	/^        bool autoScale;$/;"	m	class:VisionClass	typeref:typename:bool
+ax	python_scripts/plot_csv.py	/^fig, ax = plt.subplots()$/;"	v
+ax	python_scripts/shutdown.py	/^    fig, ax = plt.subplots()$/;"	v
+axisLength	marker_vision.h	/^        float axisLength;$/;"	m	class:VisionClass	typeref:typename:float
+board	marker_vision.h	/^        Ptr<aruco::Board> board;$/;"	m	class:VisionClass	typeref:typename:Ptr<aruco::Board>
+calibration_file	marker_vision.h	/^        string calibration_file;$/;"	m	class:VisionClass	typeref:typename:string
+camMatrix	marker_vision.h	/^    	Mat camMatrix; $/;"	m	class:VisionClass	typeref:typename:Mat
+charuco	marker_vision.h	/^        bool charuco;$/;"	m	class:VisionClass	typeref:typename:bool
+charucoboard	marker_vision.h	/^        Ptr<aruco::CharucoBoard> charucoboard;$/;"	m	class:VisionClass	typeref:typename:Ptr<aruco::CharucoBoard>
+clean	build/Makefile	/^clean:$/;"	t
+clean/fast	build/Makefile	/^clean\/fast: clean$/;"	t
+cmake_check_build_system	build/Makefile	/^cmake_check_build_system:$/;"	t
+cmake_force	build/Makefile	/^cmake_force:$/;"	t
+cmd	python_scripts/rpi_video_recorder.py	/^    cmd = "v4l2-ctl -d \/dev\/video0 -c auto_exposure=0"$/;"	v
+cmd	python_scripts/rpi_video_recorder.py	/^    cmd = "v4l2-ctl -d \/dev\/video0 -p {FPS}"$/;"	v
+cmd	python_scripts/rpi_video_recorder.py	/^    cmd = cmd + f"-framerate {FPS} "$/;"	v
+cmd	python_scripts/rpi_video_recorder.py	/^cmd = cmd + output_file$/;"	v
+cmd	python_scripts/rpi_video_recorder.py	/^cmd = f"ffmpeg -f v4l2 -video_size {WIDTH}x{HEIGHT} -i \/dev\/video0 "$/;"	v
+cmd	python_scripts/rpi_video_recorder.py	/^cmd=f"v4l2-ctl --set-fmt-video=width={WIDTH},height={HEIGHT},pixelformat=10"$/;"	v
+connection_result	mavlink_helper.h	/^        ConnectionResult connection_result;$/;"	m	class:ComunicationClass	typeref:typename:ConnectionResult
+connection_url	mavlink_helper.h	/^        string connection_url;$/;"	m	class:ComunicationClass	typeref:typename:string
+const	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define const$/;"	d	file:
+curr_path	python_scripts/startup.py	/^curr_path= os.getcwd()$/;"	v
+data_to_send	shared_memory_helper.h	/^struct data_to_send{$/;"	s
+data_to_send	trayectory_gen.h	/^struct data_to_send{$/;"	s
+dc	mavlink_helper.h	/^        Mavsdk dc;$/;"	m	class:ComunicationClass	typeref:typename:Mavsdk
+default_target	build/Makefile	/^default_target: all$/;"	t
+depend	build/Makefile	/^depend:$/;"	t
+detect_marker	marker_vision.h	/^bool VisionClass::detect_marker(Eigen::Vector3d &pos, Eigen::Vector3d &eul){$/;"	f	class:VisionClass	typeref:typename:bool
+detectorParams	marker_vision.h	/^        Ptr<aruco::DetectorParameters> detectorParams;$/;"	m	class:VisionClass	typeref:typename:Ptr<aruco::DetectorParameters>
+diamond	marker_vision.h	/^        bool diamond;$/;"	m	class:VisionClass	typeref:typename:bool
+dict_type	marker_vision.h	/^        int dict_type;$/;"	m	class:VisionClass	typeref:typename:int
+dictionary	marker_vision.h	/^    	Ptr<aruco::Dictionary> dictionary;$/;"	m	class:VisionClass	typeref:typename:Ptr<aruco::Dictionary>
+distCoeffs	marker_vision.h	/^        Mat distCoeffs;$/;"	m	class:VisionClass	typeref:typename:Mat
+draw_animation	python_scripts/matplot_animation.py	/^def draw_animation(x, y1, y2, y3, label1, label2, label3):$/;"	f
+edit_cache	build/Makefile	/^edit_cache:$/;"	t
+edit_cache/fast	build/Makefile	/^edit_cache\/fast: edit_cache$/;"	t
+est_pos	mavlink_helper.h	/^        Mocap::VisionPositionEstimate  est_pos;$/;"	m	class:ComunicationClass	typeref:typename:Mocap::VisionPositionEstimate
+execution_time_detect	marker_vision.h	/^        double execution_time_detect;$/;"	m	class:VisionClass	typeref:typename:double
+execution_time_video_grab_and_ret	marker_vision.h	/^        double execution_time_video_grab_and_ret;$/;"	m	class:VisionClass	typeref:typename:double
+exists_dirs	python_scripts/startup.py	/^exists_dirs=os.path.exists('..\/results\/latest')$/;"	v
+exposure_time	marker_vision.h	/^        int exposure_time;$/;"	m	class:VisionClass	typeref:typename:int
+fd_estimated	shared_memory_helper.h	/^int fd_estimated;$/;"	v	typeref:typename:int
+fd_estimated	trayectory_gen.h	/^int fd_estimated;$/;"	v	typeref:typename:int
+fd_setpoint	shared_memory_helper.h	/^int fd_setpoint;$/;"	v	typeref:typename:int
+fd_setpoint	trayectory_gen.h	/^int fd_setpoint;$/;"	v	typeref:typename:int
+fig	python_scripts/plot_csv.py	/^fig, ax = plt.subplots()$/;"	v
+fig	python_scripts/shutdown.py	/^    fig, ax = plt.subplots()$/;"	v
+fps	marker_vision.h	/^        int fps;$/;"	m	class:VisionClass	typeref:typename:int
+frame_height	marker_vision.h	/^        int frame_height;$/;"	m	class:VisionClass	typeref:typename:int
+frame_width	marker_vision.h	/^        int frame_width;$/;"	m	class:VisionClass	typeref:typename:int
+get_current_time	trayectory_gen.cpp	/^float get_current_time(){$/;"	f	typeref:typename:float
+get_pos_from_tray_gen	shared_memory_helper.h	/^bool get_pos_from_tray_gen(Eigen::Vector3d &pos_setpoint){$/;"	f	typeref:typename:bool
+get_pos_ned	mavlink_helper.h	/^bool ComunicationClass::get_pos_ned(Eigen::Vector3d &pos){$/;"	f	class:ComunicationClass	typeref:typename:bool
+grab_and_retrieve_image	marker_vision.h	/^	int grab_and_retrieve_image(){$/;"	f	class:VisionClass	typeref:typename:int
+help	build/Makefile	/^help:$/;"	t
+image	marker_vision.h	/^        Mat image;$/;"	m	class:VisionClass	typeref:typename:Mat
+imageCopy	marker_vision.h	/^        Mat imageCopy;$/;"	m	class:VisionClass	typeref:typename:Mat
+info_arch	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v	typeref:typename:char const *
+info_arch	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v	typeref:typename:char const *
+info_compiler	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^char const* info_compiler = "INFO" ":" "compiler[" COMPILER_ID "]";$/;"	v	typeref:typename:char const *
+info_compiler	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_compiler = "INFO" ":" "compiler[" COMPILER_ID "]";$/;"	v	typeref:typename:char const *
+info_cray	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^char const *info_cray = "INFO" ":" "compiler_wrapper[CrayPrgEnv]";$/;"	v	typeref:typename:char const *
+info_cray	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const *info_cray = "INFO" ":" "compiler_wrapper[CrayPrgEnv]";$/;"	v	typeref:typename:char const *
+info_language_dialect_default	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^const char* info_language_dialect_default =$/;"	v	typeref:typename:const char *
+info_language_dialect_default	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^const char* info_language_dialect_default = "INFO" ":" "dialect_default["$/;"	v	typeref:typename:const char *
+info_platform	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^char const* info_platform = "INFO" ":" "platform[" PLATFORM_ID "]";$/;"	v	typeref:typename:char const *
+info_platform	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_platform = "INFO" ":" "platform[" PLATFORM_ID "]";$/;"	v	typeref:typename:char const *
+info_simulate	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";$/;"	v	typeref:typename:char const *
+info_simulate	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";$/;"	v	typeref:typename:char const *
+info_simulate_version	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^char const info_simulate_version[] = {$/;"	v	typeref:typename:char const[]
+info_simulate_version	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const info_simulate_version[] = {$/;"	v	typeref:typename:char const[]
+info_version	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^char const info_version[] = {$/;"	v	typeref:typename:char const[]
+info_version	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const info_version[] = {$/;"	v	typeref:typename:char const[]
+info_version_internal	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^char const info_version_internal[] = {$/;"	v	typeref:typename:char const[]
+info_version_internal	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const info_version_internal[] = {$/;"	v	typeref:typename:char const[]
+init	marker_vision.h	/^void VisionClass::init(){$/;"	f	class:VisionClass	typeref:typename:void
+init	mavlink_helper.h	/^void ComunicationClass::init()$/;"	f	class:ComunicationClass	typeref:typename:void
+init	python_scripts/matplot_animation.py	/^    def init():$/;"	f	function:draw_animation	file:
+inputVideo	marker_vision.h	/^    	VideoCapture inputVideo;$/;"	m	class:VisionClass	typeref:typename:VideoCapture
+install2	CMakeLists.txt	/^add_custom_target(install2$/;"	t
+install2	build/Makefile	/^install2: cmake_check_build_system$/;"	t
+install2/fast	build/Makefile	/^install2\/fast:$/;"	t
+log_csv	python_scripts/plot_csv.py	/^log_csv='..\/results\/single_marker\/log.csv'$/;"	v
+log_csv	python_scripts/plot_csv.py	/^log_csv=sys.argv[1]$/;"	v
+log_file	python_scripts/startup.py	/^log_file=params["log_file"]$/;"	v
+main	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int argc; char *argv[];$/;"	f
+main	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f	typeref:typename:void
+main	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f	typeref:typename:int
+main	main.cpp	/^int main()$/;"	f	typeref:typename:int
+main	trayectory_gen.cpp	/^int main(void) {$/;"	f	typeref:typename:int
+main.cpp.i	build/Makefile	/^main.cpp.i:$/;"	t
+main.cpp.o	build/Makefile	/^main.cpp.o:$/;"	t
+main.cpp.s	build/Makefile	/^main.cpp.s:$/;"	t
+main.i	build/Makefile	/^main.i: main.cpp.i$/;"	t
+main.o	build/Makefile	/^main.o: main.cpp.o$/;"	t
+main.s	build/Makefile	/^main.s: main.cpp.s$/;"	t
+marker_length	marker_vision.h	/^        float marker_length;$/;"	m	class:VisionClass	typeref:typename:float
+marker_length_ch	marker_vision.h	/^        float marker_length_ch;$/;"	m	class:VisionClass	typeref:typename:float
+max_n_markers	marker_vision.h	/^        int max_n_markers=16;$/;"	m	class:VisionClass	typeref:typename:int
+memptr_est	shared_memory_helper.h	/^void* memptr_est;$/;"	v	typeref:typename:void *
+memptr_est	trayectory_gen.h	/^void* memptr_est;$/;"	v	typeref:typename:void *
+memptr_set	shared_memory_helper.h	/^void* memptr_set;$/;"	v	typeref:typename:void *
+memptr_set	trayectory_gen.h	/^void* memptr_set;$/;"	v	typeref:typename:void *
+minMarkers	marker_vision.h	/^        int minMarkers;$/;"	m	class:VisionClass	typeref:typename:int
+mocap	mavlink_helper.h	/^        shared_ptr<Mocap> mocap;$/;"	m	class:ComunicationClass	typeref:typename:shared_ptr<Mocap>
+n_charuco_corners	marker_vision.h	/^        int n_charuco_corners;$/;"	m	class:VisionClass	typeref:typename:int
+n_markers	marker_vision.h	/^        int n_markers;$/;"	m	class:VisionClass	typeref:typename:int
+n_position_get	marker_vision.h	/^        double n_position_get=0;$/;"	m	class:VisionClass	typeref:typename:double
+n_since_call_statistics	marker_vision.h	/^        double n_since_call_statistics=0;$/;"	m	class:VisionClass	typeref:typename:double
+np	python_scripts/matplot_animation.py	/^    import numpy as np$/;"	I	function:draw_animation	file:	nameref:module:numpy
+np	python_scripts/matplot_animation.py	/^import numpy as np$/;"	I	nameref:module:numpy
+np	python_scripts/shutdown.py	/^import numpy as np$/;"	I	nameref:module:numpy
+offboard	mavlink_helper.h	/^        shared_ptr<Offboard> offboard;$/;"	m	class:ComunicationClass	typeref:typename:shared_ptr<Offboard>
+offboard_vision	CMakeLists.txt	/^add_executable(offboard_vision$/;"	t
+offboard_vision	CMakeLists.txt	/^project(offboard_vision)$/;"	p
+offboard_vision	build/Makefile	/^offboard_vision: cmake_check_build_system$/;"	t
+offboard_vision/fast	build/Makefile	/^offboard_vision\/fast:$/;"	t
+open_window	marker_vision.h	/^        bool open_window;$/;"	m	class:VisionClass	typeref:typename:bool
+output_file	python_scripts/rpi_video_recorder.py	/^output_file="videos\/"+ timestamp+"." + OUTPUT_FORMAT$/;"	v
+params	python_scripts/rpi_video_recorder.py	/^    params = yaml.load(file.read(), Loader=yaml.FullLoader)$/;"	v
+params	python_scripts/rpi_video_recorder.py	/^params=None$/;"	v
+params	python_scripts/shutdown.py	/^    params = yaml.load(file.read(), Loader=yaml.FullLoader)$/;"	v
+params	python_scripts/shutdown.py	/^params=None$/;"	v
+params	python_scripts/startup.py	/^    params = yaml.load(file.read(), Loader=yaml.FullLoader)$/;"	v
+params	python_scripts/startup.py	/^params=None$/;"	v
+pitch	python_scripts/plot_csv.py	/^pitch= []$/;"	v
+pitch	python_scripts/shutdown.py	/^    pitch= []$/;"	v
+plots	python_scripts/matplot_animation.py	/^    plots = csv.reader(csvfile, delimiter=',')$/;"	v
+plots	python_scripts/plot_csv.py	/^    plots = csv.reader(csvfile, delimiter=',')$/;"	v
+plots	python_scripts/shutdown.py	/^        plots = csv.reader(csvfile, delimiter=',')$/;"	v
+plt	python_scripts/matplot_animation.py	/^    import matplotlib.pyplot as plt$/;"	I	function:draw_animation	file:	nameref:module:matplotlib.pyplot
+plt	python_scripts/matplot_animation.py	/^import matplotlib.pyplot as plt$/;"	I	nameref:module:matplotlib.pyplot
+plt	python_scripts/plot_csv.py	/^import matplotlib.pyplot as plt$/;"	I	nameref:module:matplotlib.pyplot
+plt	python_scripts/shutdown.py	/^import matplotlib.pyplot as plt$/;"	I	nameref:module:matplotlib.pyplot
+pos_down	mavlink_helper.h	/^static float pos_down=0;$/;"	v	typeref:typename:float
+pos_east	mavlink_helper.h	/^static float pos_east=0;$/;"	v	typeref:typename:float
+pos_north	mavlink_helper.h	/^static float pos_north=0;$/;"	v	typeref:typename:float
+preinstall	build/Makefile	/^preinstall: all$/;"	t
+preinstall/fast	build/Makefile	/^preinstall\/fast:$/;"	t
+print_statistics	marker_vision.h	/^void VisionClass::print_statistics(Eigen::Vector3d &pos, Eigen::Vector3d &eul){$/;"	f	class:VisionClass	typeref:typename:void
+print_tm	trayectory_gen.cpp	/^void print_tm(float seconds, int scr_y,int scr_x,const char *msg,  Args... args){$/;"	f	typeref:typename:void
+px	python_scripts/matplot_animation.py	/^px = []$/;"	v
+px	python_scripts/plot_csv.py	/^px = []$/;"	v
+px	python_scripts/shutdown.py	/^    px = []$/;"	v
+py	python_scripts/matplot_animation.py	/^py = []$/;"	v
+py	python_scripts/plot_csv.py	/^py = []$/;"	v
+py	python_scripts/shutdown.py	/^    py = []$/;"	v
+pz	python_scripts/matplot_animation.py	/^pz = []$/;"	v
+pz	python_scripts/plot_csv.py	/^pz = []$/;"	v
+pz	python_scripts/shutdown.py	/^    pz = []$/;"	v
+qnxnto	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v	typeref:typename:char const *
+qnxnto	build/CMakeFiles/3.16.3/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v	typeref:typename:char const *
+readCameraParameters	marker_vision.h	/^bool VisionClass::readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeffs) {$/;"	f	class:VisionClass	typeref:typename:bool
+readCommParameters	mavlink_helper.h	/^bool ComunicationClass::readCommParameters(string filename) {$/;"	f	class:ComunicationClass	typeref:typename:bool
+readDetectorParameters	marker_vision.h	/^bool VisionClass::readDetectorParameters(string filename, Ptr<aruco::DetectorParameters> &params/;"	f	class:VisionClass	typeref:typename:bool
+readParameters	main.cpp	/^static bool readParameters(string filename, bool &mav_connect, bool &log_file, int &loop_period_/;"	f	typeref:typename:bool	file:
+readVisionParameters	marker_vision.h	/^bool VisionClass::readVisionParameters(string filename) {$/;"	f	class:VisionClass	typeref:typename:bool
+rebuild_cache	build/Makefile	/^rebuild_cache:$/;"	t
+rebuild_cache/fast	build/Makefile	/^rebuild_cache\/fast: rebuild_cache$/;"	t
+refindStrategy	marker_vision.h	/^        bool refindStrategy;$/;"	m	class:VisionClass	typeref:typename:bool
+report_and_exit	shared_memory_helper.h	/^void report_and_exit(const char* msg) {$/;"	f	typeref:typename:void
+report_and_exit	trayectory_gen.h	/^void report_and_exit(const char* msg) {$/;"	f	typeref:typename:void
+results_path	python_scripts/shutdown.py	/^results_path='..\/results\/latest\/'$/;"	v
+roll	python_scripts/plot_csv.py	/^roll= []$/;"	v
+roll	python_scripts/shutdown.py	/^    roll= []$/;"	v
+rotationMatrixToEulerAngles	marker_vision.h	/^Eigen::Vector3d VisionClass::rotationMatrixToEulerAngles(Eigen::Matrix3d &R)$/;"	f	class:VisionClass	typeref:typename:Eigen::Vector3d
+semptr_est	shared_memory_helper.h	/^sem_t* semptr_est;$/;"	v	typeref:typename:sem_t *
+semptr_est	trayectory_gen.h	/^sem_t* semptr_est;$/;"	v	typeref:typename:sem_t *
+semptr_set	shared_memory_helper.h	/^sem_t* semptr_set;$/;"	v	typeref:typename:sem_t *
+semptr_set	trayectory_gen.h	/^sem_t* semptr_set;$/;"	v	typeref:typename:sem_t *
+send_msg	mavlink_helper.h	/^void ComunicationClass::send_msg(Eigen::Vector3d pos, Eigen::Vector3d eul)$/;"	f	class:ComunicationClass	typeref:typename:void
+send_pos_ned_to_tray_gen	shared_memory_helper.h	/^void send_pos_ned_to_tray_gen(Eigen::Vector3d pos_ned){$/;"	f	typeref:typename:void
+send_pos_setpoint	mavlink_helper.h	/^void ComunicationClass::send_pos_setpoint(Eigen::Vector3d pos)$/;"	f	class:ComunicationClass	typeref:typename:void
+shmem_cleanup	shared_memory_helper.h	/^void shmem_cleanup(){$/;"	f	typeref:typename:void
+shmem_cleanup	trayectory_gen.h	/^void shmem_cleanup (){$/;"	f	typeref:typename:void
+shmem_init	shared_memory_helper.h	/^void shmem_init(){$/;"	f	typeref:typename:void
+shmem_init_est	shared_memory_helper.h	/^void shmem_init_est() {$/;"	f	typeref:typename:void
+shmem_init_est	trayectory_gen.h	/^void shmem_init_est() {$/;"	f	typeref:typename:void
+shmem_init_set	shared_memory_helper.h	/^void shmem_init_set() {$/;"	f	typeref:typename:void
+shmem_init_set	trayectory_gen.h	/^void shmem_init_set() {$/;"	f	typeref:typename:void
+shmem_read	trayectory_gen.h	/^bool shmem_read(data_to_send &msg){$/;"	f	typeref:typename:bool
+shmem_write	trayectory_gen.h	/^void shmem_write(data_to_send msg){$/;"	f	typeref:typename:void
+show_rejected	marker_vision.h	/^        bool show_rejected;$/;"	m	class:VisionClass	typeref:typename:bool
+square_length	marker_vision.h	/^        float square_length;$/;"	m	class:VisionClass	typeref:typename:float
+squaresX	marker_vision.h	/^        int squaresX;$/;"	m	class:VisionClass	typeref:typename:int
+squaresY	marker_vision.h	/^        int squaresY;$/;"	m	class:VisionClass	typeref:typename:int
+t	python_scripts/matplot_animation.py	/^t = []$/;"	v
+t	python_scripts/matplot_animation.py	/^t=np.linspace(0,len(px)*0.025,len(px))$/;"	v
+t	python_scripts/plot_csv.py	/^t = []$/;"	v
+t	python_scripts/shutdown.py	/^    t = []$/;"	v
+telemetry	mavlink_helper.h	/^        shared_ptr<Telemetry> telemetry;$/;"	m	class:ComunicationClass	typeref:typename:shared_ptr<Telemetry>
+timestamp	python_scripts/rpi_video_recorder.py	/^timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")$/;"	v
+timestamp	python_scripts/shutdown.py	/^timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")$/;"	v
+totalIterations	marker_vision.h	/^        int totalIterations=0;$/;"	m	class:VisionClass	typeref:typename:int
+trayectory_gen	CMakeLists.txt	/^add_executable(trayectory_gen$/;"	t
+trayectory_gen	build/Makefile	/^trayectory_gen: cmake_check_build_system$/;"	t
+trayectory_gen.cpp.i	build/Makefile	/^trayectory_gen.cpp.i:$/;"	t
+trayectory_gen.cpp.o	build/Makefile	/^trayectory_gen.cpp.o:$/;"	t
+trayectory_gen.cpp.s	build/Makefile	/^trayectory_gen.cpp.s:$/;"	t
+trayectory_gen.i	build/Makefile	/^trayectory_gen.i: trayectory_gen.cpp.i$/;"	t
+trayectory_gen.o	build/Makefile	/^trayectory_gen.o: trayectory_gen.cpp.o$/;"	t
+trayectory_gen.s	build/Makefile	/^trayectory_gen.s: trayectory_gen.cpp.s$/;"	t
+trayectory_gen/fast	build/Makefile	/^trayectory_gen\/fast:$/;"	t
+update	python_scripts/matplot_animation.py	/^    def update(frame):$/;"	f	function:draw_animation	file:
+valid	shared_memory_helper.h	/^  bool valid;$/;"	m	struct:data_to_send	typeref:typename:bool
+valid	trayectory_gen.h	/^  bool valid;$/;"	m	struct:data_to_send	typeref:typename:bool
+valid_ned	mavlink_helper.h	/^static bool valid_ned=false;$/;"	v	typeref:typename:bool
+valid_pose	marker_vision.h	/^        double valid_pose;$/;"	m	class:VisionClass	typeref:typename:double
+video_file	marker_vision.h	/^        string video_file;$/;"	m	class:VisionClass	typeref:typename:string
+volatile	build/CMakeFiles/3.16.3/CompilerIdC/CMakeCCompilerId.c	/^# define volatile$/;"	d	file:
+wait_until_discover	mavlink_helper.h	/^void ComunicationClass::wait_until_discover(Mavsdk& dc)$/;"	f	class:ComunicationClass	typeref:typename:void
+write_images	marker_vision.h	/^        bool write_images;$/;"	m	class:VisionClass	typeref:typename:bool
+write_images	python_scripts/shutdown.py	/^    write_images=params["write_images"]$/;"	v
+write_images	python_scripts/startup.py	/^write_images=params["write_images"]$/;"	v
+x	shared_memory_helper.h	/^  float x;$/;"	m	struct:data_to_send	typeref:typename:float
+x	trayectory_gen.h	/^  float x;$/;"	m	struct:data_to_send	typeref:typename:float
+y	shared_memory_helper.h	/^  float y;$/;"	m	struct:data_to_send	typeref:typename:float
+y	trayectory_gen.h	/^  float y;$/;"	m	struct:data_to_send	typeref:typename:float
+yaw	python_scripts/plot_csv.py	/^yaw= []$/;"	v
+yaw	python_scripts/shutdown.py	/^    yaw= []$/;"	v
+yaw	shared_memory_helper.h	/^  float yaw;$/;"	m	struct:data_to_send	typeref:typename:float
+yaw	trayectory_gen.h	/^  float yaw;$/;"	m	struct:data_to_send	typeref:typename:float
+z	shared_memory_helper.h	/^  float z;$/;"	m	struct:data_to_send	typeref:typename:float
+z	trayectory_gen.h	/^  float z;$/;"	m	struct:data_to_send	typeref:typename:float
